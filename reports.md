@@ -18,3 +18,6 @@ inspection.
 - Configured `/root/nimit` `origin` to use the SSH remote and set local
   `core.sshCommand` to use the deploy key on GitHub port `22`.
 - Updated `readme.md` with durable GitHub/deploy-key context.
+- Recorded the long-term product direction: SWG Audit should use authorized,
+  educational simulations to demonstrate how easily common attacks can succeed
+  and why defenses can fail in practice.

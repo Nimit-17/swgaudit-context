@@ -4,11 +4,16 @@ This workspace is a coordination area for understanding and safely working on th
 SWG Audit dev server. It is not currently the application repository. The live
 application code appears to live separately under `/var/www/swgaudit`.
 
-The project goal is to improve the SWG Audit website and make the changes the
-user wants over time. The user is still learning how the site and server are
-set up, so the current phase is exploratory and cautious: understand the system,
-document findings, and make only minor, well-scoped website changes unless the
-user explicitly approves a larger step.
+The project goal is to improve the SWG Audit website so it can clearly and
+convincingly demonstrate how easily common attack scenarios can compromise users
+and organizations, and why many defenses fail in practice. The site should use
+authorized, educational simulations to make security risks tangible without
+enabling real-world abuse.
+
+The user is still learning how the site and server are set up, so the current
+phase is exploratory and cautious: understand the system, document findings, and
+make only minor, well-scoped website changes unless the user explicitly approves
+a larger step.
 
 At this stage, avoid significant infrastructure work such as fixing HTTPS,
 changing DNS, restructuring deployment, or restarting services unless the user
@@ -34,8 +39,9 @@ work. Keep `readme.md` focused on durable context and decisions; keep
 - The dev server is not confirmed to be the canonical production host.
 - The server configuration is only partially understood, so inspection should
   come before changes.
-- The current focus is small website improvements and learning the codebase, not
-  major server repair or deployment cleanup.
+- The current focus is small website improvements, learning the codebase, and
+  evolving safe educational attack simulations, not major server repair or
+  deployment cleanup.
 
 ## Operating Context
 
