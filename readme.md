@@ -19,6 +19,10 @@ updated as new facts, preferences, goals, risks, and decisions are discovered so
 future sessions can understand the user's intent without requiring extremely
 specific instructions every time.
 
+Use `reports.md` as the running change log for meaningful changes made during
+work. Keep `readme.md` focused on durable context and decisions; keep
+`reports.md` focused on concise change records.
+
 ## Current Situation
 
 - The user has access to the Linux dev server behind `https://www.swgaudit.com/`.
