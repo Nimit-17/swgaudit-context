@@ -24,6 +24,8 @@ specific instructions every time.
 - The user has access to the Linux dev server behind `https://www.swgaudit.com/`.
 - Codex is launched from `/root/nimit` on that server.
 - This `/root/nimit` directory currently contains only agent/context files.
+- The `/root/nimit` context repository is pushed to
+  `git@github.com:Nimit-17/swgaudit-context.git`.
 - The actual deployed site is a traditional Apache/PHP application.
 - The dev server is not confirmed to be the canonical production host.
 - The server configuration is only partially understood, so inspection should
@@ -64,6 +66,15 @@ with origin:
 ```text
 https://github.com/swgauditor/swgaudit.git
 ```
+
+The context repository at `/root/nimit` uses:
+
+```text
+git@github.com:Nimit-17/swgaudit-context.git
+```
+
+Its local Git config sets `core.sshCommand` to use
+`/root/.ssh/swgaudit_context_github` on GitHub SSH port `22`.
 
 A GitHub deploy key pair exists at:
 
