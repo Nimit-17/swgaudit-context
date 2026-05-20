@@ -65,6 +65,39 @@ with origin:
 https://github.com/swgauditor/swgaudit.git
 ```
 
+A GitHub deploy key pair exists at:
+
+```text
+/root/.ssh/swgaudit_context_github
+/root/.ssh/swgaudit_context_github.pub
+```
+
+GitHub SSH auth with this key returned:
+
+```text
+Hi Nimit-17/swgaudit-context! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+This suggests the deploy key is attached to `Nimit-17/swgaudit-context`. The
+actual app remote is still `swgauditor/swgaudit`; read-only access to that repo
+works, but that does not prove the deploy key can push there if the repository is
+publicly readable. The system-wide SSH client config sets `Port 7575` for all
+hosts in `/etc/ssh/ssh_config`, so GitHub SSH commands must explicitly use port
+`22` unless a host-specific SSH config is added.
+
+Read-only verification command:
+
+```bash
+GIT_SSH_COMMAND='ssh -p 22 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git ls-remote git@github.com:swgauditor/swgaudit.git HEAD
+```
+
+Observed remote refs:
+
+```text
+swgauditor/swgaudit: main=e91c78982a5d80dc3ea32194c16bdee44dafff69, dev=26bef503ffffefc903fd28b5b89efed207ce2f99
+Nimit-17/swgaudit-context: main=3b233b600e2a00c40b3cb2115f8796ded71d898d
+```
+
 Because the repo is owned outside this workspace, read-only Git inspection may
 need an ephemeral safe-directory override, for example:
 
