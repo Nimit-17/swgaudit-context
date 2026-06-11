@@ -342,10 +342,10 @@ p {
 
 .hero h1 {
   max-width: 100%;
-  font-size: clamp(2.6rem, 3.2vw, 3.6rem);
+  font-size: clamp(2.4rem, 2.7vw, 3rem);
   line-height: 1;
   font-weight: 850;
-  text-wrap: balance;
+  white-space: nowrap;
 }
 
 .hero-copy {
@@ -711,6 +711,8 @@ h2 {
   .hero h1 {
     max-width: 100%;
     font-size: clamp(2.35rem, 11.4vw, 3.15rem);
+    white-space: normal;
+    text-wrap: balance;
   }
 
   .hero-copy {
@@ -731,7 +733,7 @@ h2 {
 
 @media (max-height: 760px) and (min-width: 900px) {
   .hero h1 {
-    font-size: clamp(3rem, 4.1vw, 4.4rem);
+    font-size: clamp(2.4rem, 2.6vw, 2.9rem);
   }
 
   .hero-copy {
