@@ -102,34 +102,43 @@ $url = "https://www.swgaudit.com/about/";
     </nav>
   </header>
 
-  <main class="page-shell article-page">
-    <section class="article-hero" aria-labelledby="about-title">
-      <p class="eyebrow">About</p>
-      <h1 id="about-title">SWG Audit was created to change that.</h1>
-      <p>
-        We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.
-      </p>
+  <main class="page-shell article-page about-original">
+    <section class="intro-section">
+      <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools.</p>
     </section>
 
-    <section class="article-grid" aria-label="About SWG Audit">
-      <article class="article-card">
-        <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools.</p>
-
-        <ul class="warning-list">
-          <li>Many vendors continue to promote outdated solutions with bold marketing claims&mdash;offering little transparency or proof of actual protection.</li>
-          <li>Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</li>
-        </ul>
-
-        <h2>Our Mission</h2>
-        <p>
-          Empower cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats&mdash;before investing in it.
-        </p>
+    <section class="warning-section" aria-label="Problems">
+      <article class="warning-item">
+        <div class="warning-icon" aria-hidden="true">!</div>
+        <p>Many vendors continue to promote outdated solutions with bold marketing claims&mdash;offering little transparency or proof of actual protection.</p>
       </article>
+      <article class="warning-item">
+        <div class="warning-icon" aria-hidden="true">!</div>
+        <p>Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</p>
+      </article>
+    </section>
 
-      <aside class="mission-card">
-        <h2>Join the community.</h2>
-        <p>Test honestly. Buy confidently.</p>
-      </aside>
+    <section class="article-hero" aria-labelledby="about-title">
+      <h1 id="about-title">SWG Audit was created to change that.</h1>
+      <p>We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.</p>
+    </section>
+
+    <section class="feature-section" aria-labelledby="mission-title">
+      <div class="feature-container">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="64" height="84" viewBox="0 0 92 126" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M73.6 54.001C83.761 54.001 92 62.06 92 71.999V107.999C92 117.941 83.761 126 73.6 126H18.4C8.239 126 0 117.941 0 107.999V71.999C0 62.06 8.239 54.001 18.4 54.001H73.6ZM46 71.999C38.379 71.999 32.2 78.045 32.2 85.501C32.2 92.956 38.379 99 46 99C53.621 99 59.8 92.956 59.8 85.501C59.8 78.045 53.621 71.999 46 71.999ZM46 0C61.243 0 73.6 12.089 73.6 27V44.999H59.8V27C59.8 19.545 53.621 13.499 46 13.499C38.379 13.499 32.2 19.545 32.2 27V44.999H18.4V27C18.4 12.089 30.757 0 46 0Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h2 id="mission-title">Our Mission</h2>
+          <p>Empower cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats&mdash;before investing in it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" aria-label="Call to action">
+      <p>Join the community. Test honestly. Buy confidently.</p>
     </section>
   </main>
 

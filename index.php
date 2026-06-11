@@ -58,7 +58,7 @@ $url = "https://www.swgaudit.com";
 
       <a class="github-link" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">
         <img src="/assets/images/github-mark.svg" alt="" width="18" height="18">
-        GitHub
+        <span class="sr-only">GitHub</span>
       </a>
 
       <button class="mobile-toggle" type="button" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
@@ -122,84 +122,52 @@ $url = "https://www.swgaudit.com";
 
     <section class="section" aria-labelledby="categories-title">
       <div class="section-head">
-        <h2 id="categories-title">Four ways to challenge the perimeter</h2>
+        <h2 id="categories-title">Four ways to challenge the perimeter.</h2>
       </div>
 
       <div class="category-grid">
-        <button class="card" id="phishing" type="button" aria-expanded="false" data-level-card>
+        <article class="card" id="phishing">
           <div>
-            <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
-              <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
-              <path class="mark" d="M40 19v23.5a8 8 0 1 1-12.2-6.8"/>
-              <path class="mark" d="M40 19a5.5 5.5 0 1 1 6 5.5"/>
-              <path class="mark" d="M46 24.5v8.2"/>
-              <circle class="fill-mark" cx="46" cy="35.5" r="3.2"/>
-              <path class="mark" d="M30.4 34.2 25 28.8"/>
-            </svg>
+            <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
             <h3>Phishing</h3>
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
-          <span class="card-cta">View phishing levels</span>
           <div class="card-levels">
-            <span id="phishing-level-1"><strong>Level 1</strong>Bare Minimum</span>
-            <span id="phishing-level-2"><strong>Level 2</strong>Evasion Resistance</span>
-            <span id="phishing-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+            <a id="phishing-level-1" href="/phishing/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
+            <a id="phishing-level-2" href="/phishing/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
+            <a id="phishing-level-3" href="/phishing/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
           </div>
-        </button>
+        </article>
 
-        <button class="card" id="malware" type="button" aria-expanded="false" data-level-card>
+        <article class="card" id="malware">
           <div>
-            <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
-              <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
-              <circle class="mark" cx="42" cy="35.5" r="4.4"/>
-              <path class="mark" d="M42 31c-.5-9.8 7.4-14.6 14.1-10.1"/>
-              <path class="mark" d="M46 37.8c8.6 4.5 8.8 13.8 1.7 17.5"/>
-              <path class="mark" d="M38 37.8c-8.6 4.5-8.8 13.8-1.7 17.5"/>
-              <path class="mark" d="M37.9 33.3c-8.8-4.1-8.8-13.2-1.7-16.7"/>
-              <path class="mark" d="M46.1 33.3c8.8-4.1 8.8-13.2 1.7-16.7"/>
-            </svg>
+            <img class="category-icon" src="/assets/images/malware-icon.png" alt="" width="92" height="92">
             <h3>Malware</h3>
             <p>Safe malware-delivery checks that validate whether download controls, inspection, and detection policies respond.</p>
           </div>
-          <span class="card-cta">View malware levels</span>
           <div class="card-levels">
-            <span id="malware-level-1"><strong>Level 1</strong>Bare Minimum</span>
-            <span id="malware-level-2"><strong>Level 2</strong>Evasion Resistance</span>
-            <span id="malware-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+            <a id="malware-level-1" href="/malware/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
+            <a id="malware-level-2" href="/malware/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
+            <a id="malware-level-3" href="/malware/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
           </div>
-        </button>
+        </article>
 
-        <button class="card" id="data-theft" type="button" aria-expanded="false" data-level-card>
+        <article class="card" id="data-theft">
           <div>
-            <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
-              <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
-              <ellipse class="mark" cx="40" cy="23" rx="12" ry="5"/>
-              <path class="mark" d="M28 23v20c0 2.8 5.4 5 12 5 2.1 0 4.1-.2 5.8-.7"/>
-              <path class="mark" d="M52 23v12"/>
-              <path class="mark" d="M28 33c0 2.8 5.4 5 12 5 2.1 0 4.1-.2 5.8-.7"/>
-              <rect class="mark" x="50" y="42" width="13" height="12" rx="1.5"/>
-              <path class="mark" d="M53 42v-3.2a3.5 3.5 0 0 1 7 0V42"/>
-            </svg>
+            <img class="category-icon" src="/assets/images/data-theft-icon.png" alt="" width="92" height="92">
             <h3>Data Theft</h3>
             <p>DLP and egress validation for attempts to move sensitive data outside expected inspection paths.</p>
           </div>
-          <span class="card-cta">View data theft levels</span>
           <div class="card-levels">
-            <span id="data-theft-level-1"><strong>Level 1</strong>Bare Minimum</span>
-            <span id="data-theft-level-2"><strong>Level 2</strong>Evasion Resistance</span>
-            <span id="data-theft-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+            <a id="data-theft-level-1" href="/data-theft/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
+            <a id="data-theft-level-2" href="/data-theft/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
+            <a id="data-theft-level-3" href="/data-theft/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
           </div>
-        </button>
+        </article>
 
         <article class="card" id="cyberslacking">
           <div>
-            <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
-              <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
-              <circle class="fill-mark" cx="42" cy="26" r="8"/>
-              <path class="fill-mark" d="M26.5 53c1.6-9 7.5-14.2 15.5-14.2S55.9 44 57.5 53H26.5Z"/>
-              <path class="mark" d="M58 19h7v7"/>
-              <path class="mark" d="M65 19 56 28"/>
-            </svg>
+            <img class="category-icon" src="/assets/images/cyberslacking-icon.png" alt="" width="92" height="92">
             <h3>Cyberslacking</h3>
             <p>Acceptable-use and content-filtering validation for non-work web activity and media-category enforcement.</p>
           </div>

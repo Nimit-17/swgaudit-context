@@ -204,10 +204,14 @@ button:focus-visible {
 .github-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0;
   margin-left: 0.35rem;
   border: 1px solid var(--line);
   font-weight: 700;
+  width: 48px;
+  height: 44px;
+  padding: 0;
 }
 
 .github-link img {
@@ -318,7 +322,7 @@ p {
 .eyebrow {
   margin: 0 0 1rem;
   color: var(--red);
-  font-size: 0.78rem;
+  font-size: clamp(0.92rem, 1vw, 1.12rem);
   font-weight: 850;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -352,7 +356,7 @@ p {
   max-width: 760px;
   margin-top: 1.25rem;
   color: var(--muted);
-  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-size: clamp(1.28rem, 1.7vw, 1.6rem);
   line-height: 1.6;
   overflow-wrap: break-word;
 }
@@ -421,7 +425,7 @@ h2 {
 }
 
 .card {
-  min-height: 270px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -433,7 +437,6 @@ h2 {
   padding: 1.2rem;
   color: inherit;
   text-align: left;
-  cursor: pointer;
   transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
 }
 
@@ -445,28 +448,9 @@ h2 {
 }
 
 .category-icon {
-  width: 84px;
-  height: 72px;
-  color: var(--red);
-}
-
-.category-icon .hex {
-  fill: transparent;
-  stroke: rgba(255, 255, 255, 0.44);
-  stroke-width: 1.25;
-}
-
-.category-icon .mark {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.35;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.category-icon .fill-mark {
-  fill: currentColor;
-  stroke: none;
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
 }
 
 .card h3 {
@@ -488,22 +472,25 @@ h2 {
 }
 
 .card-levels {
-  display: none;
+  display: grid;
+  gap: 0.55rem;
   margin-top: 0.35rem;
   padding-top: 0.85rem;
   border-top: 1px solid var(--line);
 }
 
-.card[aria-expanded="true"] .card-levels {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.card-levels span {
+.card-levels a {
   display: grid;
   gap: 0.12rem;
   color: var(--muted);
   font-size: 0.9rem;
+  border-radius: 6px;
+  padding: 0.35rem 0;
+}
+
+.card-levels a:hover,
+.card-levels a:focus-visible {
+  color: var(--text);
 }
 
 .card-levels strong {
@@ -628,6 +615,100 @@ h2 {
   gap: 1rem;
 }
 
+.about-original {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.intro-section {
+  max-width: 780px;
+  margin-inline: auto;
+  text-align: center;
+  color: var(--muted);
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  line-height: 1.5;
+}
+
+.warning-section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.warning-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 1.2rem;
+}
+
+.warning-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--red);
+  font-weight: 850;
+}
+
+.warning-item p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.about-original .article-hero {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.feature-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: clamp(1.4rem, 3vw, 2rem);
+}
+
+.feature-container {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+.feature-icon {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--red);
+}
+
+.feature-text {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.feature-text p,
+.cta p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.cta {
+  text-align: center;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+
 .site-footer {
   padding: 1.5rem 0 2.2rem;
   color: var(--soft);
@@ -650,7 +731,8 @@ h2 {
 @media (max-width: 1020px) {
   .category-grid,
   .roadmap-grid,
-  .article-grid {
+  .article-grid,
+  .warning-section {
     grid-template-columns: 1fr;
   }
 
@@ -728,6 +810,15 @@ h2 {
   .level-row {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  .feature-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .feature-icon {
+    margin-inline: auto;
   }
 }
 
