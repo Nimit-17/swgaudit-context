@@ -31,25 +31,25 @@ $url = "https://www.swgaudit.com";
         <div class="nav-item">
           <a class="nav-trigger" href="#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
-            <a href="#phishing-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="#phishing-level-2">Evasion Resistance <span>Level 2</span></a>
-            <a href="#phishing-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+            <a href="#phishing-level-1">Bare Minimum</a>
+            <a href="#phishing-level-2">Evasion Resistance</a>
+            <a href="#phishing-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
           <a class="nav-trigger" href="#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
           <div class="dropdown" aria-label="Malware levels">
-            <a href="#malware-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="#malware-level-2">Evasion Resistance <span>Level 2</span></a>
-            <a href="#malware-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+            <a href="#malware-level-1">Bare Minimum</a>
+            <a href="#malware-level-2">Evasion Resistance</a>
+            <a href="#malware-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
           <a class="nav-trigger" href="#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
           <div class="dropdown" aria-label="Data Theft levels">
-            <a href="#data-theft-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="#data-theft-level-2">Evasion Resistance <span>Level 2</span></a>
-            <a href="#data-theft-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+            <a href="#data-theft-level-1">Bare Minimum</a>
+            <a href="#data-theft-level-2">Evasion Resistance</a>
+            <a href="#data-theft-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="nav-link" href="#cyberslacking">Cyberslacking</a>
@@ -72,27 +72,27 @@ $url = "https://www.swgaudit.com";
           <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
           <div id="mobile-phishing">
             <a href="#phishing">Overview</a>
-            <a href="#phishing-level-1">Level 1: Bare Minimum</a>
-            <a href="#phishing-level-2">Level 2: Evasion Resistance</a>
-            <a href="#phishing-level-3">Level 3: Advanced Threat Simulation</a>
+            <a href="#phishing-level-1">Bare Minimum</a>
+            <a href="#phishing-level-2">Evasion Resistance</a>
+            <a href="#phishing-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-malware">Malware</button>
           <div id="mobile-malware">
             <a href="#malware">Overview</a>
-            <a href="#malware-level-1">Level 1: Bare Minimum</a>
-            <a href="#malware-level-2">Level 2: Evasion Resistance</a>
-            <a href="#malware-level-3">Level 3: Advanced Threat Simulation</a>
+            <a href="#malware-level-1">Bare Minimum</a>
+            <a href="#malware-level-2">Evasion Resistance</a>
+            <a href="#malware-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-data-theft">Data Theft</button>
           <div id="mobile-data-theft">
             <a href="#data-theft">Overview</a>
-            <a href="#data-theft-level-1">Level 1: Bare Minimum</a>
-            <a href="#data-theft-level-2">Level 2: Evasion Resistance</a>
-            <a href="#data-theft-level-3">Level 3: Advanced Threat Simulation</a>
+            <a href="#data-theft-level-1">Bare Minimum</a>
+            <a href="#data-theft-level-2">Evasion Resistance</a>
+            <a href="#data-theft-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="mobile-direct" href="#cyberslacking">Cyberslacking</a>
@@ -122,7 +122,7 @@ $url = "https://www.swgaudit.com";
 
     <section class="section" aria-labelledby="categories-title">
       <div class="section-head">
-        <h2 id="categories-title">Four ways to challenge the perimeter.</h2>
+        <h2 id="categories-title">Four ways to challenge the perimeter</h2>
       </div>
 
       <div class="category-grid">

@@ -334,7 +334,7 @@ p {
 .eyebrow {
   margin: 0 0 1rem;
   color: var(--red);
-  font-size: clamp(1.05rem, 1.15vw, 1.25rem);
+  font-size: clamp(1.18rem, 1.32vw, 1.42rem);
   font-weight: 850;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -358,7 +358,7 @@ p {
 
 .hero h1 {
   max-width: 100%;
-  font-size: clamp(2.8rem, 3vw, 3.45rem);
+  font-size: clamp(3.1rem, 3.35vw, 3.9rem);
   line-height: 1;
   font-weight: 850;
   white-space: nowrap;
@@ -368,7 +368,7 @@ p {
   max-width: 760px;
   margin-top: 1.25rem;
   color: var(--muted);
-  font-size: clamp(1.45rem, 1.9vw, 1.85rem);
+  font-size: clamp(1.65rem, 2.05vw, 2.05rem);
   line-height: 1.6;
   overflow-wrap: break-word;
 }
@@ -496,22 +496,36 @@ h2 {
 }
 
 .card-levels a {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.12rem;
-  color: var(--muted);
-  font-size: 0.9rem;
+  color: var(--text);
+  font-size: 0.94rem;
+  background: rgba(255, 37, 56, 0.08);
+  border: 1px solid rgba(255, 37, 56, 0.24);
   border-radius: 6px;
-  padding: 0.35rem 0;
+  padding: 0.6rem 0.7rem;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .card-levels a:hover,
 .card-levels a:focus-visible {
   color: var(--text);
+  background: rgba(255, 37, 56, 0.18);
+  border-color: rgba(255, 37, 56, 0.58);
+  transform: translateX(2px);
 }
 
 .card-levels strong {
   color: var(--text);
   font-size: 0.94rem;
+}
+
+.card-levels a::after {
+  content: "->";
+  color: var(--red);
+  font-weight: 850;
 }
 
 .card-toggle {
@@ -589,7 +603,7 @@ h2 {
 }
 
 .article-hero h1 {
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-size: clamp(2.25rem, 3.4vw, 3.25rem);
   line-height: 0.98;
   font-weight: 850;
   text-wrap: balance;
