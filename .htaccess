@@ -1,2 +1,3 @@
 Options -Indexes
 RedirectMatch 404 /\.git
+RedirectMatch 404 ^/(AGENTS\.md|readme\.md|reports\.md)$
