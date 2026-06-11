@@ -122,7 +122,7 @@ $url = "https://www.swgaudit.com";
 
     <section class="section" aria-labelledby="categories-title">
       <div class="section-head">
-        <h2 id="categories-title">Four ways to challenge the perimeter.</h2>
+        <h2 id="categories-title">Four ways to challenge the perimeter</h2>
       </div>
 
       <div class="category-grid">
