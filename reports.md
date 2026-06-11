@@ -14,6 +14,12 @@ inspection.
   a side navigation panel.
 - Updated homepage and about-page phishing level links to point to the new
   `/phishing/#...` section anchors.
+- Removed the separate phishing test navigation bar after folding its card-like
+  styling into the primary header dropdowns.
+- Tightened the phishing hero and category section layout so the first viewport
+  shows only the page heading and description on desktop.
+- Changed phishing test cards to open from a card click, with only the selected
+  card expanding.
 
 ## 2026-05-20
 

@@ -29,7 +29,7 @@ $url = "https://www.swgaudit.com";
 
       <nav class="desktop-nav" aria-label="Primary">
         <div class="nav-item">
-          <a class="nav-trigger" href="#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
+          <a class="nav-trigger" href="/phishing/" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
             <a href="/phishing/#bare-minimum">Bare Minimum</a>
             <a href="/phishing/#evasion-detection">Evasion Detection</a>
@@ -71,7 +71,7 @@ $url = "https://www.swgaudit.com";
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
           <div id="mobile-phishing">
-            <a href="#phishing">Overview</a>
+            <a href="/phishing/">Overview</a>
             <a href="/phishing/#bare-minimum">Bare Minimum</a>
             <a href="/phishing/#evasion-detection">Evasion Detection</a>
             <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
@@ -126,18 +126,18 @@ $url = "https://www.swgaudit.com";
       </div>
 
       <div class="category-grid">
-        <article class="card" id="phishing" role="button" tabindex="0" aria-expanded="false" data-level-card>
+        <article class="card" id="phishing" role="link" tabindex="0" aria-label="Open phishing tests" data-card-link="/phishing/">
           <div>
             <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
             <h3>Phishing</h3>
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
-          <div class="card-levels">
+          <div class="card-levels" aria-hidden="true">
             <a id="phishing-level-1" href="/phishing/#bare-minimum"><strong>Bare Minimum</strong></a>
             <a id="phishing-level-2" href="/phishing/#evasion-detection"><strong>Evasion Detection</strong></a>
             <a id="phishing-level-3" href="/phishing/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
-          <span class="card-toggle">View tests</span>
+          <span class="card-toggle">Open phishing tests</span>
         </article>
 
         <article class="card" id="malware" role="button" tabindex="0" aria-expanded="false" data-level-card>

@@ -2,8 +2,6 @@ const menuButton = document.querySelector(".mobile-toggle");
 const mobilePanel = document.querySelector("#mobile-panel");
 const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
-const testNavToggle = document.querySelector("[data-test-nav-toggle]");
-const testNavPanel = document.querySelector("#test-nav-panel");
 
 if (menuButton && mobilePanel) {
   menuButton.addEventListener("click", () => {
@@ -51,20 +49,22 @@ dropdownTriggers.forEach((trigger) => {
   });
 });
 
-if (testNavToggle && testNavPanel) {
-  const state = testNavToggle.querySelector(".test-nav-state");
-
-  const setTestNavOpen = (open) => {
-    testNavToggle.setAttribute("aria-expanded", String(open));
-    testNavPanel.dataset.open = String(open);
-    if (state) state.textContent = open ? "Hide" : "Show";
+document.querySelectorAll("[data-card-link]").forEach((card) => {
+  const openCardLink = () => {
+    window.location.href = card.dataset.cardLink;
   };
 
-  testNavToggle.addEventListener("click", () => {
-    const isOpen = testNavToggle.getAttribute("aria-expanded") === "true";
-    setTestNavOpen(!isOpen);
+  card.addEventListener("click", (event) => {
+    if (event.target.closest("a, button")) return;
+    openCardLink();
   });
-}
+
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openCardLink();
+  });
+});
 
 document.querySelectorAll("[data-level-card]").forEach((card) => {
   const setOpen = (open) => {
@@ -91,38 +91,48 @@ document.querySelectorAll("[data-level-card]").forEach((card) => {
 });
 
 document.querySelectorAll("[data-test-card]").forEach((card) => {
-  const button = card.querySelector("[data-test-card-toggle]");
-  const detail = button ? document.getElementById(button.getAttribute("aria-controls")) : null;
+  const detail = document.getElementById(card.getAttribute("aria-controls"));
+  const cue = card.querySelector(".test-card-cue");
 
-  if (!button || !detail) return;
+  if (!detail) return;
 
   const setOpen = (open) => {
     card.classList.toggle("is-open", open);
-    button.setAttribute("aria-expanded", String(open));
-    button.textContent = open ? "Close test" : "Open test";
+    card.setAttribute("aria-expanded", String(open));
+    if (cue) cue.textContent = open ? "Click to close" : "Click to open";
     detail.hidden = !open;
   };
 
-  button.addEventListener("click", () => {
-    const willOpen = button.getAttribute("aria-expanded") !== "true";
+  const toggleCard = () => {
+    const willOpen = card.getAttribute("aria-expanded") !== "true";
     const grid = card.closest(".test-card-grid");
 
     if (grid) {
       grid.querySelectorAll("[data-test-card]").forEach((otherCard) => {
         if (otherCard === card) return;
 
-        const otherButton = otherCard.querySelector("[data-test-card-toggle]");
-        const otherDetail = otherButton ? document.getElementById(otherButton.getAttribute("aria-controls")) : null;
+        const otherDetail = document.getElementById(otherCard.getAttribute("aria-controls"));
+        const otherCue = otherCard.querySelector(".test-card-cue");
         otherCard.classList.remove("is-open");
-        if (otherButton) {
-          otherButton.setAttribute("aria-expanded", "false");
-          otherButton.textContent = "Open test";
-        }
+        otherCard.setAttribute("aria-expanded", "false");
+        if (otherCue) otherCue.textContent = "Click to open";
         if (otherDetail) otherDetail.hidden = true;
       });
     }
 
     setOpen(willOpen);
+  };
+
+  card.addEventListener("click", (event) => {
+    if (event.target.closest("button, a, .test-card-detail")) return;
+    toggleCard();
+  });
+
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    if (event.target.closest("button, a")) return;
+    event.preventDefault();
+    toggleCard();
   });
 });
 

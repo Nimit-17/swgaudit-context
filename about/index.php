@@ -29,7 +29,7 @@ $url = "https://www.swgaudit.com/about/";
 
       <nav class="desktop-nav" aria-label="Primary">
         <div class="nav-item">
-          <a class="nav-trigger" href="/#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
+          <a class="nav-trigger" href="/phishing/" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
             <a href="/phishing/#bare-minimum">Bare Minimum</a>
             <a href="/phishing/#evasion-detection">Evasion Detection</a>
@@ -71,7 +71,7 @@ $url = "https://www.swgaudit.com/about/";
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
           <div id="mobile-phishing">
-            <a href="/#phishing">Overview</a>
+            <a href="/phishing/">Overview</a>
             <a href="/phishing/#bare-minimum">Bare Minimum</a>
             <a href="/phishing/#evasion-detection">Evasion Detection</a>
             <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>

@@ -102,52 +102,10 @@ $url = "https://www.swgaudit.com/phishing/";
     </nav>
   </header>
 
-  <nav class="test-header" aria-label="Test category navigation" data-test-nav>
-    <div class="test-header-inner">
-      <button class="test-nav-toggle" type="button" aria-expanded="true" aria-controls="test-nav-panel" data-test-nav-toggle>
-        <span>Test navigation</span>
-        <span class="test-nav-state">Hide</span>
-      </button>
-      <div class="test-nav-panel" id="test-nav-panel" data-open="true">
-        <div class="test-nav-group is-current">
-          <a class="test-nav-heading" href="/phishing/">Phishing</a>
-          <div class="test-nav-links">
-            <a href="#bare-minimum">Bare Minimum</a>
-            <a href="#evasion-detection">Evasion Detection</a>
-            <a href="#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="test-nav-group">
-          <a class="test-nav-heading" href="/#malware">Malware</a>
-          <div class="test-nav-links">
-            <a href="/malware/bare-minimum/">Bare Minimum</a>
-            <a href="/malware/evasion-detection/">Evasion Detection</a>
-            <a href="/malware/advanced-threat-simulation/">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="test-nav-group">
-          <a class="test-nav-heading" href="/#data-theft">Data Theft</a>
-          <div class="test-nav-links">
-            <a href="/data-theft/bare-minimum/">Bare Minimum</a>
-            <a href="/data-theft/evasion-detection/">Evasion Detection</a>
-            <a href="/data-theft/advanced-threat-simulation/">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="test-nav-group test-nav-simple">
-          <a class="test-nav-heading" href="/#cyberslacking">Cyberslacking</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
   <main class="page-shell test-page" id="top">
     <section class="test-hero" aria-labelledby="phishing-title">
-      <p class="eyebrow">Web threat validation</p>
       <h1 id="phishing-title">Phishing</h1>
-      <p>
-        Use these safe phishing test structures to validate how perimeter controls handle credential collection,
-        deceptive navigation, and realistic social engineering flows.
-      </p>
+      <p>Use these safe phishing test structures to validate how perimeter controls handle credential collection, deceptive navigation, and realistic social engineering flows.</p>
     </section>
 
     <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
@@ -157,13 +115,13 @@ $url = "https://www.swgaudit.com/phishing/";
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="credential-submission-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Credential Submission Check</h3>
               <p>Validates whether controls interrupt a simple credential capture flow hosted on an untrusted page.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="credential-submission-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="credential-submission-detail" hidden>
             <div class="test-detail-grid">
@@ -183,13 +141,13 @@ $url = "https://www.swgaudit.com/phishing/";
           </div>
         </article>
 
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="suspicious-login-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Suspicious Login Page Link</h3>
               <p>Checks whether a direct link to a deceptive login page is categorized, warned, or blocked.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="suspicious-login-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="suspicious-login-detail" hidden>
             <div class="test-detail-grid">
@@ -218,13 +176,13 @@ $url = "https://www.swgaudit.com/phishing/";
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="redirect-chain-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Redirect Chain Landing Page</h3>
               <p>Models a phishing flow that reaches the final page through intermediate redirects instead of a single obvious URL.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="redirect-chain-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="redirect-chain-detail" hidden>
             <div class="test-detail-grid">
@@ -244,13 +202,13 @@ $url = "https://www.swgaudit.com/phishing/";
           </div>
         </article>
 
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="lookalike-domain-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Lookalike Domain Prompt</h3>
               <p>Tests how defenses respond when a phishing page uses brand-like language and a plausible-looking destination.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="lookalike-domain-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="lookalike-domain-detail" hidden>
             <div class="test-detail-grid">
@@ -279,13 +237,13 @@ $url = "https://www.swgaudit.com/phishing/";
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="multi-step-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Multi-step Credential Flow</h3>
               <p>Represents a more realistic phishing path with staged prompts instead of a single landing page.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="multi-step-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="multi-step-detail" hidden>
             <div class="test-detail-grid">
@@ -305,13 +263,13 @@ $url = "https://www.swgaudit.com/phishing/";
           </div>
         </article>
 
-        <article class="test-card" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="attachment-login-detail" data-test-card>
           <div class="test-card-summary">
             <div>
               <h3>Attachment-to-Login Scenario</h3>
               <p>Frames a phishing journey that begins from a document or notification and ends at a credential prompt.</p>
             </div>
-            <button class="test-card-open" type="button" aria-expanded="false" aria-controls="attachment-login-detail" data-test-card-toggle>Open test</button>
+            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="attachment-login-detail" hidden>
             <div class="test-detail-grid">
