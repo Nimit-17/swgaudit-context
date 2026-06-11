@@ -1,0 +1,143 @@
+<?php
+$title = "About - SWG Audit";
+$description = "An open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions.";
+$url = "https://www.swgaudit.com/about/";
+?>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?php echo $title; ?></title>
+  <meta name="description" content="<?php echo $description; ?>">
+  <meta name="author" content="SWG Audit">
+  <meta property="og:title" content="<?php echo $title; ?>">
+  <meta property="og:description" content="<?php echo $description; ?>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<?php echo $url; ?>">
+  <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="SWG Audit home">
+        <img src="/assets/icons/logo_swg_audit.png" alt="" width="34" height="34">
+        <span>SWG Audit</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary">
+        <div class="nav-item">
+          <a class="nav-trigger" href="/#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
+          <div class="dropdown" aria-label="Phishing levels">
+            <a href="/#phishing-level-1">Bare Minimum <span>Level 1</span></a>
+            <a href="/#phishing-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#phishing-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a class="nav-trigger" href="/#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
+          <div class="dropdown" aria-label="Malware levels">
+            <a href="/#malware-level-1">Bare Minimum <span>Level 1</span></a>
+            <a href="/#malware-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#malware-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a class="nav-trigger" href="/#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
+          <div class="dropdown" aria-label="Data Theft levels">
+            <a href="/#data-theft-level-1">Bare Minimum <span>Level 1</span></a>
+            <a href="/#data-theft-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#data-theft-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+          </div>
+        </div>
+        <a class="nav-link" href="/#cyberslacking">Cyberslacking</a>
+        <a class="nav-link" href="/about/" aria-current="page">About</a>
+      </nav>
+
+      <a class="github-link" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">
+        <img src="/assets/images/github-mark.svg" alt="" width="18" height="18">
+        GitHub
+      </a>
+
+      <button class="mobile-toggle" type="button" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <nav class="mobile-panel" id="mobile-panel" data-open="false" aria-label="Mobile primary">
+      <div class="mobile-panel-inner">
+        <div class="mobile-accordion">
+          <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
+          <div id="mobile-phishing">
+            <a href="/#phishing">Overview</a>
+            <a href="/#phishing-level-1">Level 1: Bare Minimum</a>
+            <a href="/#phishing-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#phishing-level-3">Level 3: Advanced Threat Simulation</a>
+          </div>
+        </div>
+        <div class="mobile-accordion">
+          <button type="button" aria-expanded="false" aria-controls="mobile-malware">Malware</button>
+          <div id="mobile-malware">
+            <a href="/#malware">Overview</a>
+            <a href="/#malware-level-1">Level 1: Bare Minimum</a>
+            <a href="/#malware-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#malware-level-3">Level 3: Advanced Threat Simulation</a>
+          </div>
+        </div>
+        <div class="mobile-accordion">
+          <button type="button" aria-expanded="false" aria-controls="mobile-data-theft">Data Theft</button>
+          <div id="mobile-data-theft">
+            <a href="/#data-theft">Overview</a>
+            <a href="/#data-theft-level-1">Level 1: Bare Minimum</a>
+            <a href="/#data-theft-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#data-theft-level-3">Level 3: Advanced Threat Simulation</a>
+          </div>
+        </div>
+        <a class="mobile-direct" href="/#cyberslacking">Cyberslacking</a>
+        <a class="mobile-direct" href="/about/">About</a>
+        <a class="mobile-direct" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell article-page">
+    <section class="article-hero" aria-labelledby="about-title">
+      <p class="eyebrow">About</p>
+      <h1 id="about-title">SWG Audit was created to change that.</h1>
+      <p>
+        We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.
+      </p>
+    </section>
+
+    <section class="article-grid" aria-label="About SWG Audit">
+      <article class="article-card">
+        <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools.</p>
+
+        <ul class="warning-list">
+          <li>Many vendors continue to promote outdated solutions with bold marketing claims&mdash;offering little transparency or proof of actual protection.</li>
+          <li>Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</li>
+        </ul>
+
+        <h2>Our Mission</h2>
+        <p>
+          Empower cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats&mdash;before investing in it.
+        </p>
+      </article>
+
+      <aside class="mission-card">
+        <h2>Join the community.</h2>
+        <p>Test honestly. Buy confidently.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
+    </p>
+  </footer>
+  <script src="/assets/js/site.js"></script>
+</body>
+</html>
