@@ -31,9 +31,9 @@ $url = "https://www.swgaudit.com/about/";
         <div class="nav-item">
           <a class="nav-trigger" href="/#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
-            <a href="/#phishing-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="/#phishing-level-2">Evasion Detection</a>
-            <a href="/#phishing-level-3">Advanced Threat Simulation <span>Level 3</span></a>
+            <a href="/phishing/#bare-minimum">Bare Minimum</a>
+            <a href="/phishing/#evasion-detection">Evasion Detection</a>
+            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
@@ -72,9 +72,9 @@ $url = "https://www.swgaudit.com/about/";
           <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
           <div id="mobile-phishing">
             <a href="/#phishing">Overview</a>
-            <a href="/#phishing-level-1">Level 1: Bare Minimum</a>
-            <a href="/#phishing-level-2">Evasion Detection</a>
-            <a href="/#phishing-level-3">Level 3: Advanced Threat Simulation</a>
+            <a href="/phishing/#bare-minimum">Bare Minimum</a>
+            <a href="/phishing/#evasion-detection">Evasion Detection</a>
+            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">

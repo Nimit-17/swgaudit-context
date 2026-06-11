@@ -2,6 +2,8 @@ const menuButton = document.querySelector(".mobile-toggle");
 const mobilePanel = document.querySelector("#mobile-panel");
 const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
+const testNavToggle = document.querySelector("[data-test-nav-toggle]");
+const testNavPanel = document.querySelector("#test-nav-panel");
 
 if (menuButton && mobilePanel) {
   menuButton.addEventListener("click", () => {
@@ -49,6 +51,21 @@ dropdownTriggers.forEach((trigger) => {
   });
 });
 
+if (testNavToggle && testNavPanel) {
+  const state = testNavToggle.querySelector(".test-nav-state");
+
+  const setTestNavOpen = (open) => {
+    testNavToggle.setAttribute("aria-expanded", String(open));
+    testNavPanel.dataset.open = String(open);
+    if (state) state.textContent = open ? "Hide" : "Show";
+  };
+
+  testNavToggle.addEventListener("click", () => {
+    const isOpen = testNavToggle.getAttribute("aria-expanded") === "true";
+    setTestNavOpen(!isOpen);
+  });
+}
+
 document.querySelectorAll("[data-level-card]").forEach((card) => {
   const setOpen = (open) => {
     card.classList.toggle("is-open", open);
@@ -70,5 +87,53 @@ document.querySelectorAll("[data-level-card]").forEach((card) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
     card.click();
+  });
+});
+
+document.querySelectorAll("[data-test-card]").forEach((card) => {
+  const button = card.querySelector("[data-test-card-toggle]");
+  const detail = button ? document.getElementById(button.getAttribute("aria-controls")) : null;
+
+  if (!button || !detail) return;
+
+  const setOpen = (open) => {
+    card.classList.toggle("is-open", open);
+    button.setAttribute("aria-expanded", String(open));
+    button.textContent = open ? "Close test" : "Open test";
+    detail.hidden = !open;
+  };
+
+  button.addEventListener("click", () => {
+    const willOpen = button.getAttribute("aria-expanded") !== "true";
+    const grid = card.closest(".test-card-grid");
+
+    if (grid) {
+      grid.querySelectorAll("[data-test-card]").forEach((otherCard) => {
+        if (otherCard === card) return;
+
+        const otherButton = otherCard.querySelector("[data-test-card-toggle]");
+        const otherDetail = otherButton ? document.getElementById(otherButton.getAttribute("aria-controls")) : null;
+        otherCard.classList.remove("is-open");
+        if (otherButton) {
+          otherButton.setAttribute("aria-expanded", "false");
+          otherButton.textContent = "Open test";
+        }
+        if (otherDetail) otherDetail.hidden = true;
+      });
+    }
+
+    setOpen(willOpen);
+  });
+});
+
+document.querySelectorAll("[data-run-test]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const card = button.closest("[data-test-card]");
+    const output = card ? card.querySelector("[data-test-output]") : null;
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.textContent = "Run Test selected. This flexible slot is ready for the real simulation flow for this test.";
   });
 });

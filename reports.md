@@ -4,6 +4,17 @@ This file is the running change log for work performed from `/root/nimit`.
 Use it for concise records of meaningful changes, not routine read-only
 inspection.
 
+## 2026-06-11
+
+- Added the `/phishing/` catalog page for SWG Audit v2 with three visible
+  sections: Bare Minimum, Evasion Detection, and Advanced Threat Simulation.
+- Added six placeholder phishing test cards that expand inline and expose a
+  direct `Run Test` action for future simulation flows.
+- Added a top collapsible test navigation bar for the phishing page instead of
+  a side navigation panel.
+- Updated homepage and about-page phishing level links to point to the new
+  `/phishing/#...` section anchors.
+
 ## 2026-05-20
 
 - Verified that `/root/nimit` is a Git repository for SWG Audit context files.

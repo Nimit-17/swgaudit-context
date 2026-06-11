@@ -31,9 +31,9 @@ $url = "https://www.swgaudit.com";
         <div class="nav-item">
           <a class="nav-trigger" href="#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
-            <a href="#phishing-level-1">Bare Minimum</a>
-            <a href="#phishing-level-2">Evasion Detection</a>
-            <a href="#phishing-level-3">Advanced Threat Simulation</a>
+            <a href="/phishing/#bare-minimum">Bare Minimum</a>
+            <a href="/phishing/#evasion-detection">Evasion Detection</a>
+            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
@@ -72,9 +72,9 @@ $url = "https://www.swgaudit.com";
           <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
           <div id="mobile-phishing">
             <a href="#phishing">Overview</a>
-            <a href="#phishing-level-1">Bare Minimum</a>
-            <a href="#phishing-level-2">Evasion Detection</a>
-            <a href="#phishing-level-3">Advanced Threat Simulation</a>
+            <a href="/phishing/#bare-minimum">Bare Minimum</a>
+            <a href="/phishing/#evasion-detection">Evasion Detection</a>
+            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">
@@ -133,9 +133,9 @@ $url = "https://www.swgaudit.com";
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
           <div class="card-levels">
-            <a id="phishing-level-1" href="/phishing/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="phishing-level-2" href="/phishing/evasion-detection/"><strong>Evasion Detection</strong></a>
-            <a id="phishing-level-3" href="/phishing/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
+            <a id="phishing-level-1" href="/phishing/#bare-minimum"><strong>Bare Minimum</strong></a>
+            <a id="phishing-level-2" href="/phishing/#evasion-detection"><strong>Evasion Detection</strong></a>
+            <a id="phishing-level-3" href="/phishing/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>
         </article>
