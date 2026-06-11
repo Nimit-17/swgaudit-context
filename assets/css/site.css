@@ -629,10 +629,6 @@ h2 {
   display: grid;
   gap: clamp(2rem, 4vw, 3rem);
   padding: 0 0 clamp(2rem, 4.5vw, 3.8rem);
-  background:
-    radial-gradient(circle at 82% 22rem, rgba(255, 37, 56, 0.22), transparent 30rem),
-    linear-gradient(115deg, rgba(255, 37, 56, 0.1), transparent 52%);
-  background-attachment: fixed;
 }
 
 .test-hero {
@@ -642,6 +638,9 @@ h2 {
   min-height: calc(100svh - var(--header));
   padding: clamp(2rem, 5vw, 4rem) 0;
   border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 92% 0%, rgba(255, 37, 56, 0.28), rgba(255, 37, 56, 0.12) 28%, transparent 68%),
+    linear-gradient(180deg, rgba(255, 37, 56, 0.08), transparent 100%);
 }
 
 .test-hero h1 {
