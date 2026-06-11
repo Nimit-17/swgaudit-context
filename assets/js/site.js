@@ -48,3 +48,27 @@ dropdownTriggers.forEach((trigger) => {
     }, 0);
   });
 });
+
+document.querySelectorAll("[data-level-card]").forEach((card) => {
+  const setOpen = (open) => {
+    card.classList.toggle("is-open", open);
+    card.setAttribute("aria-expanded", String(open));
+  };
+
+  card.addEventListener("click", (event) => {
+    if (event.target.closest("a")) return;
+
+    const willOpen = !card.classList.contains("is-open");
+    document.querySelectorAll("[data-level-card]").forEach((otherCard) => {
+      otherCard.classList.remove("is-open");
+      otherCard.setAttribute("aria-expanded", "false");
+    });
+    setOpen(willOpen);
+  });
+
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    card.click();
+  });
+});

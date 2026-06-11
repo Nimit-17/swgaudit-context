@@ -122,47 +122,50 @@ $url = "https://www.swgaudit.com";
 
     <section class="section" aria-labelledby="categories-title">
       <div class="section-head">
-        <h2 id="categories-title">Four ways to challenge the perimeter</h2>
+        <h2 id="categories-title">Four ways to challenge the perimeter.</h2>
       </div>
 
       <div class="category-grid">
-        <article class="card" id="phishing">
+        <article class="card" id="phishing" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
             <h3>Phishing</h3>
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
           <div class="card-levels">
-            <a id="phishing-level-1" href="/phishing/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
-            <a id="phishing-level-2" href="/phishing/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
-            <a id="phishing-level-3" href="/phishing/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
+            <a id="phishing-level-1" href="/phishing/bare-minimum/"><strong>Bare Minimum</strong></a>
+            <a id="phishing-level-2" href="/phishing/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="phishing-level-3" href="/phishing/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
+          <span class="card-toggle">View tests</span>
         </article>
 
-        <article class="card" id="malware">
+        <article class="card" id="malware" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/malware-icon.png" alt="" width="92" height="92">
             <h3>Malware</h3>
             <p>Safe malware-delivery checks that validate whether download controls, inspection, and detection policies respond.</p>
           </div>
           <div class="card-levels">
-            <a id="malware-level-1" href="/malware/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
-            <a id="malware-level-2" href="/malware/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
-            <a id="malware-level-3" href="/malware/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
+            <a id="malware-level-1" href="/malware/bare-minimum/"><strong>Bare Minimum</strong></a>
+            <a id="malware-level-2" href="/malware/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="malware-level-3" href="/malware/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
+          <span class="card-toggle">View tests</span>
         </article>
 
-        <article class="card" id="data-theft">
+        <article class="card" id="data-theft" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/data-theft-icon.png" alt="" width="92" height="92">
             <h3>Data Theft</h3>
             <p>DLP and egress validation for attempts to move sensitive data outside expected inspection paths.</p>
           </div>
           <div class="card-levels">
-            <a id="data-theft-level-1" href="/data-theft/bare-minimum/"><strong>Level 1</strong>Bare Minimum</a>
-            <a id="data-theft-level-2" href="/data-theft/evasion-resistance/"><strong>Level 2</strong>Evasion Resistance</a>
-            <a id="data-theft-level-3" href="/data-theft/advanced-threat-simulation/"><strong>Level 3</strong>Advanced Threat Simulation</a>
+            <a id="data-theft-level-1" href="/data-theft/bare-minimum/"><strong>Bare Minimum</strong></a>
+            <a id="data-theft-level-2" href="/data-theft/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="data-theft-level-3" href="/data-theft/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
+          <span class="card-toggle">View tests</span>
         </article>
 
         <article class="card" id="cyberslacking">
