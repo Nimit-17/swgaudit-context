@@ -37,19 +37,19 @@ $url = "https://www.swgaudit.com/phishing/";
           </div>
         </div>
         <div class="nav-item">
-          <a class="nav-trigger" href="/#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
+          <a class="nav-trigger" href="/malware/" aria-haspopup="true" aria-expanded="false">Malware</a>
           <div class="dropdown" aria-label="Malware levels">
-            <a href="/malware/bare-minimum/">Bare Minimum</a>
-            <a href="/malware/evasion-detection/">Evasion Detection</a>
-            <a href="/malware/advanced-threat-simulation/">Advanced Threat Simulation</a>
+            <a href="/malware/#bare-minimum">Bare Minimum</a>
+            <a href="/malware/#evasion-detection">Evasion Detection</a>
+            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
-          <a class="nav-trigger" href="/#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
+          <a class="nav-trigger" href="/data-theft/" aria-haspopup="true" aria-expanded="false">Data Theft</a>
           <div class="dropdown" aria-label="Data Theft levels">
-            <a href="/data-theft/bare-minimum/">Bare Minimum</a>
-            <a href="/data-theft/evasion-detection/">Evasion Detection</a>
-            <a href="/data-theft/advanced-threat-simulation/">Advanced Threat Simulation</a>
+            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
+            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
+            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="nav-link" href="/#cyberslacking">Cyberslacking</a>
@@ -80,19 +80,19 @@ $url = "https://www.swgaudit.com/phishing/";
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-malware">Malware</button>
           <div id="mobile-malware">
-            <a href="/#malware">Overview</a>
-            <a href="/malware/bare-minimum/">Bare Minimum</a>
-            <a href="/malware/evasion-detection/">Evasion Detection</a>
-            <a href="/malware/advanced-threat-simulation/">Advanced Threat Simulation</a>
+            <a href="/malware/">Overview</a>
+            <a href="/malware/#bare-minimum">Bare Minimum</a>
+            <a href="/malware/#evasion-detection">Evasion Detection</a>
+            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-data-theft">Data Theft</button>
           <div id="mobile-data-theft">
-            <a href="/#data-theft">Overview</a>
-            <a href="/data-theft/bare-minimum/">Bare Minimum</a>
-            <a href="/data-theft/evasion-detection/">Evasion Detection</a>
-            <a href="/data-theft/advanced-threat-simulation/">Advanced Threat Simulation</a>
+            <a href="/data-theft/">Overview</a>
+            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
+            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
+            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="mobile-direct" href="/#cyberslacking">Cyberslacking</a>
@@ -121,7 +121,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Credential Submission Check</h3>
               <p>Validates whether controls interrupt a simple credential capture flow hosted on an untrusted page.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="credential-submission-detail" hidden>
             <div class="test-detail-grid">
@@ -147,7 +146,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Suspicious Login Page Link</h3>
               <p>Checks whether a direct link to a deceptive login page is categorized, warned, or blocked.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="suspicious-login-detail" hidden>
             <div class="test-detail-grid">
@@ -182,7 +180,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Redirect Chain Landing Page</h3>
               <p>Models a phishing flow that reaches the final page through intermediate redirects instead of a single obvious URL.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="redirect-chain-detail" hidden>
             <div class="test-detail-grid">
@@ -208,7 +205,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Lookalike Domain Prompt</h3>
               <p>Tests how defenses respond when a phishing page uses brand-like language and a plausible-looking destination.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="lookalike-domain-detail" hidden>
             <div class="test-detail-grid">
@@ -243,7 +239,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Multi-step Credential Flow</h3>
               <p>Represents a more realistic phishing path with staged prompts instead of a single landing page.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="multi-step-detail" hidden>
             <div class="test-detail-grid">
@@ -269,7 +264,6 @@ $url = "https://www.swgaudit.com/phishing/";
               <h3>Attachment-to-Login Scenario</h3>
               <p>Frames a phishing journey that begins from a document or notification and ends at a credential prompt.</p>
             </div>
-            <span class="test-card-cue">Click to open</span>
           </div>
           <div class="test-card-detail" id="attachment-login-detail" hidden>
             <div class="test-detail-grid">

@@ -37,19 +37,19 @@ $url = "https://www.swgaudit.com";
           </div>
         </div>
         <div class="nav-item">
-          <a class="nav-trigger" href="#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
+          <a class="nav-trigger" href="/malware/" aria-haspopup="true" aria-expanded="false">Malware</a>
           <div class="dropdown" aria-label="Malware levels">
-            <a href="#malware-level-1">Bare Minimum</a>
-            <a href="#malware-level-2">Evasion Detection</a>
-            <a href="#malware-level-3">Advanced Threat Simulation</a>
+            <a href="/malware/#bare-minimum">Bare Minimum</a>
+            <a href="/malware/#evasion-detection">Evasion Detection</a>
+            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="nav-item">
-          <a class="nav-trigger" href="#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
+          <a class="nav-trigger" href="/data-theft/" aria-haspopup="true" aria-expanded="false">Data Theft</a>
           <div class="dropdown" aria-label="Data Theft levels">
-            <a href="#data-theft-level-1">Bare Minimum</a>
-            <a href="#data-theft-level-2">Evasion Detection</a>
-            <a href="#data-theft-level-3">Advanced Threat Simulation</a>
+            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
+            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
+            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="nav-link" href="#cyberslacking">Cyberslacking</a>
@@ -80,19 +80,19 @@ $url = "https://www.swgaudit.com";
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-malware">Malware</button>
           <div id="mobile-malware">
-            <a href="#malware">Overview</a>
-            <a href="#malware-level-1">Bare Minimum</a>
-            <a href="#malware-level-2">Evasion Detection</a>
-            <a href="#malware-level-3">Advanced Threat Simulation</a>
+            <a href="/malware/">Overview</a>
+            <a href="/malware/#bare-minimum">Bare Minimum</a>
+            <a href="/malware/#evasion-detection">Evasion Detection</a>
+            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <div class="mobile-accordion">
           <button type="button" aria-expanded="false" aria-controls="mobile-data-theft">Data Theft</button>
           <div id="mobile-data-theft">
-            <a href="#data-theft">Overview</a>
-            <a href="#data-theft-level-1">Bare Minimum</a>
-            <a href="#data-theft-level-2">Evasion Detection</a>
-            <a href="#data-theft-level-3">Advanced Threat Simulation</a>
+            <a href="/data-theft/">Overview</a>
+            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
+            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
+            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
         <a class="mobile-direct" href="#cyberslacking">Cyberslacking</a>
@@ -126,30 +126,30 @@ $url = "https://www.swgaudit.com";
       </div>
 
       <div class="category-grid">
-        <article class="card" id="phishing" role="link" tabindex="0" aria-label="Open phishing tests" data-card-link="/phishing/">
+        <article class="card" id="phishing" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
-            <h3>Phishing</h3>
+            <h3><a class="card-title-link" href="/phishing/">Phishing</a></h3>
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
-          <div class="card-levels" aria-hidden="true">
+          <div class="card-levels">
             <a id="phishing-level-1" href="/phishing/#bare-minimum"><strong>Bare Minimum</strong></a>
             <a id="phishing-level-2" href="/phishing/#evasion-detection"><strong>Evasion Detection</strong></a>
             <a id="phishing-level-3" href="/phishing/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
-          <span class="card-toggle">Open phishing tests</span>
+          <span class="card-toggle">View tests</span>
         </article>
 
         <article class="card" id="malware" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/malware-icon.png" alt="" width="92" height="92">
-            <h3>Malware</h3>
+            <h3><a class="card-title-link" href="/malware/">Malware</a></h3>
             <p>Safe malware-delivery checks that validate whether download controls, inspection, and detection policies respond.</p>
           </div>
           <div class="card-levels">
-            <a id="malware-level-1" href="/malware/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="malware-level-2" href="/malware/evasion-detection/"><strong>Evasion Detection</strong></a>
-            <a id="malware-level-3" href="/malware/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
+            <a id="malware-level-1" href="/malware/#bare-minimum"><strong>Bare Minimum</strong></a>
+            <a id="malware-level-2" href="/malware/#evasion-detection"><strong>Evasion Detection</strong></a>
+            <a id="malware-level-3" href="/malware/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>
         </article>
@@ -157,13 +157,13 @@ $url = "https://www.swgaudit.com";
         <article class="card" id="data-theft" role="button" tabindex="0" aria-expanded="false" data-level-card>
           <div>
             <img class="category-icon" src="/assets/images/data-theft-icon.png" alt="" width="92" height="92">
-            <h3>Data Theft</h3>
+            <h3><a class="card-title-link" href="/data-theft/">Data Theft</a></h3>
             <p>DLP and egress validation for attempts to move sensitive data outside expected inspection paths.</p>
           </div>
           <div class="card-levels">
-            <a id="data-theft-level-1" href="/data-theft/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="data-theft-level-2" href="/data-theft/evasion-detection/"><strong>Evasion Detection</strong></a>
-            <a id="data-theft-level-3" href="/data-theft/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
+            <a id="data-theft-level-1" href="/data-theft/#bare-minimum"><strong>Bare Minimum</strong></a>
+            <a id="data-theft-level-2" href="/data-theft/#evasion-detection"><strong>Evasion Detection</strong></a>
+            <a id="data-theft-level-3" href="/data-theft/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>
         </article>

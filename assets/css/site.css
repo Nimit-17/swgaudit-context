@@ -175,8 +175,8 @@ button:focus-visible {
   position: absolute;
   top: calc(100% + 0.55rem);
   left: 0;
-  width: 310px;
-  padding: 0.62rem;
+  width: 265px;
+  padding: 0.48rem;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(8, 8, 10, 0.98);
@@ -201,8 +201,9 @@ button:focus-visible {
   border-radius: 6px;
   color: var(--text);
   background: rgba(255, 255, 255, 0.022);
-  padding: 0.78rem;
-  font-weight: 850;
+  padding: 0.62rem 0.68rem;
+  font-size: 0.88rem;
+  font-weight: 500;
   box-shadow: inset 3px 0 0 transparent;
 }
 
@@ -487,6 +488,15 @@ h2 {
   line-height: 1.2;
 }
 
+.card-title-link {
+  display: inline-block;
+}
+
+.card-title-link:hover,
+.card-title-link:focus-visible {
+  color: var(--red);
+}
+
 .card p {
   margin-top: 0.65rem;
   font-size: 0.98rem;
@@ -628,6 +638,9 @@ h2 {
   min-height: calc(100svh - var(--header));
   padding: clamp(2rem, 5vw, 4rem) 0;
   border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 82% 46%, rgba(255, 37, 56, 0.22), transparent 30rem),
+    linear-gradient(115deg, rgba(255, 37, 56, 0.1), transparent 52%);
 }
 
 .test-hero h1 {
@@ -695,7 +708,7 @@ h2 {
 
 .test-card-summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 1fr;
   gap: 1rem;
   align-items: start;
   padding: clamp(1rem, 2vw, 1.25rem);
@@ -705,24 +718,6 @@ h2 {
   margin-bottom: 0.55rem;
   font-size: clamp(1.18rem, 2vw, 1.45rem);
   line-height: 1.2;
-}
-
-.test-card-cue {
-  align-self: start;
-  border: 1px solid rgba(255, 37, 56, 0.46);
-  border-radius: 6px;
-  color: var(--text);
-  background: rgba(255, 37, 56, 0.12);
-  padding: 0.52rem 0.72rem;
-  font-size: 0.92rem;
-  font-weight: 850;
-  white-space: nowrap;
-}
-
-.test-card.is-open .test-card-cue {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
 }
 
 .test-card-detail {
@@ -1055,7 +1050,6 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .test-card-cue,
   .primary-action {
     width: 100%;
     text-align: center;

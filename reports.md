@@ -20,6 +20,11 @@ inspection.
   shows only the page heading and description on desktop.
 - Changed phishing test cards to open from a card click, with only the selected
   card expanding.
+- Restored homepage category cards to expand in place, while category title
+  text links directly to the matching test catalog page.
+- Added `/malware/` and `/data-theft/` catalog pages with placeholder tests.
+- Refined header dropdown sizing/weight and added red gradient treatment to
+  catalog page hero areas.
 
 ## 2026-05-20
 

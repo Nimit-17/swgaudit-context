@@ -49,23 +49,6 @@ dropdownTriggers.forEach((trigger) => {
   });
 });
 
-document.querySelectorAll("[data-card-link]").forEach((card) => {
-  const openCardLink = () => {
-    window.location.href = card.dataset.cardLink;
-  };
-
-  card.addEventListener("click", (event) => {
-    if (event.target.closest("a, button")) return;
-    openCardLink();
-  });
-
-  card.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    openCardLink();
-  });
-});
-
 document.querySelectorAll("[data-level-card]").forEach((card) => {
   const setOpen = (open) => {
     card.classList.toggle("is-open", open);
@@ -92,14 +75,12 @@ document.querySelectorAll("[data-level-card]").forEach((card) => {
 
 document.querySelectorAll("[data-test-card]").forEach((card) => {
   const detail = document.getElementById(card.getAttribute("aria-controls"));
-  const cue = card.querySelector(".test-card-cue");
 
   if (!detail) return;
 
   const setOpen = (open) => {
     card.classList.toggle("is-open", open);
     card.setAttribute("aria-expanded", String(open));
-    if (cue) cue.textContent = open ? "Click to close" : "Click to open";
     detail.hidden = !open;
   };
 
@@ -112,10 +93,8 @@ document.querySelectorAll("[data-test-card]").forEach((card) => {
         if (otherCard === card) return;
 
         const otherDetail = document.getElementById(otherCard.getAttribute("aria-controls"));
-        const otherCue = otherCard.querySelector(".test-card-cue");
         otherCard.classList.remove("is-open");
         otherCard.setAttribute("aria-expanded", "false");
-        if (otherCue) otherCue.textContent = "Click to open";
         if (otherDetail) otherDetail.hidden = true;
       });
     }
