@@ -32,7 +32,7 @@ $url = "https://www.swgaudit.com";
           <a class="nav-trigger" href="#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
             <a href="#phishing-level-1">Bare Minimum</a>
-            <a href="#phishing-level-2">Evasion Resistance</a>
+            <a href="#phishing-level-2">Evasion Detection</a>
             <a href="#phishing-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -40,7 +40,7 @@ $url = "https://www.swgaudit.com";
           <a class="nav-trigger" href="#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
           <div class="dropdown" aria-label="Malware levels">
             <a href="#malware-level-1">Bare Minimum</a>
-            <a href="#malware-level-2">Evasion Resistance</a>
+            <a href="#malware-level-2">Evasion Detection</a>
             <a href="#malware-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -48,7 +48,7 @@ $url = "https://www.swgaudit.com";
           <a class="nav-trigger" href="#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
           <div class="dropdown" aria-label="Data Theft levels">
             <a href="#data-theft-level-1">Bare Minimum</a>
-            <a href="#data-theft-level-2">Evasion Resistance</a>
+            <a href="#data-theft-level-2">Evasion Detection</a>
             <a href="#data-theft-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -73,7 +73,7 @@ $url = "https://www.swgaudit.com";
           <div id="mobile-phishing">
             <a href="#phishing">Overview</a>
             <a href="#phishing-level-1">Bare Minimum</a>
-            <a href="#phishing-level-2">Evasion Resistance</a>
+            <a href="#phishing-level-2">Evasion Detection</a>
             <a href="#phishing-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -82,7 +82,7 @@ $url = "https://www.swgaudit.com";
           <div id="mobile-malware">
             <a href="#malware">Overview</a>
             <a href="#malware-level-1">Bare Minimum</a>
-            <a href="#malware-level-2">Evasion Resistance</a>
+            <a href="#malware-level-2">Evasion Detection</a>
             <a href="#malware-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -91,7 +91,7 @@ $url = "https://www.swgaudit.com";
           <div id="mobile-data-theft">
             <a href="#data-theft">Overview</a>
             <a href="#data-theft-level-1">Bare Minimum</a>
-            <a href="#data-theft-level-2">Evasion Resistance</a>
+            <a href="#data-theft-level-2">Evasion Detection</a>
             <a href="#data-theft-level-3">Advanced Threat Simulation</a>
           </div>
         </div>
@@ -134,7 +134,7 @@ $url = "https://www.swgaudit.com";
           </div>
           <div class="card-levels">
             <a id="phishing-level-1" href="/phishing/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="phishing-level-2" href="/phishing/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="phishing-level-2" href="/phishing/evasion-detection/"><strong>Evasion Detection</strong></a>
             <a id="phishing-level-3" href="/phishing/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>
@@ -148,7 +148,7 @@ $url = "https://www.swgaudit.com";
           </div>
           <div class="card-levels">
             <a id="malware-level-1" href="/malware/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="malware-level-2" href="/malware/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="malware-level-2" href="/malware/evasion-detection/"><strong>Evasion Detection</strong></a>
             <a id="malware-level-3" href="/malware/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>
@@ -162,7 +162,7 @@ $url = "https://www.swgaudit.com";
           </div>
           <div class="card-levels">
             <a id="data-theft-level-1" href="/data-theft/bare-minimum/"><strong>Bare Minimum</strong></a>
-            <a id="data-theft-level-2" href="/data-theft/evasion-resistance/"><strong>Evasion Resistance</strong></a>
+            <a id="data-theft-level-2" href="/data-theft/evasion-detection/"><strong>Evasion Detection</strong></a>
             <a id="data-theft-level-3" href="/data-theft/advanced-threat-simulation/"><strong>Advanced Threat Simulation</strong></a>
           </div>
           <span class="card-toggle">View tests</span>

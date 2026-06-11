@@ -32,7 +32,7 @@ $url = "https://www.swgaudit.com/about/";
           <a class="nav-trigger" href="/#phishing" aria-haspopup="true" aria-expanded="false">Phishing</a>
           <div class="dropdown" aria-label="Phishing levels">
             <a href="/#phishing-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="/#phishing-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#phishing-level-2">Evasion Detection</a>
             <a href="/#phishing-level-3">Advanced Threat Simulation <span>Level 3</span></a>
           </div>
         </div>
@@ -40,7 +40,7 @@ $url = "https://www.swgaudit.com/about/";
           <a class="nav-trigger" href="/#malware" aria-haspopup="true" aria-expanded="false">Malware</a>
           <div class="dropdown" aria-label="Malware levels">
             <a href="/#malware-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="/#malware-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#malware-level-2">Evasion Detection</a>
             <a href="/#malware-level-3">Advanced Threat Simulation <span>Level 3</span></a>
           </div>
         </div>
@@ -48,7 +48,7 @@ $url = "https://www.swgaudit.com/about/";
           <a class="nav-trigger" href="/#data-theft" aria-haspopup="true" aria-expanded="false">Data Theft</a>
           <div class="dropdown" aria-label="Data Theft levels">
             <a href="/#data-theft-level-1">Bare Minimum <span>Level 1</span></a>
-            <a href="/#data-theft-level-2">Evasion Resistance <span>Level 2</span></a>
+            <a href="/#data-theft-level-2">Evasion Detection</a>
             <a href="/#data-theft-level-3">Advanced Threat Simulation <span>Level 3</span></a>
           </div>
         </div>
@@ -73,7 +73,7 @@ $url = "https://www.swgaudit.com/about/";
           <div id="mobile-phishing">
             <a href="/#phishing">Overview</a>
             <a href="/#phishing-level-1">Level 1: Bare Minimum</a>
-            <a href="/#phishing-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#phishing-level-2">Evasion Detection</a>
             <a href="/#phishing-level-3">Level 3: Advanced Threat Simulation</a>
           </div>
         </div>
@@ -82,7 +82,7 @@ $url = "https://www.swgaudit.com/about/";
           <div id="mobile-malware">
             <a href="/#malware">Overview</a>
             <a href="/#malware-level-1">Level 1: Bare Minimum</a>
-            <a href="/#malware-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#malware-level-2">Evasion Detection</a>
             <a href="/#malware-level-3">Level 3: Advanced Threat Simulation</a>
           </div>
         </div>
@@ -91,7 +91,7 @@ $url = "https://www.swgaudit.com/about/";
           <div id="mobile-data-theft">
             <a href="/#data-theft">Overview</a>
             <a href="/#data-theft-level-1">Level 1: Bare Minimum</a>
-            <a href="/#data-theft-level-2">Level 2: Evasion Resistance</a>
+            <a href="/#data-theft-level-2">Evasion Detection</a>
             <a href="/#data-theft-level-3">Level 3: Advanced Threat Simulation</a>
           </div>
         </div>
