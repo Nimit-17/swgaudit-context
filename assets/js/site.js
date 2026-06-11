@@ -48,3 +48,24 @@ dropdownTriggers.forEach((trigger) => {
     }, 0);
   });
 });
+
+document.querySelectorAll("[data-level-card]").forEach((card) => {
+  card.addEventListener("click", () => {
+    const isOpen = card.getAttribute("aria-expanded") === "true";
+    card.setAttribute("aria-expanded", String(!isOpen));
+  });
+});
+
+function openCardForHash() {
+  const id = window.location.hash.slice(1);
+  if (!id) return;
+
+  const target = document.getElementById(id);
+  const card = target?.closest?.("[data-level-card]");
+  if (card) {
+    card.setAttribute("aria-expanded", "true");
+  }
+}
+
+window.addEventListener("hashchange", openCardForHash);
+openCardForHash();

@@ -10,7 +10,7 @@
   --soft: #777784;
   --red: #ff2538;
   --red-soft: rgba(255, 37, 56, 0.12);
-  --max: 1180px;
+  --max: 1680px;
   --header: 76px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -328,27 +328,31 @@ p {
   min-height: calc(100svh - var(--header));
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: clamp(1.5rem, 4vh, 3rem) 0;
   border-bottom: 1px solid var(--line);
 }
 
 .hero-inner {
   width: 100%;
+  display: grid;
+  justify-items: center;
+  text-align: center;
 }
 
 .hero h1 {
-  max-width: 860px;
-  font-size: clamp(3.25rem, 5.35vw, 6.25rem);
-  line-height: 0.96;
+  max-width: 100%;
+  font-size: clamp(2.6rem, 3.2vw, 3.6rem);
+  line-height: 1;
   font-weight: 850;
   text-wrap: balance;
 }
 
 .hero-copy {
-  max-width: 790px;
+  max-width: 760px;
   margin-top: 1.25rem;
   color: var(--muted);
-  font-size: clamp(1rem, 1.25vw, 1.16rem);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
   line-height: 1.6;
   overflow-wrap: break-word;
 }
@@ -366,6 +370,7 @@ p {
   gap: 0.6rem;
   color: var(--soft);
   font-size: 0.92rem;
+  justify-content: center;
 }
 
 .hero-meta span {
@@ -384,7 +389,7 @@ p {
 .section-head {
   display: grid;
   gap: 0.7rem;
-  max-width: 760px;
+  max-width: 100%;
   margin-bottom: 1.6rem;
 }
 
@@ -393,6 +398,10 @@ h2 {
   line-height: 1.06;
   font-weight: 800;
   text-wrap: balance;
+}
+
+#categories-title {
+  white-space: nowrap;
 }
 
 .section-head p,
@@ -413,13 +422,18 @@ h2 {
 
 .card {
   min-height: 270px;
-  display: grid;
-  align-content: space-between;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.038), rgba(255, 255, 255, 0.012));
   padding: 1.2rem;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
   transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
 }
 
@@ -467,9 +481,34 @@ h2 {
 }
 
 .card-cta {
+  margin-top: auto;
   color: var(--red);
   font-size: 0.9rem;
   font-weight: 800;
+}
+
+.card-levels {
+  display: none;
+  margin-top: 0.35rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.card[aria-expanded="true"] .card-levels {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.card-levels span {
+  display: grid;
+  gap: 0.12rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.card-levels strong {
+  color: var(--text);
+  font-size: 0.94rem;
 }
 
 .roadmap-grid {
@@ -656,15 +695,28 @@ h2 {
     padding: 1.1rem 0 1.45rem;
   }
 
+  .hero-inner {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .hero-meta {
+    justify-content: flex-start;
+  }
+
+  #categories-title {
+    white-space: normal;
+  }
+
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(2.5rem, 12.6vw, 3.35rem);
+    font-size: clamp(2.35rem, 11.4vw, 3.15rem);
   }
 
   .hero-copy {
     margin-top: 1rem;
-    font-size: 0.98rem;
-    line-height: 1.55;
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   .hero-rule {
@@ -679,7 +731,7 @@ h2 {
 
 @media (max-height: 760px) and (min-width: 900px) {
   .hero h1 {
-    font-size: clamp(3rem, 4.5vw, 4.8rem);
+    font-size: clamp(3rem, 4.1vw, 4.4rem);
   }
 
   .hero-copy {

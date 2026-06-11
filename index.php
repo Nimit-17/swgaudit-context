@@ -105,30 +105,28 @@ $url = "https://www.swgaudit.com";
   <main class="page-shell" id="top">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-inner">
-        <p class="eyebrow">Open-source perimeter validation</p>
-        <h1 id="hero-title">Validate your perimeter security against real web threats.</h1>
+        <p class="eyebrow">Open-source initiative</p>
+        <h1 id="hero-title">Validate real world effectiveness of your perimeter security</h1>
         <p class="hero-copy">
-          SWG Audit is an open-source initiative that helps buyers validate the real-world effectiveness of perimeter security solutions against modern web-based threats. Safely simulate phishing, malware delivery, data exfiltration, and cyberslacking controls without relying on vendor claims.
+          Safely simulate modern web-based threats
         </p>
         <div class="hero-rule" aria-hidden="true"></div>
         <div class="hero-meta" aria-label="What SWG Audit validates">
-          <span>Phishing controls</span>
-          <span>Malware detection</span>
-          <span>DLP and egress</span>
-          <span>Content filtering</span>
+          <span>Phishing</span>
+          <span>Malware delivery</span>
+          <span>Data exfiltration</span>
+          <span>Cyberslacking</span>
         </div>
       </div>
     </section>
 
     <section class="section" aria-labelledby="categories-title">
       <div class="section-head">
-        <p class="eyebrow">Test categories</p>
         <h2 id="categories-title">Four ways to challenge the perimeter.</h2>
-        <p>Start with the control family you want to validate. Phishing, malware, and data theft use progressive levels; cyberslacking remains a direct content-filtering test.</p>
       </div>
 
       <div class="category-grid">
-        <a class="card" id="phishing" href="#phishing-level-1">
+        <button class="card" id="phishing" type="button" aria-expanded="false" data-level-card>
           <div>
             <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
               <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
@@ -142,9 +140,14 @@ $url = "https://www.swgaudit.com";
             <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
           </div>
           <span class="card-cta">View phishing levels</span>
-        </a>
+          <div class="card-levels">
+            <span id="phishing-level-1"><strong>Level 1</strong>Bare Minimum</span>
+            <span id="phishing-level-2"><strong>Level 2</strong>Evasion Resistance</span>
+            <span id="phishing-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+          </div>
+        </button>
 
-        <a class="card" id="malware" href="#malware-level-1">
+        <button class="card" id="malware" type="button" aria-expanded="false" data-level-card>
           <div>
             <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
               <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
@@ -159,9 +162,14 @@ $url = "https://www.swgaudit.com";
             <p>Safe malware-delivery checks that validate whether download controls, inspection, and detection policies respond.</p>
           </div>
           <span class="card-cta">View malware levels</span>
-        </a>
+          <div class="card-levels">
+            <span id="malware-level-1"><strong>Level 1</strong>Bare Minimum</span>
+            <span id="malware-level-2"><strong>Level 2</strong>Evasion Resistance</span>
+            <span id="malware-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+          </div>
+        </button>
 
-        <a class="card" id="data-theft" href="#data-theft-level-1">
+        <button class="card" id="data-theft" type="button" aria-expanded="false" data-level-card>
           <div>
             <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
               <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
@@ -176,9 +184,14 @@ $url = "https://www.swgaudit.com";
             <p>DLP and egress validation for attempts to move sensitive data outside expected inspection paths.</p>
           </div>
           <span class="card-cta">View data theft levels</span>
-        </a>
+          <div class="card-levels">
+            <span id="data-theft-level-1"><strong>Level 1</strong>Bare Minimum</span>
+            <span id="data-theft-level-2"><strong>Level 2</strong>Evasion Resistance</span>
+            <span id="data-theft-level-3"><strong>Level 3</strong>Advanced Threat Simulation</span>
+          </div>
+        </button>
 
-        <a class="card" id="cyberslacking" href="#cyberslacking-test">
+        <article class="card" id="cyberslacking">
           <div>
             <svg class="category-icon" viewBox="0 0 84 72" aria-hidden="true">
               <path class="hex" d="M24 5.5h36L78 36 60 66.5H24L6 36 24 5.5Z"/>
@@ -190,73 +203,6 @@ $url = "https://www.swgaudit.com";
             <h3>Cyberslacking</h3>
             <p>Acceptable-use and content-filtering validation for non-work web activity and media-category enforcement.</p>
           </div>
-          <span class="card-cta">View category test</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="section" aria-labelledby="roadmap-title">
-      <div class="section-head">
-        <p class="eyebrow">Test structure</p>
-        <h2 id="roadmap-title">Levels define how each category grows.</h2>
-        <p>These anchors establish the navigation model for the future test pages while keeping the homepage focused today.</p>
-      </div>
-
-      <div class="roadmap-grid">
-        <article class="roadmap-card" aria-labelledby="phishing-roadmap-title">
-          <h3 id="phishing-roadmap-title">Phishing</h3>
-          <a class="level-row" id="phishing-level-1" href="#phishing-level-1">
-            <span class="level-kicker">Level 1</span>
-            <span><strong>Bare Minimum</strong><p>Baseline credential-submission and form-protection checks.</p></span>
-          </a>
-          <a class="level-row" id="phishing-level-2" href="#phishing-level-2">
-            <span class="level-kicker">Level 2</span>
-            <span><strong>Evasion Resistance</strong><p>Checks designed around reputation and categorization evasion.</p></span>
-          </a>
-          <a class="level-row" id="phishing-level-3" href="#phishing-level-3">
-            <span class="level-kicker">Level 3</span>
-            <span><strong>Advanced Threat Simulation</strong><p>Higher-fidelity phishing paths that mirror modern attacker tradecraft.</p></span>
-          </a>
-        </article>
-
-        <article class="roadmap-card" aria-labelledby="malware-roadmap-title">
-          <h3 id="malware-roadmap-title">Malware</h3>
-          <a class="level-row" id="malware-level-1" href="#malware-level-1">
-            <span class="level-kicker">Level 1</span>
-            <span><strong>Bare Minimum</strong><p>Baseline safe-file detection and download-control checks.</p></span>
-          </a>
-          <a class="level-row" id="malware-level-2" href="#malware-level-2">
-            <span class="level-kicker">Level 2</span>
-            <span><strong>Evasion Resistance</strong><p>Delivery paths that challenge basic inspection and reputation reliance.</p></span>
-          </a>
-          <a class="level-row" id="malware-level-3" href="#malware-level-3">
-            <span class="level-kicker">Level 3</span>
-            <span><strong>Advanced Threat Simulation</strong><p>Controlled simulations for more realistic multi-step delivery behavior.</p></span>
-          </a>
-        </article>
-
-        <article class="roadmap-card" aria-labelledby="data-roadmap-title">
-          <h3 id="data-roadmap-title">Data Theft</h3>
-          <a class="level-row" id="data-theft-level-1" href="#data-theft-level-1">
-            <span class="level-kicker">Level 1</span>
-            <span><strong>Bare Minimum</strong><p>Baseline DLP and outbound policy checks for simple data movement.</p></span>
-          </a>
-          <a class="level-row" id="data-theft-level-2" href="#data-theft-level-2">
-            <span class="level-kicker">Level 2</span>
-            <span><strong>Evasion Resistance</strong><p>Exfiltration paths that test inspection coverage beyond obvious uploads.</p></span>
-          </a>
-          <a class="level-row" id="data-theft-level-3" href="#data-theft-level-3">
-            <span class="level-kicker">Level 3</span>
-            <span><strong>Advanced Threat Simulation</strong><p>Advanced controlled scenarios for stealthier data-loss techniques.</p></span>
-          </a>
-        </article>
-
-        <article class="roadmap-card" aria-labelledby="cyberslacking-roadmap-title">
-          <h3 id="cyberslacking-roadmap-title">Cyberslacking</h3>
-          <a class="level-row" id="cyberslacking-test" href="#cyberslacking-test">
-            <span class="level-kicker">Direct</span>
-            <span><strong>Category Test</strong><p>No levels for now. This remains a focused content-filtering and acceptable-use validation path.</p></span>
-          </a>
         </article>
       </div>
     </section>
