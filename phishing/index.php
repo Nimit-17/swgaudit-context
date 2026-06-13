@@ -103,61 +103,26 @@ $url = "https://www.swgaudit.com/phishing/";
   </header>
 
   <main class="page-shell test-page" id="top">
-    <section class="test-hero" aria-labelledby="phishing-title">
-      <h1 id="phishing-title">Phishing</h1>
+    <section class="test-hero" aria-labelledby="page-title">
+      <h1 id="page-title">Phishing</h1>
       <p>Use these safe phishing test structures to validate how perimeter controls handle credential collection, deceptive navigation, and realistic social engineering flows.</p>
     </section>
 
     <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
       <div class="test-section-head">
         <h2 id="bare-minimum-title">Bare Minimum</h2>
-        <p>This level of security is a must. Baseline controls should stop straightforward phishing attempts before a user can submit sensitive information.</p>
+        <p>This level of security is a must. Baseline controls should stop known phishing infrastructure and obvious credential-theft attempts.</p>
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="credential-submission-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-bare-minimum-test-1-detail" data-test-card>
           <div class="test-card-summary">
             <div>
-              <h3>Credential Submission Check</h3>
-              <p>Validates whether controls interrupt a simple credential capture flow hosted on an untrusted page.</p>
+              <h3>Known phishing domains</h3>
+              <p>Checks whether known phishing destinations are blocked by reputation, category, or threat-intelligence controls.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="credential-submission-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a safe form-submission flow that can later collect dummy credentials and record whether the security stack blocks or warns.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Confirm whether the page is blocked, the form submission is interrupted, or the user reaches the final step without friction.</p>
-              </div>
-            </div>
-            <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
-            </div>
-            <p class="test-output" data-test-output hidden></p>
-          </div>
-        </article>
-
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="suspicious-login-detail" data-test-card>
-          <div class="test-card-summary">
-            <div>
-              <h3>Suspicious Login Page Link</h3>
-              <p>Checks whether a direct link to a deceptive login page is categorized, warned, or blocked.</p>
-            </div>
-          </div>
-          <div class="test-card-detail" id="suspicious-login-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a controlled landing page or new-tab launch that resembles a common credential prompt without collecting real secrets.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Check whether URL filtering, browser isolation, or safe-browsing controls engage before the user can interact with the page.</p>
-              </div>
-            </div>
+          <div class="test-card-detail" id="phishing-bare-minimum-test-1-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
@@ -166,57 +131,49 @@ $url = "https://www.swgaudit.com/phishing/";
         </article>
       </div>
     </section>
-
     <section class="test-category-section" id="evasion-detection" aria-labelledby="evasion-detection-title">
       <div class="test-section-head">
         <h2 id="evasion-detection-title">Evasion Detection</h2>
-        <p>If attackers use better techniques, this level of security is needed. These tests are for redirects, reputation tricks, and better-crafted phishing flows.</p>
+        <p>If attackers use better techniques, this level of security is needed. These tests cover disguised URLs, misclassification, and file-based deception.</p>
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="redirect-chain-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-1-detail" data-test-card>
           <div class="test-card-summary">
             <div>
-              <h3>Redirect Chain Landing Page</h3>
-              <p>Models a phishing flow that reaches the final page through intermediate redirects instead of a single obvious URL.</p>
+              <h3>URL manipulation</h3>
+              <p>Covers hiding in subdomains, extra words, misspellings, shorteners, redirects, fake paths, and homograph-style lookalikes.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="redirect-chain-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a future redirect path or new-tab sequence that can validate inspection across each navigation step.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Look for blocks or warnings at the first URL, during the redirect, or only after the final landing page loads.</p>
-              </div>
-            </div>
+          <div class="test-card-detail" id="phishing-evasion-detection-test-1-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
-
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="lookalike-domain-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-2-detail" data-test-card>
           <div class="test-card-summary">
             <div>
-              <h3>Lookalike Domain Prompt</h3>
-              <p>Tests how defenses respond when a phishing page uses brand-like language and a plausible-looking destination.</p>
+              <h3>Misclassified domains</h3>
+              <p>Uses domains that are not initially classified as phishing but later host phishing behavior.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="lookalike-domain-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a controlled page that can later simulate visual deception, copy similarity, and user decision points.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Confirm whether the defense classifies the destination by content, reputation, or form behavior instead of name matching alone.</p>
-              </div>
+          <div class="test-card-detail" id="phishing-evasion-detection-test-2-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-3-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>File spoofing</h3>
+              <p>Checks whether disguised or misleading files can lead users into phishing flows.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
@@ -225,57 +182,77 @@ $url = "https://www.swgaudit.com/phishing/";
         </article>
       </div>
     </section>
-
     <section class="test-category-section" id="advanced-threat-simulation" aria-labelledby="advanced-threat-simulation-title">
       <div class="test-section-head">
         <h2 id="advanced-threat-simulation-title">Advanced Threat Simulation</h2>
-        <p>Advanced security should handle realistic, multi-step phishing paths where attackers combine timing, user prompts, and layered deception.</p>
+        <p>Advanced security should handle realistic phishing paths that combine unknown infrastructure, rendering tricks, and user-flow evasion.</p>
       </div>
 
       <div class="test-card-grid">
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="multi-step-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-advanced-threat-simulation-test-1-detail" data-test-card>
           <div class="test-card-summary">
             <div>
-              <h3>Multi-step Credential Flow</h3>
-              <p>Represents a more realistic phishing path with staged prompts instead of a single landing page.</p>
+              <h3>Site stored as MHTML or raw HTML</h3>
+              <p>Tests whether saved-page formats can preserve or launch phishing content.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="multi-step-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a future sequence that can move through awareness prompt, login prompt, and confirmation step using only dummy data.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Watch whether controls evaluate the whole journey or only react to a single URL, page title, or form field.</p>
-              </div>
-            </div>
+          <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-1-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
-
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="attachment-login-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-advanced-threat-simulation-test-2-detail" data-test-card>
           <div class="test-card-summary">
             <div>
-              <h3>Attachment-to-Login Scenario</h3>
-              <p>Frames a phishing journey that begins from a document or notification and ends at a credential prompt.</p>
+              <h3>Unknown domains - zero hour</h3>
+              <p>Models phishing on newly seen domains before reputation systems catch up.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="attachment-login-detail" hidden>
-            <div class="test-detail-grid">
-              <div>
-                <h4>Test surface</h4>
-                <p>Reserved for a safe launch path that can later use a document-style prompt, new tab, or guided manual step.</p>
-              </div>
-              <div>
-                <h4>What to observe</h4>
-                <p>Confirm whether policy enforcement follows the user across files, tabs, and final destinations.</p>
-              </div>
+          <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-2-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-advanced-threat-simulation-test-3-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Canvas engine</h3>
+              <p>Uses canvas-rendered page elements to reduce normal DOM-based inspection visibility.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-3-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-advanced-threat-simulation-test-4-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Browser fingerprinting</h3>
+              <p>Checks whether phishing content can adapt based on browser, device, or inspection signals.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-4-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-advanced-threat-simulation-test-5-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Form submission on random site</h3>
+              <p>Represents the current SWG Audit style test: credential-style form submission on an unexpected site.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-5-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>

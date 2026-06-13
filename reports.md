@@ -25,6 +25,8 @@ inspection.
 - Added `/malware/` and `/data-theft/` catalog pages with placeholder tests.
 - Refined header dropdown sizing/weight and added red gradient treatment to
   catalog page hero areas.
+- Replaced placeholder catalog cards with the planned phishing, malware, and
+  data-theft test names plus short descriptions.
 
 ## 2026-05-20
 

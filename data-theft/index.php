@@ -2,14 +2,6 @@
 $title = "Data Theft Tests - SWG Audit";
 $description = "Validate perimeter security against safe data-theft and exfiltration test structures across baseline, evasion, and advanced scenarios.";
 $url = "https://www.swgaudit.com/data-theft/";
-$pageTitle = "Data Theft";
-$pagePath = "/data-theft/";
-$pageDescription = "Use these safe data-theft test structures to validate how perimeter controls handle sensitive data movement and egress attempts.";
-$sections = [
-  ["bare-minimum", "Bare Minimum", "This level of security is a must. Baseline controls should stop straightforward attempts to move sensitive data outside expected paths."],
-  ["evasion-detection", "Evasion Detection", "If attackers use better techniques, this level of security is needed. These tests are for less obvious data movement and egress paths."],
-  ["advanced-threat-simulation", "Advanced Threat Simulation", "Advanced security should handle realistic, multi-step data-theft paths where attackers combine uploads, redirects, and alternative channels."]
-];
 ?>
 <!doctype html>
 <html lang="en">
@@ -112,35 +104,149 @@ $sections = [
 
   <main class="page-shell test-page" id="top">
     <section class="test-hero" aria-labelledby="page-title">
-      <h1 id="page-title"><?php echo $pageTitle; ?></h1>
-      <p><?php echo $pageDescription; ?></p>
+      <h1 id="page-title">Data Theft</h1>
+      <p>Use these safe data-theft test structures to validate how perimeter controls handle sensitive data movement and egress attempts.</p>
     </section>
 
-    <?php foreach ($sections as $section): ?>
-      <section class="test-category-section" id="<?php echo $section[0]; ?>" aria-labelledby="<?php echo $section[0]; ?>-title">
-        <div class="test-section-head">
-          <h2 id="<?php echo $section[0]; ?>-title"><?php echo $section[1]; ?></h2>
-          <p><?php echo $section[2]; ?></p>
-        </div>
+    <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
+      <div class="test-section-head">
+        <h2 id="bare-minimum-title">Bare Minimum</h2>
+        <p>This level of security is a must. Baseline controls should stop straightforward sensitive-data submission.</p>
+      </div>
 
-        <div class="test-card-grid">
-          <?php for ($i = 1; $i <= 2; $i++): ?>
-            <?php $detailId = "data-theft-" . $section[0] . "-test-" . $i . "-detail"; ?>
-            <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="<?php echo $detailId; ?>" data-test-card>
-              <div class="test-card-summary">
-                <h3>Test <?php echo $i; ?></h3>
-              </div>
-              <div class="test-card-detail" id="<?php echo $detailId; ?>" hidden>
-                <div class="test-actions">
-                  <button class="primary-action" type="button" data-run-test>Run Test</button>
-                </div>
-                <p class="test-output" data-test-output hidden></p>
-              </div>
-            </article>
-          <?php endfor; ?>
-        </div>
-      </section>
-    <?php endforeach; ?>
+      <div class="test-card-grid">
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-bare-minimum-test-1-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Personal data submission in normal file</h3>
+              <p>Checks whether common sensitive data inside a normal file is detected before upload or submission.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-bare-minimum-test-1-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="test-category-section" id="evasion-detection" aria-labelledby="evasion-detection-title">
+      <div class="test-section-head">
+        <h2 id="evasion-detection-title">Evasion Detection</h2>
+        <p>If attackers use better techniques, this level of security is needed. These tests cover transformed files and alternate transfer channels.</p>
+      </div>
+
+      <div class="test-card-grid">
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-evasion-detection-test-1-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>File encoding</h3>
+              <p>Checks whether encoded sensitive data is still detected during upload or egress.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-evasion-detection-test-1-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-evasion-detection-test-2-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>File encrypting</h3>
+              <p>Tests whether encrypted sensitive-data files are blocked, warned, or controlled.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-evasion-detection-test-2-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-evasion-detection-test-3-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>File chunking</h3>
+              <p>Models splitting sensitive data into pieces to avoid single-file inspection.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-evasion-detection-test-3-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-evasion-detection-test-4-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>WebSocket</h3>
+              <p>Checks whether sensitive data movement over WebSocket channels is inspected or controlled.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-evasion-detection-test-4-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="test-category-section" id="advanced-threat-simulation" aria-labelledby="advanced-threat-simulation-title">
+      <div class="test-section-head">
+        <h2 id="advanced-threat-simulation-title">Advanced Threat Simulation</h2>
+        <p>Advanced security should handle realistic exfiltration paths that use malware, tunneling, or session compromise.</p>
+      </div>
+
+      <div class="test-card-grid">
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-1-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Sent by malware</h3>
+              <p>Models sensitive data leaving through malware-driven exfiltration behavior.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-1-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-2-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>DNS tunnelling</h3>
+              <p>Checks whether sensitive data can be encoded and sent through DNS-style channels.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-2-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Browser session or credential theft</h3>
+              <p>Represents theft of browser sessions or credentials that can enable downstream data access.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail" hidden>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
