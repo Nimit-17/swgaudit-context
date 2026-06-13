@@ -517,6 +517,8 @@ h2 {
   border-top: 1px solid var(--line);
 }
 
+.card:hover .card-levels,
+.card:focus-within .card-levels,
 .card.is-open .card-levels {
   display: grid;
 }
@@ -527,8 +529,8 @@ h2 {
   justify-content: center;
   gap: 0.12rem;
   color: var(--text);
-  font-size: 1rem;
-  font-weight: 850;
+  font-size: 0.95rem;
+  font-weight: 500;
   background: linear-gradient(135deg, rgba(255, 37, 56, 0.2), rgba(255, 37, 56, 0.07));
   border: 1px solid rgba(255, 37, 56, 0.44);
   border-radius: 6px;
@@ -549,7 +551,8 @@ h2 {
 
 .card-levels strong {
   color: var(--text);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .card-toggle {
@@ -632,14 +635,30 @@ h2 {
 }
 
 .test-hero {
+  position: relative;
+  isolation: isolate;
   display: grid;
   align-content: center;
   gap: 1.05rem;
   min-height: calc(100svh - var(--header));
   padding: clamp(2rem, 5vw, 4rem) 0;
+}
+
+.test-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: -1;
+  width: 100vw;
+  transform: translateX(-50%);
+  pointer-events: none;
   background:
-    radial-gradient(circle at 92% 0%, rgba(255, 37, 56, 0.28), rgba(255, 37, 56, 0.13) 30%, rgba(255, 37, 56, 0.045) 58%, transparent 82%),
-    linear-gradient(180deg, rgba(255, 37, 56, 0.075), rgba(255, 37, 56, 0.025) 68%, transparent 100%);
+    radial-gradient(ellipse at 100% 0%, rgba(255, 37, 56, 0.3), rgba(255, 37, 56, 0.14) 34%, rgba(255, 37, 56, 0.045) 66%, transparent 100%),
+    linear-gradient(180deg, rgba(255, 37, 56, 0.075), rgba(255, 37, 56, 0.025) 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0, 0, 0, 0.7) 76%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0, 0, 0, 0.7) 76%, transparent 100%);
 }
 
 .test-hero h1 {

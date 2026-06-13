@@ -137,7 +137,6 @@ $url = "https://www.swgaudit.com";
             <a id="phishing-level-2" href="/phishing/#evasion-detection"><strong>Evasion Detection</strong></a>
             <a id="phishing-level-3" href="/phishing/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
-          <span class="card-toggle">View tests</span>
         </article>
 
         <article class="card" id="malware" role="button" tabindex="0" aria-expanded="false" data-level-card>
@@ -151,7 +150,6 @@ $url = "https://www.swgaudit.com";
             <a id="malware-level-2" href="/malware/#evasion-detection"><strong>Evasion Detection</strong></a>
             <a id="malware-level-3" href="/malware/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
-          <span class="card-toggle">View tests</span>
         </article>
 
         <article class="card" id="data-theft" role="button" tabindex="0" aria-expanded="false" data-level-card>
@@ -165,7 +163,6 @@ $url = "https://www.swgaudit.com";
             <a id="data-theft-level-2" href="/data-theft/#evasion-detection"><strong>Evasion Detection</strong></a>
             <a id="data-theft-level-3" href="/data-theft/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
           </div>
-          <span class="card-toggle">View tests</span>
         </article>
 
         <article class="card" id="cyberslacking">
