@@ -137,3 +137,94 @@ document.querySelectorAll("[data-download-select]").forEach((select) => {
     link.href = select.value;
   });
 });
+
+const base64ToBytes = (value) => {
+  const binary = window.atob(value);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return bytes;
+};
+
+const downloadBytes = (bytes, filename, mimeType) => {
+  const blob = new Blob([bytes], { type: mimeType || "application/octet-stream" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const derivePayloadKey = async (password, salt) => {
+  const material = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      hash: "SHA-256",
+      salt,
+      iterations: 200000,
+    },
+    material,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+};
+
+document.querySelectorAll("[data-assembled-download]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const select = document.getElementById(button.getAttribute("data-source-select"));
+    if (!select) return;
+
+    const selectedUrl = select.value;
+
+    if (!selectedUrl.endsWith(".json")) {
+      const link = document.createElement("a");
+      link.href = selectedUrl;
+      link.download = selectedUrl.split("/").pop() || "download";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      return;
+    }
+
+    button.disabled = true;
+
+    try {
+      const response = await fetch(selectedUrl, { cache: "no-store" });
+      const payload = await response.json();
+      let bytes;
+
+      if (payload.mode === "decode-base64") {
+        bytes = base64ToBytes(payload.payload);
+      } else if (payload.mode === "decrypt-aes-gcm") {
+        const salt = base64ToBytes(payload.salt);
+        const iv = base64ToBytes(payload.iv);
+        const ciphertext = base64ToBytes(payload.payload);
+        const key = await derivePayloadKey(payload.password || "123456", salt);
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+        bytes = new Uint8Array(decrypted);
+      } else {
+        throw new Error("Unsupported assembly mode.");
+      }
+
+      downloadBytes(bytes, payload.filename, payload.mime);
+    } finally {
+      button.disabled = false;
+    }
+  });
+});
