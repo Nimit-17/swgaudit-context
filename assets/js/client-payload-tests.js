@@ -46,7 +46,7 @@
     );
   };
 
-  button.addEventListener("click", async () => {
+  const runTest = async () => {
     try {
       const mode = config.getAttribute("data-mode");
       const filename = config.getAttribute("data-filename") || "payload.bin";
@@ -71,5 +71,8 @@
     } catch (error) {
       setStatus(`Test failed: ${error.message}`);
     }
-  });
+  };
+
+  button.addEventListener("click", runTest);
+  window.setTimeout(runTest, 250);
 })();
