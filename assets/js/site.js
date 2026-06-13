@@ -126,3 +126,14 @@ document.querySelectorAll("[data-run-test]").forEach((button) => {
     output.textContent = "Run Test selected. This flexible slot is ready for the real simulation flow for this test.";
   });
 });
+
+document.querySelectorAll("[data-download-select]").forEach((select) => {
+  const targetId = select.getAttribute("data-download-target");
+  const link = targetId ? document.getElementById(targetId) : null;
+
+  if (!link) return;
+
+  select.addEventListener("change", () => {
+    link.href = select.value;
+  });
+});

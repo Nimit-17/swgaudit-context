@@ -769,6 +769,26 @@ h2 {
   gap: 0.75rem;
 }
 
+.test-picker {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 360px;
+}
+
+.test-picker label {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.test-picker select {
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--text);
+  background: #09090b;
+  padding: 0.65rem 0.75rem;
+}
+
 .primary-action {
   min-height: 44px;
   display: inline-flex;
