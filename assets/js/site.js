@@ -166,6 +166,231 @@ document.querySelectorAll("[data-credential-form]").forEach((form) => {
   });
 });
 
+const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWG Audit Test - Dummy Microsoft Login</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      color: #1b1b1b;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(0, 120, 215, 0.12), transparent 32rem),
+        radial-gradient(circle at 85% 72%, rgba(243, 119, 53, 0.11), transparent 26rem),
+        linear-gradient(135deg, #f6f8fc, #fff);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    .test-banner {
+      position: fixed;
+      inset: 0 0 auto;
+      padding: 12px 18px;
+      color: #fff;
+      background: #b00020;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    main { width: min(660px, calc(100% - 36px)); }
+    .panel {
+      margin-top: 52px;
+      padding: 44px 66px 72px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #737373;
+      font-size: 29px;
+      font-weight: 600;
+    }
+    .mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3px;
+    }
+    .mark span:nth-child(1) { background: #f35325; }
+    .mark span:nth-child(2) { background: #81bc06; }
+    .mark span:nth-child(3) { background: #05a6f0; }
+    .mark span:nth-child(4) { background: #ffba08; }
+    h1 {
+      margin: 30px 0 24px;
+      font-size: 34px;
+      font-weight: 600;
+    }
+    label {
+      display: block;
+      color: #666;
+      font-size: 24px;
+    }
+    input {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-bottom: 1px solid #0067b8;
+      font-size: 21px;
+      outline: 0;
+    }
+    .links {
+      display: grid;
+      gap: 26px;
+      margin: 28px 0 42px;
+      font-size: 20px;
+    }
+    .links a {
+      color: #0067b8;
+      text-decoration: none;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    button {
+      min-width: 162px;
+      min-height: 48px;
+      border: 0;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .back { background: #ccc; }
+    .next { color: #fff; background: #0067b8; }
+    .options {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 28px;
+      padding: 20px 72px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+      font-size: 22px;
+    }
+    .key {
+      width: 36px;
+      height: 36px;
+      border: 2px solid #333;
+      border-radius: 50%;
+      position: relative;
+    }
+    .key::after {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 10px;
+      left: 23px;
+      top: 19px;
+      border-top: 3px solid #333;
+      border-right: 3px solid #333;
+      transform: rotate(38deg);
+    }
+    .notice {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-left: 4px solid #b00020;
+      background: #fff3f3;
+      color: #5f000f;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    @media (max-width: 640px) {
+      .panel { padding: 32px 24px 46px; }
+      .brand { font-size: 24px; }
+      h1 { font-size: 30px; }
+      label, .links, button, .options { font-size: 18px; }
+      .actions { flex-direction: column; }
+      button { width: 100%; }
+      .options { padding: 18px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="test-banner">SWG AUDIT TEST - DUMMY LOGIN PAGE - DO NOT ENTER REAL CREDENTIALS</div>
+  <main>
+    <section class="panel" aria-labelledby="dummy-login-title">
+      <div class="brand" aria-label="Microsoft-style dummy brand">
+        <span class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span>Microsoft</span>
+      </div>
+      <h1 id="dummy-login-title">Sign in</h1>
+      <form>
+        <label for="dummy-account">Email, phone, or Skype</label>
+        <input id="dummy-account" name="dummy-account" type="text" autocomplete="off" inputmode="email">
+        <div class="links">
+          <span>No account? <a href="#" aria-disabled="true">Create one!</a></span>
+          <a href="#" aria-disabled="true">Can't access your account?</a>
+        </div>
+        <div class="actions">
+          <button class="back" type="button">Back</button>
+          <button class="next" type="button">Next</button>
+        </div>
+      </form>
+      <p class="notice">This page is a labelled SWG Audit phishing simulation. It is a dummy Microsoft-style HTML page rendered from stored content and no data is submitted.</p>
+    </section>
+    <section class="options" aria-label="Dummy sign-in options">
+      <span class="key" aria-hidden="true"></span>
+      <span>Sign-in options</span>
+    </section>
+  </main>
+</body>
+</html>`;
+
+const makeMhtmlPayload = (html) => [
+  "MIME-Version: 1.0",
+  "Content-Type: multipart/related; boundary=\"----SWGAuditDummyMhtmlBoundary\"; type=\"text/html\"",
+  "X-SWG-Audit-Test: Dummy phishing page stored as MHTML-style content",
+  "",
+  "------SWGAuditDummyMhtmlBoundary",
+  "Content-Type: text/html; charset=\"utf-8\"",
+  "Content-Location: https://dummy-login.invalid/swg-audit-test.html",
+  "",
+  html,
+  "------SWGAuditDummyMhtmlBoundary--",
+].join("\r\n");
+
+const extractHtmlFromMhtml = (mhtml) => {
+  const match = mhtml.match(/Content-Type:\s*text\/html[^\r\n]*[\s\S]*?\r?\n\r?\n([\s\S]*?)\r?\n------SWGAuditDummyMhtmlBoundary--/i);
+  return match ? match[1] : "";
+};
+
+document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const card = button.closest("[data-test-card]");
+    const output = card ? card.querySelector("[data-test-output]") : null;
+    const select = card ? card.querySelector("[data-stored-site-format]") : null;
+    const selectedFormat = select ? select.value : "html";
+    const dummyHtml = makeDummyMicrosoftLoginHtml();
+    const storedPayload = selectedFormat === "mhtml" ? window.btoa(makeMhtmlPayload(dummyHtml)) : window.btoa(dummyHtml);
+    const renderedHtml = selectedFormat === "mhtml" ? extractHtmlFromMhtml(window.atob(storedPayload)) : window.atob(storedPayload);
+    const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
+    const openedWindow = window.open(blobUrl, "_blank");
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.classList.remove("is-pass", "is-fail");
+
+    if (openedWindow) {
+      output.textContent = `Opened dummy ${selectedFormat.toUpperCase()} phishing-page rendering test in a new tab.`;
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      return;
+    }
+
+    URL.revokeObjectURL(blobUrl);
+    output.classList.add("is-fail");
+    output.textContent = "Test launch was blocked by the browser.";
+  });
+});
+
 document.querySelectorAll("[data-download-select]").forEach((select) => {
   const targetId = select.getAttribute("data-download-target");
   const link = targetId ? document.getElementById(targetId) : null;

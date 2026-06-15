@@ -200,12 +200,21 @@ $url = "https://www.swgaudit.com/phishing/";
           <div class="test-card-summary">
             <div>
               <h3>Site stored as MHTML or raw HTML</h3>
-              <p>Tests whether saved-page formats can preserve or launch phishing content.</p>
+              <p>Tests whether saved-page formats can hide a phishing page from static request and response inspection.</p>
             </div>
           </div>
           <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-1-detail" hidden>
+            <p>SWGs often inspect network traffic using signatures and static checks. This test stores a clearly labelled dummy login page as raw HTML or MHTML-style content, then renders it with JavaScript in a new tab to show why live dynamic analysis is needed.</p>
+            <p class="test-note">This is a SWG Audit test page only. It is a dummy Microsoft-style login mockup and does not submit or collect credentials.</p>
+            <div class="test-picker">
+              <label for="phishing-stored-site-format">Stored page format</label>
+              <select id="phishing-stored-site-format" data-stored-site-format>
+                <option value="html">Raw HTML - dummy Microsoft-style login</option>
+                <option value="mhtml">MHTML - dummy Microsoft-style login</option>
+              </select>
+            </div>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <button class="primary-action" type="button" data-phishing-stored-site-launch>Open Dummy Test Page</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
