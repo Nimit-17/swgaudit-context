@@ -166,6 +166,8 @@ document.querySelectorAll("[data-credential-form]").forEach((form) => {
   });
 });
 
+const dummyMicrosoftKeyIcon = "data:image/png;base64,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";
+
 const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 <html lang="en">
 <head>
@@ -186,20 +188,8 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
         linear-gradient(135deg, #f6f8fc, #fff);
       font-family: "Segoe UI", Arial, sans-serif;
     }
-    .test-banner {
-      position: fixed;
-      inset: 0 0 auto;
-      padding: 12px 18px;
-      color: #fff;
-      background: #b00020;
-      font-size: 14px;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: 0.02em;
-    }
     main { width: min(660px, calc(100% - 36px)); }
     .panel {
-      margin-top: 52px;
       padding: 44px 66px 72px;
       background: #fff;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
@@ -276,22 +266,9 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       font-size: 22px;
     }
     .key {
-      width: 36px;
-      height: 36px;
-      border: 2px solid #333;
-      border-radius: 50%;
-      position: relative;
-    }
-    .key::after {
-      content: "";
-      position: absolute;
-      width: 25px;
-      height: 10px;
-      left: 23px;
-      top: 19px;
-      border-top: 3px solid #333;
-      border-right: 3px solid #333;
-      transform: rotate(38deg);
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
     }
     .notice {
       margin-top: 18px;
@@ -314,7 +291,6 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
   </style>
 </head>
 <body>
-  <div class="test-banner">SWG AUDIT TEST - DUMMY LOGIN PAGE - DO NOT ENTER REAL CREDENTIALS</div>
   <main>
     <section class="panel" aria-labelledby="dummy-login-title">
       <div class="brand" aria-label="Microsoft-style dummy brand">
@@ -337,7 +313,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       <p class="notice">This page is a labelled SWG Audit phishing simulation. It is a dummy Microsoft-style HTML page rendered from stored content and no data is submitted.</p>
     </section>
     <section class="options" aria-label="Dummy sign-in options">
-      <span class="key" aria-hidden="true"></span>
+      <img class="key" src="${dummyMicrosoftKeyIcon}" alt="" aria-hidden="true">
       <span>Sign-in options</span>
     </section>
   </main>
