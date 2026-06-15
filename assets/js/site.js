@@ -310,6 +310,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
         <span>Microsoft</span>
       </div>
       <h1 id="dummy-login-title">Sign in</h1>
+      <div class="result" id="dummy-microsoft-result" hidden></div>
       <form id="dummy-microsoft-form">
         <input id="dummy-account" name="dummy-account" type="text" autocomplete="off" inputmode="email" placeholder="Email, phone, or Skype" aria-label="Email, phone, or Skype">
         <input id="dummy-password" name="dummy-password" type="password" autocomplete="off" placeholder="Password" aria-label="Password">
@@ -322,7 +323,6 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
           <button class="next" type="submit">Next</button>
         </div>
       </form>
-      <div class="result" id="dummy-microsoft-result" hidden></div>
     </section>
     <section class="options" aria-label="Dummy sign-in options">
       <img class="key" src="${dummyMicrosoftKeyIcon}" alt="" aria-hidden="true">
@@ -387,32 +387,32 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
       padding: 80px 20px 54px;
     }
     .card {
-      width: min(396px, calc(100vw - 36px));
+      width: min(352px, calc(100vw - 36px));
       border-radius: 8px;
       background: #fff;
-      padding: 32px 28px 26px;
+      padding: 24px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
     }
     h1 {
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       color: #1f1f1f;
-      font-size: 34px;
+      font-size: 32px;
       line-height: 1.15;
       font-weight: 600;
     }
     .sso {
       width: 100%;
-      min-height: 48px;
+      min-height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: 1px solid #777;
       border-radius: 999px;
       color: #1f1f1f;
       background: #fff;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 500;
     }
     .google { color: #4285f4; font-weight: 800; }
@@ -429,8 +429,8 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
     .microsoft span:nth-child(4) { background: #ffba08; }
     .apple { color: #000; font-size: 18px; font-weight: 800; }
     .terms {
-      margin: 14px 0 30px;
-      font-size: 13px;
+      margin: 12px 0 22px;
+      font-size: 12px;
       line-height: 1.45;
     }
     a { color: #0a66c2; text-decoration: none; font-weight: 600; }
@@ -439,7 +439,7 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       gap: 14px;
-      margin-bottom: 30px;
+      margin-bottom: 22px;
       color: #666;
       font-size: 14px;
     }
@@ -451,13 +451,13 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
     }
     input {
       width: 100%;
-      min-height: 58px;
-      margin-bottom: 26px;
+      min-height: 52px;
+      margin-bottom: 18px;
       border: 1px solid #666;
       border-radius: 4px;
       padding: 0 12px;
       color: #191919;
-      font-size: 20px;
+      font-size: 18px;
     }
     input::placeholder { color: #666; opacity: 1; }
     .password-wrap {
@@ -473,15 +473,15 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
     }
     .forgot {
       display: inline-block;
-      margin: -10px 0 16px;
-      font-size: 18px;
+      margin: -4px 0 14px;
+      font-size: 16px;
     }
     .remember {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 22px;
-      font-size: 18px;
+      margin-bottom: 18px;
+      font-size: 16px;
     }
     .checkbox {
       width: 22px;
@@ -495,18 +495,18 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
     }
     .signin {
       width: 100%;
-      min-height: 58px;
+      min-height: 52px;
       border: 0;
       border-radius: 999px;
       color: #fff;
       background: #0a66c2;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
     }
     .join {
-      margin-top: 40px;
+      margin-top: 30px;
       text-align: center;
-      font-size: 18px;
+      font-size: 16px;
     }
     .test-note {
       margin-top: 16px;
@@ -537,6 +537,7 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
     <div>
       <section class="card" aria-labelledby="dummy-linkedin-title">
         <h1 id="dummy-linkedin-title">Sign in</h1>
+        <div class="result" id="dummy-linkedin-result" hidden></div>
         <button class="sso" type="button"><span class="google">G</span>Continue with Google</button>
         <button class="sso" type="button"><span class="microsoft" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Sign in with Microsoft</button>
         <button class="sso" type="button"><span class="apple">A</span>Sign in with Apple</button>
@@ -552,7 +553,6 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
           <div class="remember"><span class="checkbox">&#10003;</span><span>Keep me logged in</span></div>
           <button class="signin" type="submit">Sign in</button>
         </form>
-        <div class="result" id="dummy-linkedin-result" hidden></div>
       </section>
       <p class="join">New to LinkedIn? <a href="#">Join now</a></p>
     </div>
@@ -760,7 +760,14 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
 
       drawLogo(w / 2, y + 30);
       text("Sign in to GitHub", w / 2, y + 104, 28, "#f0f6fc", "700", "center");
-      y += 168;
+      y += 144;
+
+      if (state.submitted) {
+        drawResult(x, y, formWidth);
+        y += 142;
+      } else {
+        y += 24;
+      }
 
       text("Username or email address", x, y, 18, "#f0f6fc", "700");
       drawInput("username", x, y + 26, formWidth, 54, state.username);
@@ -772,14 +779,7 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       y += 102;
 
       drawButton("submit", x, y, formWidth, 54, "#238636", null, "Sign in");
-      y += 78;
-
-      if (state.submitted) {
-        drawResult(x, y, formWidth);
-        y += 154;
-      } else {
-        y += 18;
-      }
+      y += 96;
 
       ctx.strokeStyle = "#3d444d";
       ctx.beginPath();
