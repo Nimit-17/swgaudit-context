@@ -190,16 +190,17 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     }
     main { width: min(660px, calc(100% - 36px)); }
     .panel {
-      padding: 44px 66px 72px;
+      width: 100%;
+      padding: 66px 66px 72px;
       background: #fff;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: #737373;
-      font-size: 29px;
+      font-size: 30px;
       font-weight: 600;
     }
     .mark {
@@ -214,9 +215,10 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     .mark span:nth-child(3) { background: #05a6f0; }
     .mark span:nth-child(4) { background: #ffba08; }
     h1 {
-      margin: 30px 0 24px;
-      font-size: 34px;
+      margin: 28px 0 24px;
+      font-size: 36px;
       font-weight: 600;
+      line-height: 1.18;
     }
     label {
       display: block;
@@ -225,16 +227,16 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     }
     input {
       width: 100%;
-      height: 44px;
+      height: 18px;
       border: 0;
-      border-bottom: 1px solid #0067b8;
-      font-size: 21px;
+      border-bottom: 1px solid #666;
+      font-size: 18px;
       outline: 0;
     }
     .links {
       display: grid;
       gap: 26px;
-      margin: 28px 0 42px;
+      margin: 28px 0 40px;
       font-size: 20px;
     }
     .links a {
@@ -244,11 +246,11 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     .actions {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 4px;
     }
     button {
       min-width: 162px;
-      min-height: 48px;
+      min-height: 49px;
       border: 0;
       font-size: 22px;
       cursor: pointer;
@@ -258,16 +260,17 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     .options {
       display: flex;
       align-items: center;
-      gap: 24px;
-      margin-top: 28px;
-      padding: 20px 72px;
+      gap: 22px;
+      min-height: 72px;
+      margin-top: 30px;
+      padding: 18px 72px;
       background: #fff;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
-      font-size: 22px;
+      font-size: 24px;
     }
     .key {
-      width: 42px;
-      height: 42px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
     }
     .notice {
@@ -280,13 +283,15 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       line-height: 1.45;
     }
     @media (max-width: 640px) {
-      .panel { padding: 32px 24px 46px; }
+      .panel { padding: 42px 28px 48px; }
       .brand { font-size: 24px; }
+      .mark { width: 28px; height: 28px; }
       h1 { font-size: 30px; }
       label, .links, button, .options { font-size: 18px; }
       .actions { flex-direction: column; }
       button { width: 100%; }
-      .options { padding: 18px 24px; }
+      .options { min-height: 64px; padding: 16px 28px; }
+      .key { width: 28px; height: 28px; }
     }
   </style>
 </head>
