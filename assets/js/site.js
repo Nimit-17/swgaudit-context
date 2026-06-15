@@ -164,9 +164,16 @@ const base64ToBytes = (value) => {
   return bytes;
 };
 
-const downloadBytes = (bytes, filename, mimeType) => {
+const downloadBytes = (bytes, filename, mimeType, openInNewTab = false) => {
   const blob = new Blob([bytes], { type: mimeType || "application/octet-stream" });
   const url = URL.createObjectURL(blob);
+
+  if (openInNewTab) {
+    window.open(url, "_blank", "noopener");
+    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    return;
+  }
+
   const link = document.createElement("a");
 
   link.href = url;
@@ -267,7 +274,7 @@ const extractSmugglingPayload = (format) => {
 };
 
 document.querySelectorAll("[data-smuggling-download]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
     const select = document.getElementById(button.getAttribute("data-source-select"));
     const selectedOption = select ? select.options[select.selectedIndex] : null;
 
@@ -283,7 +290,12 @@ document.querySelectorAll("[data-smuggling-download]").forEach((button) => {
         throw new Error(`${format.toUpperCase()} smuggling payload was not found on the page.`);
       }
 
-      downloadBytes(base64ToBytes(payload), filename, "application/vnd.ms-word.document.macroEnabled.12");
+      downloadBytes(
+        base64ToBytes(payload),
+        filename,
+        "application/vnd.ms-word.document.macroEnabled.12",
+        event.ctrlKey || event.metaKey
+      );
     } catch (error) {
       window.alert(`Smuggling test failed: ${error.message}`);
     }
