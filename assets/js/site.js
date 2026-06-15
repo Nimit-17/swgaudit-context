@@ -266,12 +266,40 @@ const makeBlobLinkPreparer = (link, buildBlob) => {
     prepareLink();
   };
 
+  const hasPreparedHref = () => link.href && link.href !== "#" && link.href !== window.location.href + "#";
+
+  const openPreparedLinkInNewTab = async (event) => {
+    event.preventDefault();
+
+    const newTab = window.open("about:blank", "_blank", "noopener");
+    if (await prepareLink()) {
+      if (newTab) {
+        newTab.location = link.href;
+      } else {
+        window.open(link.href, "_blank", "noopener");
+      }
+    } else if (newTab) {
+      newTab.close();
+    }
+  };
+
   ["pointerenter", "focus", "mousedown", "contextmenu"].forEach((eventName) => {
     link.addEventListener(eventName, warmLink);
   });
 
+  link.addEventListener("auxclick", (event) => {
+    if (event.button === 1 && !hasPreparedHref()) {
+      openPreparedLinkInNewTab(event);
+    }
+  });
+
   link.addEventListener("click", async (event) => {
-    if (link.href && link.href !== "#" && link.href !== window.location.href + "#") return;
+    if ((event.ctrlKey || event.metaKey) && !hasPreparedHref()) {
+      openPreparedLinkInNewTab(event);
+      return;
+    }
+
+    if (hasPreparedHref()) return;
 
     event.preventDefault();
     if (await prepareLink()) {
