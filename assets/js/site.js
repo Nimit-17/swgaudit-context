@@ -244,6 +244,46 @@ document.querySelectorAll("[data-assembled-download]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-smuggling-download]").forEach((link) => {
+  link.addEventListener("click", async (event) => {
+    const select = document.getElementById(link.getAttribute("data-source-select"));
+    const selectedOption = select ? select.options[select.selectedIndex] : null;
+
+    if (!selectedOption || selectedOption.getAttribute("data-inline-smuggling") !== "html") return;
+
+    event.preventDefault();
+
+    try {
+      const response = await fetch("/assets/test-files/malware/smuggling/html-smuggling.js", { cache: "no-store" });
+
+      if (!response.ok) {
+        throw new Error("HTML smuggling payload request failed.");
+      }
+
+      const source = await response.text();
+      const payloadMatch = source.match(/const docmPayloadBase64 =([\s\S]*?);\s*const docmFilename/);
+      const filenameMatch = source.match(/const docmFilename = '([^']+)'/);
+      const mimeMatch = source.match(/const docmMimeType = '([^']+)'/);
+
+      if (!payloadMatch) {
+        throw new Error("HTML smuggling payload was not found.");
+      }
+
+      const payload = Array.from(payloadMatch[1].matchAll(/'([^']*)'/g))
+        .map((match) => match[1])
+        .join("");
+
+      downloadBytes(
+        base64ToBytes(payload),
+        filenameMatch ? filenameMatch[1] : "swgaudit-html-smuggling.docm",
+        mimeMatch ? mimeMatch[1] : "application/vnd.ms-word.document.macroEnabled.12"
+      );
+    } catch (error) {
+      window.alert(`HTML smuggling test failed: ${error.message}`);
+    }
+  });
+});
+
 document.querySelectorAll("[data-chunk-attack-download]").forEach((button) => {
   button.addEventListener("click", async () => {
     const select = document.getElementById(button.getAttribute("data-source-select"));

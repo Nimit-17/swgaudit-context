@@ -772,7 +772,8 @@ h2 {
 .test-picker {
   display: grid;
   gap: 0.45rem;
-  max-width: 360px;
+  width: 100%;
+  max-width: 760px;
 }
 
 .test-picker label {
@@ -781,6 +782,7 @@ h2 {
 }
 
 .test-picker select {
+  width: min(100%, 540px);
   min-height: 44px;
   border: 1px solid var(--line-strong);
   border-radius: 6px;
