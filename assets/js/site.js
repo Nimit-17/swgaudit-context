@@ -191,7 +191,8 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     main { width: min(660px, calc(100% - 36px)); }
     .panel {
       width: 100%;
-      padding: 66px 66px 72px;
+      min-height: 508px;
+      padding: 66px 66px 70px;
       background: #fff;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     }
@@ -220,23 +221,26 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       font-weight: 600;
       line-height: 1.18;
     }
-    label {
-      display: block;
-      color: #666;
-      font-size: 24px;
-    }
     input {
       width: 100%;
-      height: 18px;
+      height: 38px;
       border: 0;
       border-bottom: 1px solid #666;
-      font-size: 18px;
+      color: #1b1b1b;
+      font-size: 24px;
       outline: 0;
+    }
+    input::placeholder {
+      color: #666;
+      opacity: 1;
+    }
+    input:focus {
+      border-bottom-color: #0067b8;
     }
     .links {
       display: grid;
       gap: 26px;
-      margin: 28px 0 40px;
+      margin: 26px 0 0;
       font-size: 20px;
     }
     .links a {
@@ -247,6 +251,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       display: flex;
       justify-content: flex-end;
       gap: 4px;
+      margin-top: 42px;
     }
     button {
       min-width: 162px;
@@ -263,7 +268,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       gap: 22px;
       min-height: 72px;
       margin-top: 30px;
-      padding: 18px 72px;
+      padding: 0 72px;
       background: #fff;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
       font-size: 24px;
@@ -273,24 +278,16 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       height: 32px;
       object-fit: contain;
     }
-    .notice {
-      margin-top: 18px;
-      padding: 12px 14px;
-      border-left: 4px solid #b00020;
-      background: #fff3f3;
-      color: #5f000f;
-      font-size: 16px;
-      line-height: 1.45;
-    }
     @media (max-width: 640px) {
-      .panel { padding: 42px 28px 48px; }
+      .panel { min-height: auto; padding: 42px 28px 48px; }
       .brand { font-size: 24px; }
       .mark { width: 28px; height: 28px; }
       h1 { font-size: 30px; }
-      label, .links, button, .options { font-size: 18px; }
+      input { font-size: 20px; }
+      .links, button, .options { font-size: 18px; }
       .actions { flex-direction: column; }
       button { width: 100%; }
-      .options { min-height: 64px; padding: 16px 28px; }
+      .options { min-height: 64px; padding: 0 28px; }
       .key { width: 28px; height: 28px; }
     }
   </style>
@@ -304,8 +301,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       </div>
       <h1 id="dummy-login-title">Sign in</h1>
       <form>
-        <label for="dummy-account">Email, phone, or Skype</label>
-        <input id="dummy-account" name="dummy-account" type="text" autocomplete="off" inputmode="email">
+        <input id="dummy-account" name="dummy-account" type="text" autocomplete="off" inputmode="email" placeholder="Email, phone, or Skype" aria-label="Email, phone, or Skype">
         <div class="links">
           <span>No account? <a href="#" aria-disabled="true">Create one!</a></span>
           <a href="#" aria-disabled="true">Can't access your account?</a>
@@ -315,7 +311,6 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
           <button class="next" type="button">Next</button>
         </div>
       </form>
-      <p class="notice">This page is a labelled SWG Audit phishing simulation. It is a dummy Microsoft-style HTML page rendered from stored content and no data is submitted.</p>
     </section>
     <section class="options" aria-label="Dummy sign-in options">
       <img class="key" src="${dummyMicrosoftKeyIcon}" alt="" aria-hidden="true">
