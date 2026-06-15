@@ -156,7 +156,7 @@ document.querySelectorAll("[data-credential-form]").forEach((form) => {
       }
 
       output.classList.add("is-fail");
-      output.textContent = "Fail: credential form submission succeeded.";
+      output.textContent = "Test Failed: credential form submission succeeded.";
     } catch (error) {
       output.classList.add("is-pass");
       output.textContent = "Pass: credential form submission did not complete.";
