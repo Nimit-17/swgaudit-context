@@ -654,7 +654,11 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       password: "",
       submitted: false,
       boxes: {},
+      scale: 1,
+      offsetX: 0,
+      offsetY: 0,
     };
+    const design = { width: 1440, height: 900 };
 
     const fitCanvas = () => {
       const ratio = window.devicePixelRatio || 1;
@@ -665,6 +669,14 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
     };
 
     const inBox = (point, box) => point.x >= box.x && point.x <= box.x + box.width && point.y >= box.y && point.y <= box.y + box.height;
+
+    const toDesignPoint = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left - state.offsetX) / state.scale,
+        y: (event.clientY - rect.top - state.offsetY) / state.scale,
+      };
+    };
 
     const roundRect = (x, y, width, height, radius) => {
       ctx.beginPath();
@@ -753,13 +765,20 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = "#0d1117";
       ctx.fillRect(0, 0, w, h);
+      state.scale = Math.min(w / design.width, h / design.height);
+      state.offsetX = (w - design.width * state.scale) / 2;
+      state.offsetY = (h - design.height * state.scale) / 2;
 
-      const formWidth = Math.min(476, w - 48);
-      const x = (w - formWidth) / 2;
-      let y = Math.max(66, (h - 830) / 2 + 24);
+      ctx.save();
+      ctx.translate(state.offsetX, state.offsetY);
+      ctx.scale(state.scale, state.scale);
 
-      drawLogo(w / 2, y + 30);
-      text("Sign in to GitHub", w / 2, y + 104, 28, "#f0f6fc", "700", "center");
+      const formWidth = 476;
+      const x = (design.width - formWidth) / 2;
+      let y = 68;
+
+      drawLogo(design.width / 2, y + 30);
+      text("Sign in to GitHub", design.width / 2, y + 104, 28, "#f0f6fc", "700", "center");
       y += 144;
 
       if (state.submitted) {
@@ -796,22 +815,14 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       drawButton("apple", x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Apple", "A");
       y += 98;
 
-      text("New to GitHub?", w / 2 - 6, y, 18, "#f0f6fc", "400", "right");
-      text("Create an account", w / 2, y, 18, "#2f81f7", "400", "left");
-      text("Sign in with a passkey", w / 2, y + 50, 18, "#2f81f7", "700", "center");
-
-      const footerY = h - 24;
-      const footer = ["Terms", "Privacy", "Docs", "Contact GitHub Support", "Manage cookies"];
-      let footerX = Math.max(24, w / 2 - 474);
-      footer.forEach((item) => {
-        text(item, footerX, footerY, 14, "#8b949e");
-        footerX += ctx.measureText(item).width + 38;
-      });
+      text("New to GitHub?", design.width / 2 - 6, y, 18, "#f0f6fc", "400", "right");
+      text("Create an account", design.width / 2, y, 18, "#2f81f7", "400", "left");
+      text("Sign in with a passkey", design.width / 2, y + 50, 18, "#2f81f7", "700", "center");
+      ctx.restore();
     };
 
     canvas.addEventListener("mousedown", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      const point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      const point = toDesignPoint(event);
       canvas.focus();
       if (inBox(point, state.boxes.username)) state.activeField = "username";
       else if (inBox(point, state.boxes.password)) state.activeField = "password";
