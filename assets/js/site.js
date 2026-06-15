@@ -155,11 +155,11 @@ document.querySelectorAll("[data-credential-form]").forEach((form) => {
         throw new Error(`Submission returned HTTP ${response.status}`);
       }
 
-      output.classList.add("is-pass");
-      output.textContent = "Pass: credential form submission succeeded. Submitted data was immediately discarded.";
-    } catch (error) {
       output.classList.add("is-fail");
-      output.textContent = "Fail: credential form submission did not complete.";
+      output.textContent = "Fail: credential form submission succeeded.";
+    } catch (error) {
+      output.classList.add("is-pass");
+      output.textContent = "Pass: credential form submission did not complete.";
     } finally {
       if (submitButton) submitButton.disabled = false;
     }
