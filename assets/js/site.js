@@ -188,46 +188,46 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
         linear-gradient(135deg, #f6f8fc, #fff);
       font-family: "Segoe UI", Arial, sans-serif;
     }
-    main { width: min(660px, calc(100% - 36px)); }
+    main { width: min(440px, calc(100% - 36px)); }
     .panel {
       width: 100%;
-      min-height: 508px;
-      padding: 66px 66px 70px;
+      min-height: 338px;
+      padding: 44px;
       background: #fff;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       color: #737373;
-      font-size: 30px;
+      font-size: 26px;
       font-weight: 600;
     }
     .mark {
-      width: 34px;
-      height: 34px;
+      width: 24px;
+      height: 24px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 3px;
+      gap: 2px;
     }
     .mark span:nth-child(1) { background: #f35325; }
     .mark span:nth-child(2) { background: #81bc06; }
     .mark span:nth-child(3) { background: #05a6f0; }
     .mark span:nth-child(4) { background: #ffba08; }
     h1 {
-      margin: 28px 0 24px;
-      font-size: 36px;
+      margin: 24px 0 16px;
+      font-size: 24px;
       font-weight: 600;
       line-height: 1.18;
     }
     input {
       width: 100%;
-      height: 38px;
+      height: 36px;
       border: 0;
       border-bottom: 1px solid #666;
       color: #1b1b1b;
-      font-size: 24px;
+      font-size: 15px;
       outline: 0;
     }
     input::placeholder {
@@ -239,9 +239,9 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     }
     .links {
       display: grid;
-      gap: 26px;
-      margin: 26px 0 0;
-      font-size: 20px;
+      gap: 18px;
+      margin: 18px 0 0;
+      font-size: 13px;
     }
     .links a {
       color: #0067b8;
@@ -251,13 +251,13 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       display: flex;
       justify-content: flex-end;
       gap: 4px;
-      margin-top: 42px;
+      margin-top: 34px;
     }
     button {
-      min-width: 162px;
-      min-height: 49px;
+      min-width: 108px;
+      min-height: 32px;
       border: 0;
-      font-size: 22px;
+      font-size: 15px;
       cursor: pointer;
     }
     .back { background: #ccc; }
@@ -265,17 +265,17 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
     .options {
       display: flex;
       align-items: center;
-      gap: 22px;
-      min-height: 72px;
-      margin-top: 30px;
-      padding: 0 72px;
+      gap: 16px;
+      min-height: 48px;
+      margin-top: 20px;
+      padding: 0 44px;
       background: #fff;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
-      font-size: 24px;
+      font-size: 15px;
     }
     .key {
-      width: 32px;
-      height: 32px;
+      width: 26px;
+      height: 26px;
       object-fit: contain;
     }
     @media (max-width: 640px) {
