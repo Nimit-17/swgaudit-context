@@ -344,546 +344,96 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 </body>
 </html>`;
 
-const makeDummyLinkedInLoginHtml = () => `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SWG Audit Test - Dummy LinkedIn Login</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      min-height: 100vh;
-      margin: 0;
-      color: #191919;
-      background: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-    }
-    .brand {
-      position: fixed;
-      top: 42px;
-      left: 62px;
-      color: #0a66c2;
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-    .brand span {
-      display: inline-grid;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      margin-left: 2px;
-      border-radius: 3px;
-      color: #fff;
-      background: #0a66c2;
-      font-size: 24px;
-      letter-spacing: 0;
-    }
-    main {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 80px 20px 54px;
-    }
-    .card {
-      width: min(352px, calc(100vw - 36px));
-      border-radius: 8px;
-      background: #fff;
-      padding: 24px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
-    }
-    h1 {
-      margin: 0 0 16px;
-      color: #1f1f1f;
-      font-size: 32px;
-      line-height: 1.15;
-      font-weight: 600;
-    }
-    .sso {
-      width: 100%;
-      min-height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 10px;
-      border: 1px solid #777;
-      border-radius: 999px;
-      color: #1f1f1f;
-      background: #fff;
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .google { color: #4285f4; font-weight: 800; }
-    .microsoft {
-      width: 20px;
-      height: 20px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-    }
-    .microsoft span:nth-child(1) { background: #f35325; }
-    .microsoft span:nth-child(2) { background: #81bc06; }
-    .microsoft span:nth-child(3) { background: #05a6f0; }
-    .microsoft span:nth-child(4) { background: #ffba08; }
-    .apple { color: #000; font-size: 18px; font-weight: 800; }
-    .terms {
-      margin: 12px 0 22px;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    a { color: #0a66c2; text-decoration: none; font-weight: 600; }
-    .divider {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 22px;
-      color: #666;
-      font-size: 14px;
-    }
-    .divider::before,
-    .divider::after {
-      content: "";
-      height: 1px;
-      background: #ddd;
-    }
-    input {
-      width: 100%;
-      min-height: 52px;
-      margin-bottom: 18px;
-      border: 1px solid #666;
-      border-radius: 4px;
-      padding: 0 12px;
-      color: #191919;
-      font-size: 18px;
-    }
-    input::placeholder { color: #666; opacity: 1; }
-    .password-wrap {
-      position: relative;
-    }
-    .password-wrap input { padding-right: 70px; }
-    .show {
-      position: absolute;
-      top: 18px;
-      right: 12px;
-      color: #0a66c2;
-      font-weight: 700;
-    }
-    .forgot {
-      display: inline-block;
-      margin: -4px 0 14px;
-      font-size: 16px;
-    }
-    .remember {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      font-size: 16px;
-    }
-    .checkbox {
-      width: 22px;
-      height: 22px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 3px;
-      color: #fff;
-      background: #0a66c2;
-      font-weight: 800;
-    }
-    .signin {
-      width: 100%;
-      min-height: 52px;
-      border: 0;
-      border-radius: 999px;
-      color: #fff;
-      background: #0a66c2;
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .join {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 16px;
-    }
-    .test-note {
-      margin-top: 16px;
-      color: #666;
-      font-size: 12px;
-      line-height: 1.4;
-      text-align: center;
-    }
-    .result {
-      margin-top: 16px;
-      padding: 12px;
-      border-left: 4px solid #b00020;
-      color: #5f000f;
-      background: #fff3f3;
-      font-size: 13px;
-      line-height: 1.45;
-      word-break: break-word;
-    }
-    @media (max-width: 720px) {
-      .brand { position: static; padding: 26px 20px 0; }
-      main { min-height: auto; padding-top: 28px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="brand">Linked<span>in</span></div>
-  <main>
-    <div>
-      <section class="card" aria-labelledby="dummy-linkedin-title">
-        <h1 id="dummy-linkedin-title">Sign in</h1>
-        <div class="result" id="dummy-linkedin-result" hidden></div>
-        <button class="sso" type="button"><span class="google">G</span>Continue with Google</button>
-        <button class="sso" type="button"><span class="microsoft" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Sign in with Microsoft</button>
-        <button class="sso" type="button"><span class="apple">A</span>Sign in with Apple</button>
-        <p class="terms">By clicking Continue, you agree to LinkedIn's <a href="#">User Agreement</a>, <a href="#">Privacy Policy</a>, and <a href="#">Cookie Policy</a>.</p>
-        <div class="divider">or</div>
-        <form id="dummy-linkedin-form">
-          <input id="dummy-linkedin-account" type="text" autocomplete="off" placeholder="Email or phone" aria-label="Email or phone">
-          <div class="password-wrap">
-            <input id="dummy-linkedin-password" type="password" autocomplete="off" placeholder="Password" aria-label="Password">
-            <span class="show">Show</span>
-          </div>
-          <a class="forgot" href="#">Forgot password?</a>
-          <div class="remember"><span class="checkbox">&#10003;</span><span>Keep me logged in</span></div>
-          <button class="signin" type="submit">Sign in</button>
-        </form>
-      </section>
-      <p class="join">New to LinkedIn? <a href="#">Join now</a></p>
-    </div>
-  </main>
-  <script>
-    const form = document.getElementById("dummy-linkedin-form");
-    const result = document.getElementById("dummy-linkedin-result");
-    const account = document.getElementById("dummy-linkedin-account");
-    const password = document.getElementById("dummy-linkedin-password");
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      result.hidden = false;
-      result.innerHTML = "<strong>Test Failed: credential submission was supposed to be blocked.</strong><br>Username: " + account.value + "<br>Password: " + password.value;
-    });
-  </script>
-</body>
-</html>`;
-
-const makeMhtmlPayload = (html) => [
-  "MIME-Version: 1.0",
-  "Content-Type: multipart/related; boundary=\"----SWGAuditDummyMhtmlBoundary\"; type=\"text/html\"",
-  "X-SWG-Audit-Test: Dummy phishing page stored as MHTML-style content",
-  "",
-  "------SWGAuditDummyMhtmlBoundary",
-  "Content-Type: text/html; charset=\"utf-8\"",
-  "Content-Location: https://dummy-login.invalid/swg-audit-test.html",
-  "",
-  html,
-  "------SWGAuditDummyMhtmlBoundary--",
-].join("\r\n");
-
 const extractHtmlFromMhtml = (mhtml) => {
   const match = mhtml.match(/Content-Type:\s*text\/html[^\r\n]*[\s\S]*?\r?\n\r?\n([\s\S]*?)\r?\n------SWGAuditDummyMhtmlBoundary--/i);
   return match ? match[1] : "";
 };
 
+const fetchHtmlFromMhtml = async (url) => {
+  const response = await fetch(url, {
+    headers: {
+      "Accept": "multipart/related,text/plain,*/*",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`MHTML fetch returned HTTP ${response.status}`);
+  }
+
+  const html = extractHtmlFromMhtml(await response.text());
+
+  if (!html) {
+    throw new Error("MHTML payload did not contain an HTML part");
+  }
+
+  return html;
+};
+
 document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const card = button.closest("[data-test-card]");
     const output = card ? card.querySelector("[data-test-output]") : null;
     const select = card ? card.querySelector("[data-stored-site-format]") : null;
     const selectedFormat = select ? select.value : "html";
-    const dummyHtml = selectedFormat === "mhtml" ? makeDummyLinkedInLoginHtml() : makeDummyMicrosoftLoginHtml();
-    const storedPayload = selectedFormat === "mhtml" ? window.btoa(makeMhtmlPayload(dummyHtml)) : window.btoa(dummyHtml);
-    const renderedHtml = selectedFormat === "mhtml" ? extractHtmlFromMhtml(window.atob(storedPayload)) : window.atob(storedPayload);
-    const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
-    const openedWindow = window.open(blobUrl, "_blank");
 
     if (!output) return;
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
+    output.textContent = selectedFormat === "mhtml" ? "Fetching server MHTML payload..." : "Preparing raw HTML payload...";
 
-    if (openedWindow) {
-      output.textContent = `Opened dummy ${selectedFormat.toUpperCase()} phishing-page rendering test in a new tab.`;
-      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-      return;
+    try {
+      const renderedHtml = selectedFormat === "mhtml"
+        ? await fetchHtmlFromMhtml("/assets/tests/phishing/linkedin-login.mhtml")
+        : makeDummyMicrosoftLoginHtml();
+      const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
+      const openedWindow = window.open(blobUrl, "_blank");
+
+      if (openedWindow) {
+        output.textContent = `Opened dummy ${selectedFormat.toUpperCase()} phishing-page rendering test in a new tab.`;
+        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+        return;
+      }
+
+      URL.revokeObjectURL(blobUrl);
+      output.classList.add("is-fail");
+      output.textContent = "Test launch was blocked by the browser.";
+    } catch (error) {
+      output.classList.add("is-fail");
+      output.textContent = `Test launch failed: ${error.message}`;
     }
-
-    URL.revokeObjectURL(blobUrl);
-    output.classList.add("is-fail");
-    output.textContent = "Test launch was blocked by the browser.";
   });
 });
 
-const makeDummyGithubCanvasHtml = () => `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SWG Audit Test - Dummy GitHub Canvas Login</title>
-  <style>
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      background: #0d1117;
-    }
-    canvas {
-      width: 100vw;
-      height: 100vh;
-      display: block;
-      background: #0d1117;
-      outline: none;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="github-login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered on canvas"></canvas>
-  <script>
-    const canvas = document.getElementById("github-login-canvas");
-    const ctx = canvas.getContext("2d");
-    const state = {
-      activeField: "username",
-      username: "",
-      password: "",
-      submitted: false,
-      boxes: {},
-      scale: 1,
-      offsetX: 0,
-      offsetY: 0,
-    };
-    const design = { width: 1440, height: 900 };
-
-    const fitCanvas = () => {
-      const ratio = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(window.innerWidth * ratio);
-      canvas.height = Math.floor(window.innerHeight * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      draw();
-    };
-
-    const inBox = (point, box) => point.x >= box.x && point.x <= box.x + box.width && point.y >= box.y && point.y <= box.y + box.height;
-
-    const toDesignPoint = (event) => {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: (event.clientX - rect.left - state.offsetX) / state.scale,
-        y: (event.clientY - rect.top - state.offsetY) / state.scale,
-      };
-    };
-
-    const roundRect = (x, y, width, height, radius) => {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-    };
-
-    const text = (value, x, y, size, color, weight = "400", align = "left") => {
-      ctx.fillStyle = color;
-      ctx.font = weight + " " + size + "px -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif";
-      ctx.textAlign = align;
-      ctx.textBaseline = "middle";
-      ctx.fillText(value, x, y);
-    };
-
-    const drawInput = (name, x, y, width, height, value) => {
-      state.boxes[name] = { x, y, width, height };
-      roundRect(x, y, width, height, 6);
-      ctx.fillStyle = "#0d1117";
-      ctx.fill();
-      ctx.strokeStyle = state.activeField === name ? "#2f81f7" : "#3d444d";
-      ctx.lineWidth = state.activeField === name ? 2 : 1;
-      ctx.stroke();
-      text(value, x + 14, y + height / 2, 18, "#f0f6fc", "400");
-      if (state.activeField === name && Math.floor(Date.now() / 500) % 2 === 0) {
-        const caretX = x + 14 + ctx.measureText(value).width + 2;
-        ctx.strokeStyle = "#f0f6fc";
-        ctx.beginPath();
-        ctx.moveTo(caretX, y + 15);
-        ctx.lineTo(caretX, y + height - 15);
-        ctx.stroke();
-      }
-    };
-
-    const drawButton = (key, x, y, width, height, fill, stroke, label, icon) => {
-      state.boxes[key] = { x, y, width, height };
-      roundRect(x, y, width, height, 6);
-      ctx.fillStyle = fill;
-      ctx.fill();
-      if (stroke) {
-        ctx.strokeStyle = stroke;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-      if (icon) text(icon, x + width / 2 - 96, y + height / 2, 22, icon === "G" ? "#4285f4" : "#f0f6fc", "700", "center");
-      text(label, x + width / 2 + (icon ? 16 : 0), y + height / 2, 18, "#f0f6fc", "700", "center");
-    };
-
-    const drawLogo = (cx, cy) => {
-      ctx.fillStyle = "#f0f6fc";
-      ctx.beginPath();
-      ctx.arc(cx, cy, 30, 0, Math.PI * 2);
-      ctx.fill();
-      text("GH", cx, cy + 1, 17, "#0d1117", "800", "center");
-    };
-
-    const drawResult = (x, y, width) => {
-      const height = 118;
-      roundRect(x, y, width, height, 6);
-      ctx.fillStyle = "#2d1519";
-      ctx.fill();
-      ctx.strokeStyle = "#f85149";
-      ctx.stroke();
-      text("Test Failed: credential submission was supposed to be blocked.", x + 16, y + 24, 15, "#ffb4b4", "700");
-      text("Username: " + state.username, x + 16, y + 58, 15, "#f0f6fc");
-      text("Password: " + state.password, x + 16, y + 88, 15, "#f0f6fc");
-    };
-
-    const submit = () => {
-      state.submitted = true;
-      draw();
-    };
-
-    const draw = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      state.boxes = {};
-      ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = "#0d1117";
-      ctx.fillRect(0, 0, w, h);
-      state.scale = Math.min(w / design.width, h / design.height);
-      state.offsetX = (w - design.width * state.scale) / 2;
-      state.offsetY = (h - design.height * state.scale) / 2;
-
-      ctx.save();
-      ctx.translate(state.offsetX, state.offsetY);
-      ctx.scale(state.scale, state.scale);
-
-      const formWidth = 476;
-      const x = (design.width - formWidth) / 2;
-      let y = 68;
-
-      drawLogo(design.width / 2, y + 30);
-      text("Sign in to GitHub", design.width / 2, y + 104, 28, "#f0f6fc", "700", "center");
-      y += 144;
-
-      if (state.submitted) {
-        drawResult(x, y, formWidth);
-        y += 142;
-      } else {
-        y += 24;
-      }
-
-      text("Username or email address", x, y, 18, "#f0f6fc", "700");
-      drawInput("username", x, y + 26, formWidth, 54, state.username);
-      y += 112;
-
-      text("Password", x, y, 18, "#f0f6fc", "700");
-      text("Forgot password?", x + formWidth, y, 18, "#2f81f7", "400", "right");
-      drawInput("password", x, y + 26, formWidth, 54, "*".repeat(state.password.length));
-      y += 102;
-
-      drawButton("submit", x, y, formWidth, 54, "#238636", null, "Sign in");
-      y += 96;
-
-      ctx.strokeStyle = "#3d444d";
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + formWidth * 0.46, y);
-      ctx.moveTo(x + formWidth * 0.54, y);
-      ctx.lineTo(x + formWidth, y);
-      ctx.stroke();
-      text("or", x + formWidth / 2, y, 20, "#f0f6fc", "400", "center");
-      y += 42;
-
-      drawButton("google", x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Google", "G");
-      y += 64;
-      drawButton("apple", x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Apple", "A");
-      y += 98;
-
-      text("New to GitHub?", design.width / 2 - 6, y, 18, "#f0f6fc", "400", "right");
-      text("Create an account", design.width / 2, y, 18, "#2f81f7", "400", "left");
-      text("Sign in with a passkey", design.width / 2, y + 50, 18, "#2f81f7", "700", "center");
-      ctx.restore();
-    };
-
-    canvas.addEventListener("mousedown", (event) => {
-      const point = toDesignPoint(event);
-      canvas.focus();
-      if (inBox(point, state.boxes.username)) state.activeField = "username";
-      else if (inBox(point, state.boxes.password)) state.activeField = "password";
-      else if (inBox(point, state.boxes.submit)) submit();
-      draw();
-    });
-
-    canvas.addEventListener("keydown", (event) => {
-      if (event.key === "Tab") {
-        event.preventDefault();
-        state.activeField = state.activeField === "username" ? "password" : "username";
-        draw();
-        return;
-      }
-      if (event.key === "Enter") {
-        event.preventDefault();
-        submit();
-        return;
-      }
-      if (event.key === "Backspace") {
-        event.preventDefault();
-        state[state.activeField] = state[state.activeField].slice(0, -1);
-        draw();
-        return;
-      }
-      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-        event.preventDefault();
-        state[state.activeField] += event.key;
-        draw();
-      }
-    });
-
-    window.addEventListener("resize", fitCanvas);
-    window.setInterval(draw, 500);
-    fitCanvas();
-    canvas.focus();
-  </script>
-</body>
-</html>`;
-
 document.querySelectorAll("[data-phishing-canvas-launch]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const card = button.closest("[data-test-card]");
     const output = card ? card.querySelector("[data-test-output]") : null;
-    const blobUrl = URL.createObjectURL(new Blob([makeDummyGithubCanvasHtml()], { type: "text/html" }));
-    const openedWindow = window.open(blobUrl, "_blank");
 
     if (!output) return;
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
+    output.textContent = "Fetching server MHTML payload...";
 
-    if (openedWindow) {
-      output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab.";
-      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-      return;
+    try {
+      const renderedHtml = await fetchHtmlFromMhtml("/assets/tests/phishing/github-canvas.mhtml");
+      const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
+      const openedWindow = window.open(blobUrl, "_blank");
+
+      if (openedWindow) {
+        output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab from fetched MHTML.";
+        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+        return;
+      }
+
+      URL.revokeObjectURL(blobUrl);
+      output.classList.add("is-fail");
+      output.textContent = "Test launch was blocked by the browser.";
+    } catch (error) {
+      output.classList.add("is-fail");
+      output.textContent = `Test launch failed: ${error.message}`;
     }
-
-    URL.revokeObjectURL(blobUrl);
-    output.classList.add("is-fail");
-    output.textContent = "Test launch was blocked by the browser.";
   });
 });
 
