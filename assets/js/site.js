@@ -320,6 +320,210 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 </body>
 </html>`;
 
+const makeDummyLinkedInLoginHtml = () => `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWG Audit Test - Dummy LinkedIn Login</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: #191919;
+      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+    .brand {
+      position: fixed;
+      top: 42px;
+      left: 62px;
+      color: #0a66c2;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .brand span {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      margin-left: 2px;
+      border-radius: 3px;
+      color: #fff;
+      background: #0a66c2;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+    main {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 80px 20px 54px;
+    }
+    .card {
+      width: min(396px, calc(100vw - 36px));
+      border-radius: 8px;
+      background: #fff;
+      padding: 32px 28px 26px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    }
+    h1 {
+      margin: 0 0 18px;
+      color: #1f1f1f;
+      font-size: 34px;
+      line-height: 1.15;
+      font-weight: 600;
+    }
+    .sso {
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #777;
+      border-radius: 999px;
+      color: #1f1f1f;
+      background: #fff;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .google { color: #4285f4; font-weight: 800; }
+    .microsoft {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+    .microsoft span:nth-child(1) { background: #f35325; }
+    .microsoft span:nth-child(2) { background: #81bc06; }
+    .microsoft span:nth-child(3) { background: #05a6f0; }
+    .microsoft span:nth-child(4) { background: #ffba08; }
+    .apple { color: #000; font-size: 18px; font-weight: 800; }
+    .terms {
+      margin: 14px 0 30px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    a { color: #0a66c2; text-decoration: none; font-weight: 600; }
+    .divider {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 30px;
+      color: #666;
+      font-size: 14px;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: #ddd;
+    }
+    input {
+      width: 100%;
+      min-height: 58px;
+      margin-bottom: 26px;
+      border: 1px solid #666;
+      border-radius: 4px;
+      padding: 0 12px;
+      color: #191919;
+      font-size: 20px;
+    }
+    input::placeholder { color: #666; opacity: 1; }
+    .password-wrap {
+      position: relative;
+    }
+    .password-wrap input { padding-right: 70px; }
+    .show {
+      position: absolute;
+      top: 18px;
+      right: 12px;
+      color: #0a66c2;
+      font-weight: 700;
+    }
+    .forgot {
+      display: inline-block;
+      margin: -10px 0 16px;
+      font-size: 18px;
+    }
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-size: 18px;
+    }
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 3px;
+      color: #fff;
+      background: #0a66c2;
+      font-weight: 800;
+    }
+    .signin {
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: #0a66c2;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .join {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 18px;
+    }
+    .test-note {
+      margin-top: 16px;
+      color: #666;
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: center;
+    }
+    @media (max-width: 720px) {
+      .brand { position: static; padding: 26px 20px 0; }
+      main { min-height: auto; padding-top: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">Linked<span>in</span></div>
+  <main>
+    <div>
+      <section class="card" aria-labelledby="dummy-linkedin-title">
+        <h1 id="dummy-linkedin-title">Sign in</h1>
+        <button class="sso" type="button"><span class="google">G</span>Continue with Google</button>
+        <button class="sso" type="button"><span class="microsoft" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Sign in with Microsoft</button>
+        <button class="sso" type="button"><span class="apple">A</span>Sign in with Apple</button>
+        <p class="terms">By clicking Continue, you agree to LinkedIn's <a href="#">User Agreement</a>, <a href="#">Privacy Policy</a>, and <a href="#">Cookie Policy</a>.</p>
+        <div class="divider">or</div>
+        <input type="text" autocomplete="off" placeholder="Email or phone" aria-label="Email or phone">
+        <div class="password-wrap">
+          <input type="password" autocomplete="off" placeholder="Password" aria-label="Password">
+          <span class="show">Show</span>
+        </div>
+        <a class="forgot" href="#">Forgot password?</a>
+        <div class="remember"><span class="checkbox">&#10003;</span><span>Keep me logged in</span></div>
+        <button class="signin" type="button">Sign in</button>
+        <p class="test-note">SWG Audit dummy MHTML test page. No credentials are submitted or collected.</p>
+      </section>
+      <p class="join">New to LinkedIn? <a href="#">Join now</a></p>
+    </div>
+  </main>
+</body>
+</html>`;
+
 const makeMhtmlPayload = (html) => [
   "MIME-Version: 1.0",
   "Content-Type: multipart/related; boundary=\"----SWGAuditDummyMhtmlBoundary\"; type=\"text/html\"",
@@ -344,7 +548,7 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
     const output = card ? card.querySelector("[data-test-output]") : null;
     const select = card ? card.querySelector("[data-stored-site-format]") : null;
     const selectedFormat = select ? select.value : "html";
-    const dummyHtml = makeDummyMicrosoftLoginHtml();
+    const dummyHtml = selectedFormat === "mhtml" ? makeDummyLinkedInLoginHtml() : makeDummyMicrosoftLoginHtml();
     const storedPayload = selectedFormat === "mhtml" ? window.btoa(makeMhtmlPayload(dummyHtml)) : window.btoa(dummyHtml);
     const renderedHtml = selectedFormat === "mhtml" ? extractHtmlFromMhtml(window.atob(storedPayload)) : window.atob(storedPayload);
     const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
@@ -357,6 +561,182 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
 
     if (openedWindow) {
       output.textContent = `Opened dummy ${selectedFormat.toUpperCase()} phishing-page rendering test in a new tab.`;
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+      return;
+    }
+
+    URL.revokeObjectURL(blobUrl);
+    output.classList.add("is-fail");
+    output.textContent = "Test launch was blocked by the browser.";
+  });
+});
+
+const makeDummyGithubCanvasHtml = () => `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWG Audit Test - Dummy GitHub Canvas Login</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #0d1117;
+    }
+    canvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      background: #0d1117;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="github-login-canvas" aria-label="SWG Audit dummy GitHub-style login rendered on canvas"></canvas>
+  <script>
+    const canvas = document.getElementById("github-login-canvas");
+    const ctx = canvas.getContext("2d");
+
+    const fitCanvas = () => {
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * ratio);
+      canvas.height = Math.floor(window.innerHeight * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      draw();
+    };
+
+    const roundRect = (x, y, width, height, radius) => {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    };
+
+    const text = (value, x, y, size, color, weight = "400", align = "left") => {
+      ctx.fillStyle = color;
+      ctx.font = weight + " " + size + "px -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif";
+      ctx.textAlign = align;
+      ctx.textBaseline = "middle";
+      ctx.fillText(value, x, y);
+    };
+
+    const drawInput = (x, y, width, height) => {
+      roundRect(x, y, width, height, 6);
+      ctx.fillStyle = "#0d1117";
+      ctx.fill();
+      ctx.strokeStyle = "#3d444d";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    };
+
+    const drawButton = (x, y, width, height, fill, stroke, label, icon) => {
+      roundRect(x, y, width, height, 6);
+      ctx.fillStyle = fill;
+      ctx.fill();
+      if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      if (icon) text(icon, x + width / 2 - 96, y + height / 2, 22, icon === "G" ? "#4285f4" : "#f0f6fc", "700", "center");
+      text(label, x + width / 2 + (icon ? 16 : 0), y + height / 2, 18, "#f0f6fc", "700", "center");
+    };
+
+    const drawLogo = (cx, cy) => {
+      ctx.fillStyle = "#f0f6fc";
+      ctx.beginPath();
+      ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+      ctx.fill();
+      text("GH", cx, cy + 1, 17, "#0d1117", "800", "center");
+    };
+
+    const draw = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#0d1117";
+      ctx.fillRect(0, 0, w, h);
+
+      const formWidth = Math.min(476, w - 48);
+      const x = (w - formWidth) / 2;
+      let y = Math.max(66, (h - 760) / 2 + 24);
+
+      drawLogo(w / 2, y + 30);
+      text("Sign in to GitHub", w / 2, y + 104, 28, "#f0f6fc", "700", "center");
+      y += 168;
+
+      text("Username or email address", x, y, 18, "#f0f6fc", "700");
+      drawInput(x, y + 26, formWidth, 54);
+      y += 112;
+
+      text("Password", x, y, 18, "#f0f6fc", "700");
+      text("Forgot password?", x + formWidth, y, 18, "#2f81f7", "400", "right");
+      drawInput(x, y + 26, formWidth, 54);
+      y += 102;
+
+      drawButton(x, y, formWidth, 54, "#238636", null, "Sign in");
+      y += 96;
+
+      ctx.strokeStyle = "#3d444d";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + formWidth * 0.46, y);
+      ctx.moveTo(x + formWidth * 0.54, y);
+      ctx.lineTo(x + formWidth, y);
+      ctx.stroke();
+      text("or", x + formWidth / 2, y, 20, "#f0f6fc", "400", "center");
+      y += 42;
+
+      drawButton(x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Google", "G");
+      y += 64;
+      drawButton(x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Apple", "A");
+      y += 98;
+
+      text("New to GitHub?", w / 2 - 6, y, 18, "#f0f6fc", "400", "right");
+      text("Create an account", w / 2, y, 18, "#2f81f7", "400", "left");
+      text("Sign in with a passkey", w / 2, y + 50, 18, "#2f81f7", "700", "center");
+
+      const footerY = h - 24;
+      const footer = ["Terms", "Privacy", "Docs", "Contact GitHub Support", "Manage cookies"];
+      let footerX = Math.max(24, w / 2 - 474);
+      footer.forEach((item) => {
+        text(item, footerX, footerY, 14, "#8b949e");
+        footerX += ctx.measureText(item).width + 38;
+      });
+
+      text("SWG Audit dummy canvas test. No credentials are submitted or collected.", w / 2, 28, 13, "#8b949e", "400", "center");
+    };
+
+    window.addEventListener("resize", fitCanvas);
+    fitCanvas();
+  </script>
+</body>
+</html>`;
+
+document.querySelectorAll("[data-phishing-canvas-launch]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const card = button.closest("[data-test-card]");
+    const output = card ? card.querySelector("[data-test-output]") : null;
+    const blobUrl = URL.createObjectURL(new Blob([makeDummyGithubCanvasHtml()], { type: "text/html" }));
+    const openedWindow = window.open(blobUrl, "_blank");
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.classList.remove("is-pass", "is-fail");
+
+    if (openedWindow) {
+      output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab.";
       window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
       return;
     }

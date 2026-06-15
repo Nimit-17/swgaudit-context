@@ -208,7 +208,7 @@ $url = "https://www.swgaudit.com/phishing/";
               <label for="phishing-stored-site-format">Stored page format</label>
               <select id="phishing-stored-site-format" data-stored-site-format>
                 <option value="html">Raw HTML - dummy Microsoft-style login</option>
-                <option value="mhtml">MHTML - dummy Microsoft-style login</option>
+                <option value="mhtml">MHTML - dummy LinkedIn-style login</option>
               </select>
             </div>
             <div class="test-actions">
@@ -240,7 +240,7 @@ $url = "https://www.swgaudit.com/phishing/";
           </div>
           <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-3-detail" hidden>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <button class="primary-action" type="button" data-phishing-canvas-launch>Open Dummy Canvas Page</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
