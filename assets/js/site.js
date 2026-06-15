@@ -344,30 +344,7 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 </body>
 </html>`;
 
-const extractHtmlFromMhtml = (mhtml) => {
-  const match = mhtml.match(/Content-Type:\s*text\/html[^\r\n]*[\s\S]*?\r?\n\r?\n([\s\S]*?)\r?\n------SWGAuditDummyMhtmlBoundary--/i);
-  return match ? match[1] : "";
-};
-
-const fetchHtmlFromMhtml = async (url) => {
-  const response = await fetch(url, {
-    headers: {
-      "Accept": "multipart/related,text/plain,*/*",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`MHTML fetch returned HTTP ${response.status}`);
-  }
-
-  const html = extractHtmlFromMhtml(await response.text());
-
-  if (!html) {
-    throw new Error("MHTML payload did not contain an HTML part");
-  }
-
-  return html;
-};
+const makeMhtmlRendererUrl = (source) => `/assets/tests/phishing/mhtml-renderer.html?src=${encodeURIComponent(source)}`;
 
 document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button) => {
   button.addEventListener("click", async () => {
@@ -380,22 +357,26 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = selectedFormat === "mhtml" ? "Fetching server MHTML payload..." : "Preparing raw HTML payload...";
+    output.textContent = selectedFormat === "mhtml" ? "Opening server MHTML renderer..." : "Preparing raw HTML payload...";
 
     try {
-      const renderedHtml = selectedFormat === "mhtml"
-        ? await fetchHtmlFromMhtml("/assets/tests/phishing/linkedin-login.mhtml")
-        : makeDummyMicrosoftLoginHtml();
-      const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
-      const openedWindow = window.open(blobUrl, "_blank");
+      let blobUrl = "";
+      const openedWindow = selectedFormat === "mhtml"
+        ? window.open(makeMhtmlRendererUrl("/assets/tests/phishing/linkedin-login.mhtml"), "_blank")
+        : (() => {
+          blobUrl = URL.createObjectURL(new Blob([makeDummyMicrosoftLoginHtml()], { type: "text/html" }));
+          return window.open(blobUrl, "_blank");
+        })();
 
       if (openedWindow) {
-        output.textContent = `Opened dummy ${selectedFormat.toUpperCase()} phishing-page rendering test in a new tab.`;
-        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+        output.textContent = selectedFormat === "mhtml"
+          ? "Opened dummy MHTML phishing-page rendering test in a new tab. The new tab fetches the .mhtml payload."
+          : "Opened dummy HTML phishing-page rendering test in a new tab.";
+        if (blobUrl) window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
         return;
       }
 
-      URL.revokeObjectURL(blobUrl);
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       output.classList.add("is-fail");
       output.textContent = "Test launch was blocked by the browser.";
     } catch (error) {
@@ -414,20 +395,16 @@ document.querySelectorAll("[data-phishing-canvas-launch]").forEach((button) => {
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = "Fetching server MHTML payload...";
+    output.textContent = "Opening server MHTML renderer...";
 
     try {
-      const renderedHtml = await fetchHtmlFromMhtml("/assets/tests/phishing/github-canvas.mhtml");
-      const blobUrl = URL.createObjectURL(new Blob([renderedHtml], { type: "text/html" }));
-      const openedWindow = window.open(blobUrl, "_blank");
+      const openedWindow = window.open(makeMhtmlRendererUrl("/assets/tests/phishing/github-canvas.mhtml"), "_blank");
 
       if (openedWindow) {
-        output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab from fetched MHTML.";
-        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+        output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab. The new tab fetches the .mhtml payload.";
         return;
       }
 
-      URL.revokeObjectURL(blobUrl);
       output.classList.add("is-fail");
       output.textContent = "Test launch was blocked by the browser.";
     } catch (error) {
