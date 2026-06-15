@@ -207,48 +207,115 @@ const derivePayloadKey = async (password, salt) => {
   );
 };
 
-document.querySelectorAll("[data-assembled-download]").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const select = document.getElementById(button.getAttribute("data-source-select"));
-    if (!select) return;
+const makeBlobLinkPreparer = (link, buildBlob) => {
+  let preparedUrl = "";
+  let preparingPromise = null;
+  let preparedKey = "";
+
+  const revokePreparedUrl = () => {
+    if (!preparedUrl) return;
+
+    URL.revokeObjectURL(preparedUrl);
+    preparedUrl = "";
+  };
+
+  const setDirectLink = (url) => {
+    revokePreparedUrl();
+    preparedKey = url;
+    link.href = url;
+    link.download = url.split("/").pop() || "download";
+  };
+
+  const prepareLink = async () => {
+    const select = document.getElementById(link.getAttribute("data-source-select"));
+    if (!select) return false;
 
     const selectedUrl = select.value;
 
     if (!selectedUrl.endsWith(".json")) {
-      const link = document.createElement("a");
-      link.href = selectedUrl;
-      link.download = selectedUrl.split("/").pop() || "download";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      return;
+      setDirectLink(selectedUrl);
+      return true;
     }
 
-    button.disabled = true;
+    if (preparedKey === selectedUrl && preparedUrl) return true;
+    if (preparingPromise) return preparingPromise;
 
-    try {
-      const response = await fetch(selectedUrl, { cache: "no-store" });
-      const payload = await response.json();
-      let bytes;
+    link.setAttribute("aria-busy", "true");
+    preparingPromise = buildBlob(selectedUrl)
+      .then(({ bytes, filename, mime }) => {
+        revokePreparedUrl();
+        preparedUrl = URL.createObjectURL(new Blob([bytes], { type: mime || "application/octet-stream" }));
+        preparedKey = selectedUrl;
+        link.href = preparedUrl;
+        link.download = filename || selectedUrl.split("/").pop() || "download";
+        return true;
+      })
+      .catch((error) => {
+        window.alert(`Download test failed: ${error.message}`);
+        return false;
+      })
+      .finally(() => {
+        link.removeAttribute("aria-busy");
+        preparingPromise = null;
+      });
 
-      if (payload.mode === "decode-base64") {
-        bytes = base64ToBytes(payload.payload);
-      } else if (payload.mode === "decrypt-aes-gcm") {
-        const salt = base64ToBytes(payload.salt);
-        const iv = base64ToBytes(payload.iv);
-        const ciphertext = base64ToBytes(payload.payload);
-        const key = await derivePayloadKey(payload.password || "123456", salt);
-        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
-        bytes = new Uint8Array(decrypted);
-      } else {
-        throw new Error("Unsupported assembly mode.");
-      }
+    return preparingPromise;
+  };
 
-      downloadBytes(bytes, payload.filename, payload.mime);
-    } finally {
-      button.disabled = false;
+  const warmLink = () => {
+    prepareLink();
+  };
+
+  ["pointerenter", "focus", "mousedown", "contextmenu"].forEach((eventName) => {
+    link.addEventListener(eventName, warmLink);
+  });
+
+  link.addEventListener("click", async (event) => {
+    if (link.href && link.href !== "#" && link.href !== window.location.href + "#") return;
+
+    event.preventDefault();
+    if (await prepareLink()) {
+      link.click();
     }
   });
+
+  const select = document.getElementById(link.getAttribute("data-source-select"));
+  if (select) {
+    select.addEventListener("change", () => {
+      revokePreparedUrl();
+      preparedKey = "";
+      link.href = "#";
+      warmLink();
+    });
+  }
+
+  window.addEventListener("pagehide", revokePreparedUrl);
+  warmLink();
+};
+
+const buildAssembledPayload = async (selectedUrl) => {
+  const response = await fetch(selectedUrl, { cache: "no-store" });
+  const payload = await response.json();
+  let bytes;
+
+  if (payload.mode === "decode-base64") {
+    bytes = base64ToBytes(payload.payload);
+  } else if (payload.mode === "decrypt-aes-gcm") {
+    const salt = base64ToBytes(payload.salt);
+    const iv = base64ToBytes(payload.iv);
+    const ciphertext = base64ToBytes(payload.payload);
+    const key = await derivePayloadKey(payload.password || "123456", salt);
+    const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+    bytes = new Uint8Array(decrypted);
+  } else {
+    throw new Error("Unsupported assembly mode.");
+  }
+
+  return { bytes, filename: payload.filename, mime: payload.mime };
+};
+
+document.querySelectorAll("[data-assembled-download]").forEach((link) => {
+  makeBlobLinkPreparer(link, buildAssembledPayload);
 });
 
 const extractSmugglingPayload = (format) => {
@@ -334,62 +401,52 @@ document.querySelectorAll("[data-smuggling-download]").forEach((link) => {
   safelyPrepareSmugglingLink();
 });
 
-document.querySelectorAll("[data-chunk-attack-download]").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const select = document.getElementById(button.getAttribute("data-source-select"));
+const buildChunkAttackPayload = async (selectedUrl) => {
+  const manifestResponse = await fetch(selectedUrl, { cache: "no-store" });
 
-    if (!select) return;
+  if (!manifestResponse.ok) {
+    throw new Error("Manifest request failed.");
+  }
 
-    button.disabled = true;
+  const manifest = await manifestResponse.json();
+  const fetchChunk = async (chunk) => {
+    const response = await fetch(chunk.url, { cache: "no-store" });
 
-    try {
-      const manifestResponse = await fetch(select.value, { cache: "no-store" });
-
-      if (!manifestResponse.ok) {
-        throw new Error("Manifest request failed.");
-      }
-
-      const manifest = await manifestResponse.json();
-      const fetchChunk = async (chunk) => {
-        const response = await fetch(chunk.url, { cache: "no-store" });
-
-        if (!response.ok) {
-          throw new Error(`Chunk request failed: ${chunk.url}`);
-        }
-
-        return {
-          include: chunk.include !== false,
-          order: Number(chunk.order),
-          text: (await response.text()).replace(/\r?\n$/, ""),
-        };
-      };
-      let chunkResponses;
-
-      if (manifest.fetchMode === "parallel") {
-        chunkResponses = await Promise.all(manifest.chunks.map(fetchChunk));
-      } else {
-        chunkResponses = [];
-
-        for (const chunk of manifest.chunks) {
-          chunkResponses.push(await fetchChunk(chunk));
-        }
-      }
-
-      const assembledText = chunkResponses
-        .filter((chunk) => chunk.include)
-        .sort((left, right) => left.order - right.order)
-        .map((chunk) => chunk.text)
-        .join("");
-
-      downloadBytes(
-        new TextEncoder().encode(assembledText),
-        manifest.filename || "eicar-chunk-attack.txt",
-        manifest.mime || "text/plain"
-      );
-    } catch (error) {
-      window.alert(`Chunk test failed: ${error.message}`);
-    } finally {
-      button.disabled = false;
+    if (!response.ok) {
+      throw new Error(`Chunk request failed: ${chunk.url}`);
     }
-  });
+
+    return {
+      include: chunk.include !== false,
+      order: Number(chunk.order),
+      text: (await response.text()).replace(/\r?\n$/, ""),
+    };
+  };
+  let chunkResponses;
+
+  if (manifest.fetchMode === "parallel") {
+    chunkResponses = await Promise.all(manifest.chunks.map(fetchChunk));
+  } else {
+    chunkResponses = [];
+
+    for (const chunk of manifest.chunks) {
+      chunkResponses.push(await fetchChunk(chunk));
+    }
+  }
+
+  const assembledText = chunkResponses
+    .filter((chunk) => chunk.include)
+    .sort((left, right) => left.order - right.order)
+    .map((chunk) => chunk.text)
+    .join("");
+
+  return {
+    bytes: new TextEncoder().encode(assembledText),
+    filename: manifest.filename || "eicar-chunk-attack.txt",
+    mime: manifest.mime || "text/plain",
+  };
+};
+
+document.querySelectorAll("[data-chunk-attack-download]").forEach((link) => {
+  makeBlobLinkPreparer(link, buildChunkAttackPayload);
 });
