@@ -278,6 +278,16 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
       height: 26px;
       object-fit: contain;
     }
+    .result {
+      margin-top: 18px;
+      padding: 12px;
+      border-left: 4px solid #b00020;
+      color: #5f000f;
+      background: #fff3f3;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
     @media (max-width: 640px) {
       .panel { min-height: auto; padding: 42px 28px 48px; }
       .brand { font-size: 24px; }
@@ -300,23 +310,37 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
         <span>Microsoft</span>
       </div>
       <h1 id="dummy-login-title">Sign in</h1>
-      <form>
+      <form id="dummy-microsoft-form">
         <input id="dummy-account" name="dummy-account" type="text" autocomplete="off" inputmode="email" placeholder="Email, phone, or Skype" aria-label="Email, phone, or Skype">
+        <input id="dummy-password" name="dummy-password" type="password" autocomplete="off" placeholder="Password" aria-label="Password">
         <div class="links">
           <span>No account? <a href="#" aria-disabled="true">Create one!</a></span>
           <a href="#" aria-disabled="true">Can't access your account?</a>
         </div>
         <div class="actions">
           <button class="back" type="button">Back</button>
-          <button class="next" type="button">Next</button>
+          <button class="next" type="submit">Next</button>
         </div>
       </form>
+      <div class="result" id="dummy-microsoft-result" hidden></div>
     </section>
     <section class="options" aria-label="Dummy sign-in options">
       <img class="key" src="${dummyMicrosoftKeyIcon}" alt="" aria-hidden="true">
       <span>Sign-in options</span>
     </section>
   </main>
+  <script>
+    const form = document.getElementById("dummy-microsoft-form");
+    const result = document.getElementById("dummy-microsoft-result");
+    const account = document.getElementById("dummy-account");
+    const password = document.getElementById("dummy-password");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      result.hidden = false;
+      result.innerHTML = "<strong>Test Failed: credential submission was supposed to be blocked.</strong><br>Username: " + account.value + "<br>Password: " + password.value;
+    });
+  </script>
 </body>
 </html>`;
 
@@ -491,6 +515,16 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
       line-height: 1.4;
       text-align: center;
     }
+    .result {
+      margin-top: 16px;
+      padding: 12px;
+      border-left: 4px solid #b00020;
+      color: #5f000f;
+      background: #fff3f3;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
     @media (max-width: 720px) {
       .brand { position: static; padding: 26px 20px 0; }
       main { min-height: auto; padding-top: 28px; }
@@ -508,19 +542,33 @@ const makeDummyLinkedInLoginHtml = () => `<!doctype html>
         <button class="sso" type="button"><span class="apple">A</span>Sign in with Apple</button>
         <p class="terms">By clicking Continue, you agree to LinkedIn's <a href="#">User Agreement</a>, <a href="#">Privacy Policy</a>, and <a href="#">Cookie Policy</a>.</p>
         <div class="divider">or</div>
-        <input type="text" autocomplete="off" placeholder="Email or phone" aria-label="Email or phone">
-        <div class="password-wrap">
-          <input type="password" autocomplete="off" placeholder="Password" aria-label="Password">
-          <span class="show">Show</span>
-        </div>
-        <a class="forgot" href="#">Forgot password?</a>
-        <div class="remember"><span class="checkbox">&#10003;</span><span>Keep me logged in</span></div>
-        <button class="signin" type="button">Sign in</button>
-        <p class="test-note">SWG Audit dummy MHTML test page. No credentials are submitted or collected.</p>
+        <form id="dummy-linkedin-form">
+          <input id="dummy-linkedin-account" type="text" autocomplete="off" placeholder="Email or phone" aria-label="Email or phone">
+          <div class="password-wrap">
+            <input id="dummy-linkedin-password" type="password" autocomplete="off" placeholder="Password" aria-label="Password">
+            <span class="show">Show</span>
+          </div>
+          <a class="forgot" href="#">Forgot password?</a>
+          <div class="remember"><span class="checkbox">&#10003;</span><span>Keep me logged in</span></div>
+          <button class="signin" type="submit">Sign in</button>
+        </form>
+        <div class="result" id="dummy-linkedin-result" hidden></div>
       </section>
       <p class="join">New to LinkedIn? <a href="#">Join now</a></p>
     </div>
   </main>
+  <script>
+    const form = document.getElementById("dummy-linkedin-form");
+    const result = document.getElementById("dummy-linkedin-result");
+    const account = document.getElementById("dummy-linkedin-account");
+    const password = document.getElementById("dummy-linkedin-password");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      result.hidden = false;
+      result.innerHTML = "<strong>Test Failed: credential submission was supposed to be blocked.</strong><br>Username: " + account.value + "<br>Password: " + password.value;
+    });
+  </script>
 </body>
 </html>`;
 
@@ -591,14 +639,22 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       height: 100vh;
       display: block;
       background: #0d1117;
+      outline: none;
     }
   </style>
 </head>
 <body>
-  <canvas id="github-login-canvas" aria-label="SWG Audit dummy GitHub-style login rendered on canvas"></canvas>
+  <canvas id="github-login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered on canvas"></canvas>
   <script>
     const canvas = document.getElementById("github-login-canvas");
     const ctx = canvas.getContext("2d");
+    const state = {
+      activeField: "username",
+      username: "",
+      password: "",
+      submitted: false,
+      boxes: {},
+    };
 
     const fitCanvas = () => {
       const ratio = window.devicePixelRatio || 1;
@@ -607,6 +663,8 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       draw();
     };
+
+    const inBox = (point, box) => point.x >= box.x && point.x <= box.x + box.width && point.y >= box.y && point.y <= box.y + box.height;
 
     const roundRect = (x, y, width, height, radius) => {
       ctx.beginPath();
@@ -630,16 +688,27 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       ctx.fillText(value, x, y);
     };
 
-    const drawInput = (x, y, width, height) => {
+    const drawInput = (name, x, y, width, height, value) => {
+      state.boxes[name] = { x, y, width, height };
       roundRect(x, y, width, height, 6);
       ctx.fillStyle = "#0d1117";
       ctx.fill();
-      ctx.strokeStyle = "#3d444d";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = state.activeField === name ? "#2f81f7" : "#3d444d";
+      ctx.lineWidth = state.activeField === name ? 2 : 1;
       ctx.stroke();
+      text(value, x + 14, y + height / 2, 18, "#f0f6fc", "400");
+      if (state.activeField === name && Math.floor(Date.now() / 500) % 2 === 0) {
+        const caretX = x + 14 + ctx.measureText(value).width + 2;
+        ctx.strokeStyle = "#f0f6fc";
+        ctx.beginPath();
+        ctx.moveTo(caretX, y + 15);
+        ctx.lineTo(caretX, y + height - 15);
+        ctx.stroke();
+      }
     };
 
-    const drawButton = (x, y, width, height, fill, stroke, label, icon) => {
+    const drawButton = (key, x, y, width, height, fill, stroke, label, icon) => {
+      state.boxes[key] = { x, y, width, height };
       roundRect(x, y, width, height, 6);
       ctx.fillStyle = fill;
       ctx.fill();
@@ -660,32 +729,57 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       text("GH", cx, cy + 1, 17, "#0d1117", "800", "center");
     };
 
+    const drawResult = (x, y, width) => {
+      const height = 118;
+      roundRect(x, y, width, height, 6);
+      ctx.fillStyle = "#2d1519";
+      ctx.fill();
+      ctx.strokeStyle = "#f85149";
+      ctx.stroke();
+      text("Test Failed: credential submission was supposed to be blocked.", x + 16, y + 24, 15, "#ffb4b4", "700");
+      text("Username: " + state.username, x + 16, y + 58, 15, "#f0f6fc");
+      text("Password: " + state.password, x + 16, y + 88, 15, "#f0f6fc");
+    };
+
+    const submit = () => {
+      state.submitted = true;
+      draw();
+    };
+
     const draw = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
+      state.boxes = {};
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = "#0d1117";
       ctx.fillRect(0, 0, w, h);
 
       const formWidth = Math.min(476, w - 48);
       const x = (w - formWidth) / 2;
-      let y = Math.max(66, (h - 760) / 2 + 24);
+      let y = Math.max(66, (h - 830) / 2 + 24);
 
       drawLogo(w / 2, y + 30);
       text("Sign in to GitHub", w / 2, y + 104, 28, "#f0f6fc", "700", "center");
       y += 168;
 
       text("Username or email address", x, y, 18, "#f0f6fc", "700");
-      drawInput(x, y + 26, formWidth, 54);
+      drawInput("username", x, y + 26, formWidth, 54, state.username);
       y += 112;
 
       text("Password", x, y, 18, "#f0f6fc", "700");
       text("Forgot password?", x + formWidth, y, 18, "#2f81f7", "400", "right");
-      drawInput(x, y + 26, formWidth, 54);
+      drawInput("password", x, y + 26, formWidth, 54, "*".repeat(state.password.length));
       y += 102;
 
-      drawButton(x, y, formWidth, 54, "#238636", null, "Sign in");
-      y += 96;
+      drawButton("submit", x, y, formWidth, 54, "#238636", null, "Sign in");
+      y += 78;
+
+      if (state.submitted) {
+        drawResult(x, y, formWidth);
+        y += 154;
+      } else {
+        y += 18;
+      }
 
       ctx.strokeStyle = "#3d444d";
       ctx.beginPath();
@@ -697,9 +791,9 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
       text("or", x + formWidth / 2, y, 20, "#f0f6fc", "400", "center");
       y += 42;
 
-      drawButton(x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Google", "G");
+      drawButton("google", x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Google", "G");
       y += 64;
-      drawButton(x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Apple", "A");
+      drawButton("apple", x, y, formWidth, 54, "#21262d", "#3d444d", "Continue with Apple", "A");
       y += 98;
 
       text("New to GitHub?", w / 2 - 6, y, 18, "#f0f6fc", "400", "right");
@@ -713,12 +807,47 @@ const makeDummyGithubCanvasHtml = () => `<!doctype html>
         text(item, footerX, footerY, 14, "#8b949e");
         footerX += ctx.measureText(item).width + 38;
       });
-
-      text("SWG Audit dummy canvas test. No credentials are submitted or collected.", w / 2, 28, 13, "#8b949e", "400", "center");
     };
 
+    canvas.addEventListener("mousedown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      canvas.focus();
+      if (inBox(point, state.boxes.username)) state.activeField = "username";
+      else if (inBox(point, state.boxes.password)) state.activeField = "password";
+      else if (inBox(point, state.boxes.submit)) submit();
+      draw();
+    });
+
+    canvas.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        state.activeField = state.activeField === "username" ? "password" : "username";
+        draw();
+        return;
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        submit();
+        return;
+      }
+      if (event.key === "Backspace") {
+        event.preventDefault();
+        state[state.activeField] = state[state.activeField].slice(0, -1);
+        draw();
+        return;
+      }
+      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
+        state[state.activeField] += event.key;
+        draw();
+      }
+    });
+
     window.addEventListener("resize", fitCanvas);
+    window.setInterval(draw, 500);
     fitCanvas();
+    canvas.focus();
   </script>
 </body>
 </html>`;
