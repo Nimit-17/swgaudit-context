@@ -791,6 +791,38 @@ h2 {
   padding: 0.65rem 0.75rem;
 }
 
+.credential-test-form {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 560px;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.form-row label,
+.test-note {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.form-row input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--text);
+  background: #09090b;
+  padding: 0.65rem 0.75rem;
+}
+
+.form-row input:focus {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
 .primary-action {
   min-height: 44px;
   display: inline-flex;
@@ -812,6 +844,15 @@ h2 {
 .test-output {
   border-left: 2px solid var(--red);
   padding-left: 0.75rem;
+}
+
+.test-output.is-pass {
+  color: #a7f3d0;
+  border-left-color: #22c55e;
+}
+
+.test-output.is-fail {
+  color: #fecaca;
 }
 
 .article-hero {

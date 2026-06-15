@@ -127,6 +127,45 @@ document.querySelectorAll("[data-run-test]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-credential-form]").forEach((form) => {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const card = form.closest("[data-test-card]");
+    const output = card ? card.querySelector("[data-test-output]") : null;
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.classList.remove("is-pass", "is-fail");
+    output.textContent = "Submitting test credentials...";
+    if (submitButton) submitButton.disabled = true;
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method || "post",
+        body: new FormData(form),
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Submission returned HTTP ${response.status}`);
+      }
+
+      output.classList.add("is-pass");
+      output.textContent = "Pass: credential form submission succeeded. Submitted data was immediately discarded.";
+    } catch (error) {
+      output.classList.add("is-fail");
+      output.textContent = "Fail: credential form submission did not complete.";
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
+  });
+});
+
 document.querySelectorAll("[data-download-select]").forEach((select) => {
   const targetId = select.getAttribute("data-download-target");
   const link = targetId ? document.getElementById(targetId) : null;
