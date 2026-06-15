@@ -273,33 +273,65 @@ const extractSmugglingPayload = (format) => {
   return "";
 };
 
-document.querySelectorAll("[data-smuggling-download]").forEach((button) => {
-  button.addEventListener("click", (event) => {
-    const select = document.getElementById(button.getAttribute("data-source-select"));
+document.querySelectorAll("[data-smuggling-download]").forEach((link) => {
+  let smugglingUrl = "";
+
+  const revokeSmugglingUrl = () => {
+    if (!smugglingUrl) return;
+
+    URL.revokeObjectURL(smugglingUrl);
+    smugglingUrl = "";
+  };
+
+  const prepareSmugglingLink = () => {
+    const select = document.getElementById(link.getAttribute("data-source-select"));
     const selectedOption = select ? select.options[select.selectedIndex] : null;
 
-    if (!selectedOption) return;
+    if (!selectedOption) return false;
 
     const format = selectedOption.value || "html";
     const filename = selectedOption.getAttribute("data-smuggling-filename") || `${format}_smuggling.docm`;
+    const payload = extractSmugglingPayload(format).replace(/\s+/g, "");
 
+    if (!payload) {
+      throw new Error(`${format.toUpperCase()} smuggling payload was not found on the page.`);
+    }
+
+    revokeSmugglingUrl();
+    smugglingUrl = URL.createObjectURL(
+      new Blob([base64ToBytes(payload)], { type: "application/vnd.ms-word.document.macroEnabled.12" })
+    );
+    link.href = smugglingUrl;
+    link.download = filename;
+    return true;
+  };
+
+  const safelyPrepareSmugglingLink = () => {
     try {
-      const payload = extractSmugglingPayload(format).replace(/\s+/g, "");
-
-      if (!payload) {
-        throw new Error(`${format.toUpperCase()} smuggling payload was not found on the page.`);
-      }
-
-      downloadBytes(
-        base64ToBytes(payload),
-        filename,
-        "application/vnd.ms-word.document.macroEnabled.12",
-        event.ctrlKey || event.metaKey
-      );
+      return prepareSmugglingLink();
     } catch (error) {
       window.alert(`Smuggling test failed: ${error.message}`);
+      return false;
+    }
+  };
+
+  ["pointerenter", "focus", "mousedown", "contextmenu"].forEach((eventName) => {
+    link.addEventListener(eventName, safelyPrepareSmugglingLink);
+  });
+
+  link.addEventListener("click", (event) => {
+    if (!safelyPrepareSmugglingLink()) {
+      event.preventDefault();
     }
   });
+
+  const select = document.getElementById(link.getAttribute("data-source-select"));
+  if (select) {
+    select.addEventListener("change", safelyPrepareSmugglingLink);
+  }
+
+  window.addEventListener("pagehide", revokeSmugglingUrl);
+  safelyPrepareSmugglingLink();
 });
 
 document.querySelectorAll("[data-chunk-attack-download]").forEach((button) => {
