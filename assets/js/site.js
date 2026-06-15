@@ -228,3 +228,62 @@ document.querySelectorAll("[data-assembled-download]").forEach((button) => {
     }
   });
 });
+
+document.querySelectorAll("[data-chunk-attack-download]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const select = document.getElementById(button.getAttribute("data-source-select"));
+    const card = button.closest("[data-test-card]");
+    const status = card ? card.querySelector("[data-chunk-attack-status]") : null;
+
+    if (!select) return;
+
+    const setStatus = (message) => {
+      if (status) status.textContent = message;
+    };
+
+    button.disabled = true;
+    setStatus("Fetching chunks...");
+
+    try {
+      const manifestResponse = await fetch(select.value, { cache: "no-store" });
+
+      if (!manifestResponse.ok) {
+        throw new Error("Manifest request failed.");
+      }
+
+      const manifest = await manifestResponse.json();
+      const chunkResponses = await Promise.all(
+        manifest.chunks.map(async (chunk) => {
+          const response = await fetch(chunk.url, { cache: "no-store" });
+
+          if (!response.ok) {
+            throw new Error(`Chunk request failed: ${chunk.url}`);
+          }
+
+          return {
+            include: chunk.include !== false,
+            order: Number(chunk.order),
+            text: (await response.text()).replace(/\r?\n$/, ""),
+          };
+        })
+      );
+
+      const assembledText = chunkResponses
+        .filter((chunk) => chunk.include)
+        .sort((left, right) => left.order - right.order)
+        .map((chunk) => chunk.text)
+        .join("");
+
+      downloadBytes(
+        new TextEncoder().encode(assembledText),
+        manifest.filename || "eicar-chunk-attack.txt",
+        manifest.mime || "text/plain"
+      );
+      setStatus(`Assembled ${manifest.filename || "eicar-chunk-attack.txt"} from chunks.`);
+    } catch (error) {
+      setStatus(`Chunk test failed: ${error.message}`);
+    } finally {
+      button.disabled = false;
+    }
+  });
+});
