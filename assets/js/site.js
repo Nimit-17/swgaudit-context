@@ -357,26 +357,20 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = selectedFormat === "mhtml" ? "Opening server MHTML renderer..." : "Preparing raw HTML payload...";
+    output.textContent = selectedFormat === "mhtml" ? "Opening server MHTML renderer..." : "Opening dummy Microsoft login page...";
 
     try {
-      let blobUrl = "";
       const openedWindow = selectedFormat === "mhtml"
         ? window.open(makeMhtmlRendererUrl("/assets/tests/phishing/linkedin-login.mhtml"), "_blank")
-        : (() => {
-          blobUrl = URL.createObjectURL(new Blob([makeDummyMicrosoftLoginHtml()], { type: "text/html" }));
-          return window.open(blobUrl, "_blank");
-        })();
+        : window.open("/phishing/microsoft-login/", "_blank");
 
       if (openedWindow) {
         output.textContent = selectedFormat === "mhtml"
           ? "Opened dummy MHTML phishing-page rendering test in a new tab. The new tab fetches the .mhtml payload."
-          : "Opened dummy HTML phishing-page rendering test in a new tab.";
-        if (blobUrl) window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+          : "Opened dummy Microsoft-style raw HTML page in a new tab.";
         return;
       }
 
-      if (blobUrl) URL.revokeObjectURL(blobUrl);
       output.classList.add("is-fail");
       output.textContent = "Test launch was blocked by the browser.";
     } catch (error) {
