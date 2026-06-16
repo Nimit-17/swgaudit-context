@@ -153,8 +153,9 @@ $url = "https://www.swgaudit.com/phishing/";
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-1-detail" hidden>
+            <p>This URL manipulation case opens a Microsoft-style login page from a controlled same-site path: <code>/phishing/microsoft-login/</code>.</p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <a class="primary-action" href="/phishing/microsoft-login/">Run Test</a>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
@@ -205,9 +206,15 @@ $url = "https://www.swgaudit.com/phishing/";
             </div>
           </div>
           <div class="test-card-detail" id="phishing-advanced-threat-simulation-test-1-detail" hidden>
-            <p>This opens the dummy Microsoft-style raw HTML login page from a normal same-site URL.</p>
+            <div class="test-picker">
+              <label for="phishing-stored-site-format">Stored page format</label>
+              <select id="phishing-stored-site-format" data-stored-site-format>
+                <option value="html">Raw HTML - dummy Microsoft-style login</option>
+                <option value="mhtml">MHTML - dummy LinkedIn-style login</option>
+              </select>
+            </div>
             <div class="test-actions">
-              <a class="primary-action" href="/phishing/microsoft-login/">Run Test</a>
+              <button class="primary-action" type="button" data-phishing-stored-site-launch>Open Dummy Test Page</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
