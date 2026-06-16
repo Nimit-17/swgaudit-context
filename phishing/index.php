@@ -153,8 +153,27 @@ $url = "https://www.swgaudit.com/phishing/";
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-1-detail" hidden>
+            <p>These links exercise safe homograph and lookalike URL patterns. Each test uses a normal link and stays on SWG Audit; lookalike domains are shown only as inert display text or query data.</p>
+            <div class="url-case-list" aria-label="URL manipulation homograph tests">
+              <a class="url-case" href="/phishing/url-manipulation/?case=punycode-lookalike&amp;display=xn--micrsoft-qbh.example&amp;brand=microsoft">
+                <span>Punycode-style brand lookalike</span>
+                <code>xn--micrsoft-qbh.example</code>
+              </a>
+              <a class="url-case" href="/phishing/url-manipulation/?case=unicode-lookalike&amp;display=micr%D0%BEsoft.example%2Faccount%2Fverify">
+                <span>Unicode homograph display text</span>
+                <code>micr&#1086;soft.example/account/verify</code>
+              </a>
+              <a class="url-case" href="/phishing/url-manipulation/?case=redirect-param-homograph&amp;returnUrl=https%3A%2F%2Fxn--micrsoft-qbh.example%2Flogin&amp;continue=%2Fsecurity%2Fverify">
+                <span>Redirect parameter with lookalike target</span>
+                <code>?returnUrl=xn--micrsoft-qbh.example/login</code>
+              </a>
+              <a class="url-case" href="/phishing/url-manipulation/?case=display-href-mismatch&amp;actual=swgaudit-controlled">
+                <span>Visible text differs from actual href</span>
+                <code>https://login.microsoft.com/account/verify</code>
+              </a>
+            </div>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <a class="primary-action" href="/phishing/url-manipulation/?case=homograph-overview">Open Homograph Overview</a>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
