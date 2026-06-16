@@ -208,7 +208,7 @@ document.querySelectorAll("[data-file-submission-form]").forEach((form) => {
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = "Submitting normal file...";
+    output.textContent = "Submitting file...";
     if (submitButton) submitButton.disabled = true;
 
     try {
@@ -225,7 +225,7 @@ document.querySelectorAll("[data-file-submission-form]").forEach((form) => {
       }
 
       output.classList.add("is-fail");
-      output.textContent = "Test Failed: normal file submission succeeded.";
+      output.textContent = "Test Failed: file submission succeeded. The uploaded file will be deleted from the server after 10 minutes.";
     } catch (error) {
       output.classList.add("is-pass");
       output.textContent = "Pass: normal file submission did not complete.";

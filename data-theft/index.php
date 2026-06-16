@@ -3,10 +3,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["swg_audit_test"] ?? "") ==
   header("Content-Type: application/json");
 
   $hasFile = isset($_FILES["personal_data_file"]) && $_FILES["personal_data_file"]["error"] === UPLOAD_ERR_OK;
+  $stored = false;
+
+  if ($hasFile) {
+    $uploadDir = __DIR__ . "/uploads";
+
+    if (!is_dir($uploadDir)) {
+      mkdir($uploadDir, 0750, true);
+    }
+
+    $extension = pathinfo($_FILES["personal_data_file"]["name"], PATHINFO_EXTENSION);
+    $safeExtension = $extension !== "" ? "." . preg_replace("/[^a-zA-Z0-9]/", "", $extension) : "";
+    $uploadPath = $uploadDir . "/normal-file-submission-" . gmdate("YmdHis") . "-" . bin2hex(random_bytes(6)) . $safeExtension;
+    $stored = move_uploaded_file($_FILES["personal_data_file"]["tmp_name"], $uploadPath);
+  }
 
   echo json_encode([
     "received" => $hasFile,
-    "discarded" => true,
+    "stored" => $stored,
+    "delete_after_minutes" => 10,
   ]);
   exit;
 }
@@ -135,16 +150,15 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-bare-minimum-test-1-detail" hidden>
-            <p class="test-note">Download the safe sample file, then submit it below to test whether sensitive data in a normal file upload is detected.</p>
             <form class="credential-test-form" method="post" action="/data-theft/" enctype="multipart/form-data" data-file-submission-form>
               <input type="hidden" name="swg_audit_test" value="normal-file-submission">
               <div class="form-row">
-                <label for="data-theft-normal-file">Normal file</label>
-                <input id="data-theft-normal-file" name="personal_data_file" type="file" accept=".txt,text/plain" required>
+                <label class="sr-only" for="data-theft-normal-file">Choose file</label>
+                <input id="data-theft-normal-file" name="personal_data_file" type="file" required>
               </div>
+              <p class="test-note">Submitted files are deleted from the server after 10 minutes.</p>
               <div class="test-actions">
-                <a class="primary-action" href="/assets/test-files/data-theft/bare-minimum/personal-data-normal-file.txt" download>Download Sample File</a>
-                <button class="primary-action" type="submit">Submit Normal File</button>
+                <button class="primary-action" type="submit">Submit File</button>
               </div>
             </form>
             <p class="test-output" data-test-output hidden></p>
