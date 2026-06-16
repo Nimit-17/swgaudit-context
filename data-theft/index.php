@@ -260,10 +260,20 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-2-detail" hidden>
+            <form class="credential-test-form" data-dns-tunnel-form>
+              <div class="form-row">
+                <label class="sr-only" for="data-theft-dns-file">Choose file for DNS tunnelling</label>
+                <input id="data-theft-dns-file" name="dns_tunnel_file" type="file" accept=".pdf,.jpg,.jpeg,.png,.gif,.txt,.doc,.docx" required data-dns-tunnel-file>
+              </div>
+              <p class="test-note">Maximum file size: 100 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
+              <div class="test-actions">
+                <button class="primary-action" type="submit" data-dns-tunnel-submit>Run Test</button>
+              </div>
+            </form>
+            <p class="test-output" data-dns-tunnel-status hidden></p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <button class="primary-action" type="button" hidden data-dns-tunnel-reset>Reset Test</button>
             </div>
-            <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
         <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card>
@@ -290,5 +300,6 @@ $url = "https://www.swgaudit.com/data-theft/";
     </p>
   </footer>
   <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/data-theft-dns.js"></script>
 </body>
 </html>
