@@ -1,4 +1,0 @@
-1111
-Bank account test pattern: 000123456789
-
-Expected result: a capable control should warn, block, quarantine, or log this upload attempt according to policy.

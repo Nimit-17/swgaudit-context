@@ -1,1 +1,0 @@
-Bank account test pattern: 000123456789

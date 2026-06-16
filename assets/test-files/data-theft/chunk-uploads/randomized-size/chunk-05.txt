@@ -1,5 +1,0 @@
-0148
-Employee ID: SWG-10482
-Customer ID: CUST-783492
-US SSN test pattern: 078-05-1120
-Credit card test pattern: 4111 1111 1111 

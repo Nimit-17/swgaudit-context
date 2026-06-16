@@ -1,142 +1,37 @@
-const dataTheftBase64ToBytes = (value) => {
-  const binary = window.atob(value);
-  const bytes = new Uint8Array(binary.length);
+const dataTheftEvasionEndpoint = "/data-theft/process_evasion_upload.php";
+const dataTheftEvasionPassword = "123456";
 
-  for (let index = 0; index < binary.length; index += 1) {
-    bytes[index] = binary.charCodeAt(index);
+const dataTheftBytesToBase64 = (bytes) => {
+  let binary = "";
+  const chunkSize = 0x8000;
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
   }
 
-  return bytes;
+  return window.btoa(binary);
 };
 
-const dataTheftDerivePayloadKey = async (password, salt) => {
-  const material = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(password),
-    "PBKDF2",
-    false,
-    ["deriveKey"]
-  );
+const dataTheftBytesToHex = (bytes) => Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 
-  return crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      hash: "SHA-256",
-      salt,
-      iterations: 200000,
-    },
-    material,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["decrypt"]
-  );
-};
+const dataTheftReadFile = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => resolve(new Uint8Array(reader.result)));
+  reader.addEventListener("error", () => reject(reader.error));
+  reader.readAsArrayBuffer(file);
+});
 
-const dataTheftBuildAssembledPayload = async (selectedUrl) => {
-  const response = await fetch(selectedUrl, { cache: "no-store" });
+const dataTheftBuildMetadata = (file) => ({
+  name: file.name,
+  type: file.type || "application/octet-stream",
+  size: file.size,
+});
 
-  if (!response.ok) {
-    throw new Error("Payload request failed.");
-  }
-
-  const payload = await response.json();
-
-  if (payload.mode !== "decrypt-aes-gcm") {
-    throw new Error("Unsupported assembly mode.");
-  }
-
-  const salt = dataTheftBase64ToBytes(payload.salt);
-  const iv = dataTheftBase64ToBytes(payload.iv);
-  const ciphertext = dataTheftBase64ToBytes(payload.payload);
-  const key = await dataTheftDerivePayloadKey(payload.password || "123456", salt);
-  const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
-
-  return {
-    bytes: new Uint8Array(decrypted),
-    filename: payload.filename || "pii-decrypted.txt",
-    mime: payload.mime || "text/plain",
-  };
-};
-
-const dataTheftFetchFilePayload = async (selectedUrl) => {
-  if (selectedUrl.endsWith(".json")) {
-    return dataTheftBuildAssembledPayload(selectedUrl);
-  }
-
-  const response = await fetch(selectedUrl, { cache: "no-store" });
-
-  if (!response.ok) {
-    throw new Error("File request failed.");
-  }
-
-  const blob = await response.blob();
-
-  return {
-    bytes: new Uint8Array(await blob.arrayBuffer()),
-    filename: selectedUrl.split("/").pop() || "data-theft-upload.bin",
-    mime: blob.type || "application/octet-stream",
-  };
-};
-
-const dataTheftBuildChunkPayload = async (selectedUrl) => {
-  const manifestResponse = await fetch(selectedUrl, { cache: "no-store" });
-
-  if (!manifestResponse.ok) {
-    throw new Error("Manifest request failed.");
-  }
-
-  const manifest = await manifestResponse.json();
-  const fetchChunk = async (chunk) => {
-    const response = await fetch(chunk.url, { cache: "no-store" });
-
-    if (!response.ok) {
-      throw new Error(`Chunk request failed: ${chunk.url}`);
-    }
-
-    return {
-      include: chunk.include !== false,
-      order: Number(chunk.order),
-      text: (await response.text()).replace(/\r?\n$/, ""),
-    };
-  };
-  let chunkResponses;
-
-  if (manifest.fetchMode === "parallel") {
-    chunkResponses = await Promise.all(manifest.chunks.map(fetchChunk));
-  } else {
-    chunkResponses = [];
-
-    for (const chunk of manifest.chunks) {
-      chunkResponses.push(await fetchChunk(chunk));
-    }
-  }
-
-  const assembledText = chunkResponses
-    .filter((chunk) => chunk.include)
-    .sort((left, right) => left.order - right.order)
-    .map((chunk) => chunk.text)
-    .join("");
-
-  return {
-    bytes: new TextEncoder().encode(assembledText),
-    filename: manifest.filename || "pii-chunk-upload.txt",
-    mime: manifest.mime || "text/plain",
-  };
-};
-
-const dataTheftUploadPayload = async ({ bytes, filename, mime }) => {
-  const formData = new FormData();
-  const file = new File([bytes], filename, { type: mime || "application/octet-stream" });
-
-  formData.append("swg_audit_test", "normal-file-submission");
-  formData.append("personal_data_file", file);
-
-  const response = await fetch("/data-theft/", {
+const dataTheftSubmitFormData = async (formData) => {
+  const response = await fetch(dataTheftEvasionEndpoint, {
     method: "post",
     body: formData,
-    headers: {
-      "Accept": "application/json",
-    },
+    headers: { "Accept": "application/json" },
   });
 
   if (!response.ok) {
@@ -146,46 +41,187 @@ const dataTheftUploadPayload = async ({ bytes, filename, mime }) => {
   return response.json();
 };
 
-const dataTheftRunUpload = async (button, buildPayload) => {
-  const card = button.closest("[data-test-card]");
+const dataTheftRunForm = async (form, buildFormData, preparingText) => {
+  const card = form.closest("[data-test-card]");
   const output = card ? card.querySelector("[data-test-output]") : null;
-  const select = document.getElementById(button.getAttribute("data-source-select"));
+  const submitButton = form.querySelector('button[type="submit"]');
+  const fileInput = form.querySelector('input[type="file"]');
 
-  if (!output || !select) return;
+  if (!output || !fileInput) return;
+
+  const file = fileInput.files[0];
+  if (!file) {
+    output.hidden = false;
+    output.classList.remove("is-pass", "is-fail");
+    output.textContent = "Choose a file before running the test.";
+    return;
+  }
 
   output.hidden = false;
   output.classList.remove("is-pass", "is-fail");
-  output.textContent = "Preparing selected file...";
-  button.disabled = true;
+  output.textContent = preparingText;
+  if (submitButton) submitButton.disabled = true;
 
   try {
-    const payload = await buildPayload(select.value);
-    output.textContent = "Uploading selected file...";
-    const result = await dataTheftUploadPayload(payload);
+    const formData = await buildFormData(file, form);
+    output.textContent = "Submitting transformed file...";
+    const result = await dataTheftSubmitFormData(formData);
 
-    if (!result.stored) {
-      throw new Error("Server did not store the uploaded file.");
+    if (!result.reconstructed) {
+      throw new Error(result.message || "Server did not reconstruct the original file.");
     }
 
     output.classList.add("is-fail");
-    output.textContent = "Test Failed: selected file upload succeeded. The uploaded file will be deleted from the server after 10 minutes.";
+    output.textContent = "Test Failed: the transformed upload was reconstructed into the original file on the server. The file will be deleted after 10 minutes.";
   } catch (error) {
     output.classList.add("is-pass");
-    output.textContent = `Pass: selected file upload did not complete. ${error.message}`;
+    output.textContent = `Pass: the transformed file did not reconstruct on the server. ${error.message}`;
   } finally {
-    button.disabled = false;
+    if (submitButton) submitButton.disabled = false;
   }
 };
 
-document.querySelectorAll("[data-data-theft-file-upload]").forEach((button) => {
-  button.addEventListener("click", () => {
-    dataTheftRunUpload(button, dataTheftFetchFilePayload);
+const dataTheftEncodingFormData = async (file, form) => {
+  const mode = form.querySelector("[name='encoding_mode']").value;
+  const bytes = await dataTheftReadFile(file);
+  let encoded;
+  let filename = `${file.name}.${mode}.txt`;
+
+  if (mode === "base64") {
+    encoded = dataTheftBytesToBase64(bytes);
+  } else if (mode === "double-base64") {
+    encoded = window.btoa(dataTheftBytesToBase64(bytes));
+  } else if (mode === "hex") {
+    encoded = dataTheftBytesToHex(bytes);
+    filename = `${file.name}.hex.txt`;
+  } else if (mode === "url") {
+    encoded = encodeURIComponent(dataTheftBytesToBase64(bytes));
+  } else {
+    throw new Error("Unsupported encoding mode.");
+  }
+
+  const formData = new FormData();
+  formData.append("test_type", "encoding");
+  formData.append("encoding_mode", mode);
+  formData.append("metadata", JSON.stringify(dataTheftBuildMetadata(file)));
+  formData.append("encoded_payload", new Blob([encoded], { type: "text/plain" }), filename);
+
+  return formData;
+};
+
+const dataTheftEncryptionFormData = async (file, form) => {
+  const mode = form.querySelector("[name='encryption_mode']").value;
+  const bytes = await dataTheftReadFile(file);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const material = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(dataTheftEvasionPassword),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", hash: "SHA-256", salt, iterations: 200000 },
+    material,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt"]
+  );
+  const encrypted = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, bytes));
+  const tagLength = 16;
+  const ciphertext = encrypted.subarray(0, encrypted.length - tagLength);
+  const tag = encrypted.subarray(encrypted.length - tagLength);
+  const formData = new FormData();
+
+  formData.append("test_type", "encryption");
+  formData.append("encryption_mode", mode);
+  formData.append("metadata", JSON.stringify(dataTheftBuildMetadata(file)));
+  formData.append("password", dataTheftEvasionPassword);
+  formData.append("salt", dataTheftBytesToBase64(salt));
+  formData.append("iv", dataTheftBytesToBase64(iv));
+  formData.append("tag", dataTheftBytesToBase64(tag));
+  formData.append("ciphertext", new Blob([ciphertext], { type: "application/octet-stream" }), `${file.name}.aes-gcm`);
+
+  return formData;
+};
+
+const dataTheftMakeChunks = (bytes, mode) => {
+  const baseChunkSize = Math.max(1, Math.ceil(bytes.length / 6));
+  const chunks = [];
+
+  if (mode === "randomized-size") {
+    const ratios = [0.09, 0.21, 0.13, 0.27, 0.17, 0.13];
+    let offset = 0;
+
+    ratios.forEach((ratio, index) => {
+      const remaining = bytes.length - offset;
+      const size = index === ratios.length - 1 ? remaining : Math.max(1, Math.min(remaining, Math.floor(bytes.length * ratio)));
+      chunks.push({ order: index + 1, include: true, bytes: bytes.subarray(offset, offset + size) });
+      offset += size;
+    });
+  } else {
+    for (let offset = 0, order = 1; offset < bytes.length; offset += baseChunkSize, order += 1) {
+      chunks.push({ order, include: true, bytes: bytes.subarray(offset, Math.min(bytes.length, offset + baseChunkSize)) });
+    }
+  }
+
+  if (mode === "reverse-order") {
+    return chunks.reverse();
+  }
+
+  if (mode === "mixed-noise") {
+    return [
+      { order: 0, include: false, bytes: new TextEncoder().encode("benign decoy before file\n") },
+      ...chunks,
+      { order: 999, include: false, bytes: new TextEncoder().encode("benign decoy after file\n") },
+    ];
+  }
+
+  return chunks;
+};
+
+const dataTheftChunkingFormData = async (file, form) => {
+  const mode = form.querySelector("[name='chunking_mode']").value;
+  const bytes = await dataTheftReadFile(file);
+  const chunks = dataTheftMakeChunks(bytes, mode);
+  const manifest = chunks.map((chunk, index) => ({
+    field: `chunk_${index}`,
+    order: chunk.order,
+    include: chunk.include,
+  }));
+  const formData = new FormData();
+
+  formData.append("test_type", "chunking");
+  formData.append("chunking_mode", mode);
+  formData.append("metadata", JSON.stringify(dataTheftBuildMetadata(file)));
+  formData.append("manifest", JSON.stringify(manifest));
+
+  chunks.forEach((chunk, index) => {
+    formData.append(`chunk_${index}`, new Blob([chunk.bytes], { type: "application/octet-stream" }), `chunk-${index + 1}.part`);
+  });
+
+  return formData;
+};
+
+document.querySelectorAll("[data-data-theft-encoding-form]").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    dataTheftRunForm(form, dataTheftEncodingFormData, "Encoding selected file...");
   });
 });
 
-document.querySelectorAll("[data-data-theft-chunk-upload]").forEach((button) => {
-  button.addEventListener("click", () => {
-    dataTheftRunUpload(button, dataTheftBuildChunkPayload);
+document.querySelectorAll("[data-data-theft-encryption-form]").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    dataTheftRunForm(form, dataTheftEncryptionFormData, "Encrypting selected file...");
+  });
+});
+
+document.querySelectorAll("[data-data-theft-chunking-form]").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    dataTheftRunForm(form, dataTheftChunkingFormData, "Chunking selected file...");
   });
 });
 

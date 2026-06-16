@@ -181,19 +181,25 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-1-detail" hidden>
+            <form class="credential-test-form" data-data-theft-encoding-form>
+              <div class="form-row">
+                <label class="sr-only" for="data-theft-encoding-file">Choose file to encode</label>
+                <input id="data-theft-encoding-file" name="source_file" type="file" required>
+              </div>
             <div class="test-picker">
-              <label for="data-theft-encoded-file-select">Choose encoded file</label>
-              <select id="data-theft-encoded-file-select">
-                <option value="/assets/test-files/data-theft/encoded-files/pii-base64.txt">Base64 PII TXT</option>
-                <option value="/assets/test-files/data-theft/encoded-files/pii-double-base64.txt">Double Base64 PII TXT</option>
-                <option value="/assets/test-files/data-theft/encoded-files/pii-hex.txt">Hex PII TXT</option>
-                <option value="/assets/test-files/data-theft/encoded-files/pii-url-encoded.txt">URL Encoded PII TXT</option>
-                <option value="/assets/test-files/data-theft/encoded-files/pii-gzip-base64.txt">Gzip Base64 PII TXT</option>
+              <label for="data-theft-encoding-mode">Choose encoding</label>
+              <select id="data-theft-encoding-mode" name="encoding_mode">
+                <option value="base64">Base64</option>
+                <option value="double-base64">Double Base64</option>
+                <option value="hex">Hex</option>
+                <option value="url">URL Encoded</option>
               </select>
             </div>
+              <p class="test-note">The browser encodes your selected file, uploads the encoded form, and the server decodes it back to the original file.</p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-data-theft-file-upload data-source-select="data-theft-encoded-file-select">Upload Selected File</button>
+                <button class="primary-action" type="submit">Run Test</button>
             </div>
+            </form>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
@@ -205,18 +211,24 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-2-detail" hidden>
+            <form class="credential-test-form" data-data-theft-encryption-form>
+              <div class="form-row">
+                <label class="sr-only" for="data-theft-encryption-file">Choose file to encrypt</label>
+                <input id="data-theft-encryption-file" name="source_file" type="file" required>
+              </div>
             <div class="test-picker">
-              <label for="data-theft-encrypted-file-select">Choose encrypted file</label>
-              <select id="data-theft-encrypted-file-select">
-                <option value="/assets/test-files/data-theft/client-side/payloads/decrypt-pii-txt.json">AES-256 PII TXT</option>
-                <option value="/assets/test-files/data-theft/encrypted-files/pii-aes256-cbc.enc">AES-256 CBC PII TXT</option>
-                <option value="/assets/test-files/data-theft/encrypted-files/pii-password-protected.enc">Password-protected encrypted PII TXT</option>
+              <label for="data-theft-encryption-mode">Choose encryption</label>
+              <select id="data-theft-encryption-mode" name="encryption_mode">
+                <option value="aes-gcm">AES-256 GCM</option>
+                <option value="aes-gcm-password">AES-256 GCM with password</option>
               </select>
             </div>
+              <p class="test-note">The browser encrypts your selected file, uploads ciphertext and metadata, and the server decrypts it back to the original file.</p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-data-theft-file-upload data-source-select="data-theft-encrypted-file-select">Upload Selected File</button>
+                <button class="primary-action" type="submit">Run Test</button>
             </div>
-            <p class="test-output">Password: <code>123456</code></p>
+            </form>
+            <p class="test-output">Password for password mode: <code>123456</code></p>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
@@ -228,20 +240,27 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-3-detail" hidden>
+            <form class="credential-test-form" data-data-theft-chunking-form>
+              <div class="form-row">
+                <label class="sr-only" for="data-theft-chunking-file">Choose file to chunk</label>
+                <input id="data-theft-chunking-file" name="source_file" type="file" required>
+              </div>
             <div class="test-picker">
-              <label for="data-theft-chunk-upload-select">Choose chunk upload</label>
-              <select id="data-theft-chunk-upload-select">
-                <option value="/assets/test-files/data-theft/chunk-uploads/straight-split/manifest.json" data-description="Fetches sensitive-data fragments one by one in normal order, then joins them in the browser before upload.">Straight Split</option>
-                <option value="/assets/test-files/data-theft/chunk-uploads/reverse-order/manifest.json" data-description="Fetches sensitive-data fragments in reverse request order, then sorts them back into the right sequence before upload.">Reverse Order Split</option>
-                <option value="/assets/test-files/data-theft/chunk-uploads/randomized-size/manifest.json" data-description="Fetches unevenly sized sensitive-data fragments, then rebuilds the original file from the manifest order before upload.">Randomized Size Chunks</option>
-                <option value="/assets/test-files/data-theft/chunk-uploads/mixed-noise/manifest.json" data-description="Fetches sensitive-data fragments mixed with benign decoy chunks, then ignores the noise during browser reassembly before upload.">Mixed Noise Chunks</option>
-                <option value="/assets/test-files/data-theft/chunk-uploads/parallel-burst/manifest.json" data-description="Fires all sensitive-data chunk requests at once, then assembles the responses after the burst completes before upload.">Parallel Burst Fetch</option>
+              <label for="data-theft-chunking-mode">Choose chunking</label>
+              <select id="data-theft-chunking-mode" name="chunking_mode">
+                <option value="straight-split" data-description="Splits your file into equal pieces and uploads them in normal order.">Straight Split</option>
+                <option value="reverse-order" data-description="Splits your file into equal pieces and uploads them in reverse request order.">Reverse Order Split</option>
+                <option value="randomized-size" data-description="Splits your file into uneven chunk sizes before upload.">Randomized Size Chunks</option>
+                <option value="mixed-noise" data-description="Uploads your file chunks mixed with benign decoy chunks that the server ignores during reassembly.">Mixed Noise Chunks</option>
+                <option value="parallel-burst" data-description="Prepares all chunks together and uploads them as a burst in one multipart request.">Parallel Burst Upload</option>
               </select>
               <p class="test-output" data-data-theft-chunk-description>Fetches sensitive-data fragments one by one in normal order, then joins them in the browser before upload.</p>
             </div>
+              <p class="test-note">The browser chunks your selected file, uploads the chunks, and the server reassembles them back to the original file.</p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-data-theft-chunk-upload data-source-select="data-theft-chunk-upload-select">Run Selected Upload Test</button>
+                <button class="primary-action" type="submit">Run Test</button>
             </div>
+            </form>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>

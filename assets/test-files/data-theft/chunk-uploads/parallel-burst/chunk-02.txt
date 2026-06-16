@@ -1,2 +1,0 @@
-Name: Jordan Example
-Email: jordan.example@swgaudit.test

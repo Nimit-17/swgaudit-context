@@ -1,9 +1,0 @@
-{
-  "mode": "decrypt-aes-gcm",
-  "filename": "pii-decrypted.txt",
-  "mime": "text/plain",
-  "password": "123456",
-  "salt": "WI0yTfVnhCUr5BvkS/sMnA==",
-  "iv": "4a7B2S5pNXE03wjf",
-  "payload": "U/jfu8yYWyZa7sBjsbg8XBO5+NgL4XoghYGn4NG38Hmc3fw27BHpc6FIcSn9IL/++E5ciffhJBE/7gl3ueJkV7FhjlX/to7ZUzcnAI9q1Jj8R3VLIHDeL6xGfq1i+0Xp6GCoYRrslx5iZhEHYhLfYwgt7Hm4BbseHnzTuWfODRk2oxHmZQfJsyjeNgqA+K+xuyXDGzB6w0CELH5dhD+8EzhVxHCU85VjhB9tHcGOI8/86UrqiW7LuApHTqhVd6eO25bCsgvke90hFJVyiqGBclqob6TBr3isMOVoUYdI0uUA7nDqJCHUB5P1ZZuZ57BLGddOX4QHxSHM+tslhvFa/zroYzYXZSjq3CJpmiCvkg54r4bCbeTPAStuhuDRYxvw8M5RIBIIjCNT/eVYevDa8IXxlK+2AS/cMaiOO0aTDLFIeE2iQjokP0998o9TcVI24j//GnVofzPsCw9YXEHzpitkKLhdZbdgB4lv7Gr3nK8UIXxKdwBTJHv+uj3RVd7BtU24rom2wzDKXvrTqw+cYkCfP4K1fJow+eeJZaxGZUd6eUM/fU5UirlIQZfaVSUwUaputksoonhoa+r22dptZijOeJFqCKPQBEGkUOJ9ICswiO5OwQCVuOD9BXm3ECD0CTf5akUoiJrsjsjP3uC65z/e6BF5D7HWpl1qY4Tyrf288RLa5JkLMcfi0EEBNPuNsYku4xuG3hhh/JL68YErLmjV6w46"
-}
