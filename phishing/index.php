@@ -153,9 +153,9 @@ $url = "https://www.swgaudit.com/phishing/";
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-1-detail" hidden>
-            <p>This URL manipulation case opens a Microsoft-style login page from a controlled same-site path: <code>/phishing/microsoft-login/</code>.</p>
+            <p>This URL manipulation case opens a Microsoft-style login page from a controlled same-site path: <code>/phishing/rnicrosoft-Iogin/</code>.</p>
             <div class="test-actions">
-              <a class="primary-action" href="/phishing/microsoft-login/">Run Test</a>
+              <a class="primary-action" href="/phishing/rnicrosoft-Iogin/">Run Test</a>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>

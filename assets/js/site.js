@@ -362,7 +362,7 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
     try {
       const openedWindow = selectedFormat === "mhtml"
         ? window.open(makeMhtmlRendererUrl("/assets/tests/phishing/linkedin-login.mhtml"), "_blank")
-        : window.open("/phishing/microsoft-login/", "_blank");
+        : window.open("/phishing/rnicrosoft-Iogin/", "_blank");
 
       if (openedWindow) {
         output.textContent = selectedFormat === "mhtml"
