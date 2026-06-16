@@ -1,0 +1,15 @@
+SWG Audit safe data theft test file
+
+This file contains synthetic personal-data patterns for testing DLP and SWG upload controls.
+No real person, account, or credential is represented.
+
+Name: Jordan Example
+Email: jordan.example@swgaudit.test
+Phone: +1-202-555-0148
+Employee ID: SWG-10482
+Customer ID: CUST-783492
+US SSN test pattern: 078-05-1120
+Credit card test pattern: 4111 1111 1111 1111
+Bank account test pattern: 000123456789
+
+Expected result: a capable control should warn, block, quarantine, or log this upload attempt according to policy.

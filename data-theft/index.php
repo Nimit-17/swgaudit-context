@@ -1,4 +1,16 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST["swg_audit_test"] ?? "") === "normal-file-submission") {
+  header("Content-Type: application/json");
+
+  $hasFile = isset($_FILES["personal_data_file"]) && $_FILES["personal_data_file"]["error"] === UPLOAD_ERR_OK;
+
+  echo json_encode([
+    "received" => $hasFile,
+    "discarded" => true,
+  ]);
+  exit;
+}
+
 $title = "Data Theft Tests - SWG Audit";
 $description = "Validate perimeter security against safe data-theft and exfiltration test structures across baseline, evasion, and advanced scenarios.";
 $url = "https://www.swgaudit.com/data-theft/";
@@ -123,9 +135,18 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-bare-minimum-test-1-detail" hidden>
-            <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
-            </div>
+            <p class="test-note">Download the safe sample file, then submit it below to test whether sensitive data in a normal file upload is detected.</p>
+            <form class="credential-test-form" method="post" action="/data-theft/" enctype="multipart/form-data" data-file-submission-form>
+              <input type="hidden" name="swg_audit_test" value="normal-file-submission">
+              <div class="form-row">
+                <label for="data-theft-normal-file">Normal file</label>
+                <input id="data-theft-normal-file" name="personal_data_file" type="file" accept=".txt,text/plain" required>
+              </div>
+              <div class="test-actions">
+                <a class="primary-action" href="/assets/test-files/data-theft/bare-minimum/personal-data-normal-file.txt" download>Download Sample File</a>
+                <button class="primary-action" type="submit">Submit Normal File</button>
+              </div>
+            </form>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
