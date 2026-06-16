@@ -181,8 +181,9 @@ $url = "https://www.swgaudit.com/phishing/";
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
+            <p>This safe file uses a misleading double extension to test whether controls flag executable-looking downloads that pretend to be documents.</p>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <a class="primary-action" href="/assets/test-files/phishing/file-spoofing/dummy.pdf.exe" download>Download dummy.pdf.exe</a>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
