@@ -268,12 +268,10 @@ $url = "https://www.swgaudit.com/data-theft/";
               <p class="test-note">Maximum file size: 100 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
               <div class="test-actions">
                 <button class="primary-action" type="submit" data-dns-tunnel-submit>Run Test</button>
+                <button class="primary-action" type="button" hidden data-dns-tunnel-reset>Reset Test</button>
               </div>
             </form>
             <p class="test-output" data-dns-tunnel-status hidden></p>
-            <div class="test-actions">
-              <button class="primary-action" type="button" hidden data-dns-tunnel-reset>Reset Test</button>
-            </div>
           </div>
         </article>
         <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card>
