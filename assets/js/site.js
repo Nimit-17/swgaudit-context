@@ -127,6 +127,28 @@ document.querySelectorAll("[data-run-test]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-url-manipulation-select]").forEach((select) => {
+  const card = select.closest("[data-test-card]");
+  const description = card ? card.querySelector("[data-url-manipulation-description]") : null;
+  const runLink = card ? card.querySelector("[data-url-manipulation-run]") : null;
+
+  const syncUrlManipulationCase = () => {
+    const selectedOption = select.options[select.selectedIndex];
+    if (!selectedOption) return;
+
+    if (description) {
+      description.textContent = selectedOption.dataset.description || "";
+    }
+
+    if (runLink) {
+      runLink.href = selectedOption.value;
+    }
+  };
+
+  select.addEventListener("change", syncUrlManipulationCase);
+  syncUrlManipulationCase();
+});
+
 document.querySelectorAll("[data-credential-form]").forEach((form) => {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
