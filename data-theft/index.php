@@ -181,8 +181,18 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-1-detail" hidden>
+            <div class="test-picker">
+              <label for="data-theft-encoded-file-select">Choose encoded file</label>
+              <select id="data-theft-encoded-file-select">
+                <option value="/assets/test-files/data-theft/encoded-files/pii-base64.txt">Base64 PII TXT</option>
+                <option value="/assets/test-files/data-theft/encoded-files/pii-double-base64.txt">Double Base64 PII TXT</option>
+                <option value="/assets/test-files/data-theft/encoded-files/pii-hex.txt">Hex PII TXT</option>
+                <option value="/assets/test-files/data-theft/encoded-files/pii-url-encoded.txt">URL Encoded PII TXT</option>
+                <option value="/assets/test-files/data-theft/encoded-files/pii-gzip-base64.txt">Gzip Base64 PII TXT</option>
+              </select>
+            </div>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <button class="primary-action" type="button" data-data-theft-file-upload data-source-select="data-theft-encoded-file-select">Upload Selected File</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
@@ -195,9 +205,18 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-2-detail" hidden>
-            <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+            <div class="test-picker">
+              <label for="data-theft-encrypted-file-select">Choose encrypted file</label>
+              <select id="data-theft-encrypted-file-select">
+                <option value="/assets/test-files/data-theft/client-side/payloads/decrypt-pii-txt.json">AES-256 PII TXT</option>
+                <option value="/assets/test-files/data-theft/encrypted-files/pii-aes256-cbc.enc">AES-256 CBC PII TXT</option>
+                <option value="/assets/test-files/data-theft/encrypted-files/pii-password-protected.enc">Password-protected encrypted PII TXT</option>
+              </select>
             </div>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-data-theft-file-upload data-source-select="data-theft-encrypted-file-select">Upload Selected File</button>
+            </div>
+            <p class="test-output">Password: <code>123456</code></p>
             <p class="test-output" data-test-output hidden></p>
           </div>
         </article>
@@ -209,8 +228,19 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-evasion-detection-test-3-detail" hidden>
+            <div class="test-picker">
+              <label for="data-theft-chunk-upload-select">Choose chunk upload</label>
+              <select id="data-theft-chunk-upload-select">
+                <option value="/assets/test-files/data-theft/chunk-uploads/straight-split/manifest.json" data-description="Fetches sensitive-data fragments one by one in normal order, then joins them in the browser before upload.">Straight Split</option>
+                <option value="/assets/test-files/data-theft/chunk-uploads/reverse-order/manifest.json" data-description="Fetches sensitive-data fragments in reverse request order, then sorts them back into the right sequence before upload.">Reverse Order Split</option>
+                <option value="/assets/test-files/data-theft/chunk-uploads/randomized-size/manifest.json" data-description="Fetches unevenly sized sensitive-data fragments, then rebuilds the original file from the manifest order before upload.">Randomized Size Chunks</option>
+                <option value="/assets/test-files/data-theft/chunk-uploads/mixed-noise/manifest.json" data-description="Fetches sensitive-data fragments mixed with benign decoy chunks, then ignores the noise during browser reassembly before upload.">Mixed Noise Chunks</option>
+                <option value="/assets/test-files/data-theft/chunk-uploads/parallel-burst/manifest.json" data-description="Fires all sensitive-data chunk requests at once, then assembles the responses after the burst completes before upload.">Parallel Burst Fetch</option>
+              </select>
+              <p class="test-output" data-data-theft-chunk-description>Fetches sensitive-data fragments one by one in normal order, then joins them in the browser before upload.</p>
+            </div>
             <div class="test-actions">
-              <button class="primary-action" type="button" data-run-test>Run Test</button>
+              <button class="primary-action" type="button" data-data-theft-chunk-upload data-source-select="data-theft-chunk-upload-select">Run Selected Upload Test</button>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
@@ -298,6 +328,7 @@ $url = "https://www.swgaudit.com/data-theft/";
     </p>
   </footer>
   <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/data-theft-evasion.js"></script>
   <script src="/assets/js/data-theft-dns.js"></script>
 </body>
 </html>

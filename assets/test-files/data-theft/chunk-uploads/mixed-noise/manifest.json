@@ -1,0 +1,47 @@
+{
+  "filename": "pii-chunk-upload.txt",
+  "mime": "text/plain",
+  "fetchMode": "serial",
+  "chunks": [
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/noise-01.txt",
+      "order": 0,
+      "include": false
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-01.txt",
+      "order": 1,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-02.txt",
+      "order": 2,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-03.txt",
+      "order": 3,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-04.txt",
+      "order": 4,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-05.txt",
+      "order": 5,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/chunk-06.txt",
+      "order": 6,
+      "include": true
+    },
+    {
+      "url": "/assets/test-files/data-theft/chunk-uploads/mixed-noise/noise-02.txt",
+      "order": 99,
+      "include": false
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+Customer ID: CUST-783492
+US SSN test pattern: 078-05-1120

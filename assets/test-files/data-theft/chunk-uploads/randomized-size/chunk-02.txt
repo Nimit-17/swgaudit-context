@@ -1,0 +1,4 @@
+ile
+
+This file contains fake personal-data patterns for SWG and DLP testing.
+No real pers
