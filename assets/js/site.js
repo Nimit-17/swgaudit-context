@@ -798,6 +798,7 @@ const buildChunkAttackPayload = async (selectedUrl) => {
       include: chunk.include !== false,
       order: Number(chunk.order),
       text: (await response.text()).replace(/\r?\n$/, ""),
+      transform: chunk.transform || "none",
     };
   };
   let chunkResponses;
@@ -815,7 +816,7 @@ const buildChunkAttackPayload = async (selectedUrl) => {
   const assembledText = chunkResponses
     .filter((chunk) => chunk.include)
     .sort((left, right) => left.order - right.order)
-    .map((chunk) => chunk.text)
+    .map((chunk) => chunk.transform === "reverse-content" ? Array.from(chunk.text).reverse().join("") : chunk.text)
     .join("");
 
   return {
@@ -826,5 +827,21 @@ const buildChunkAttackPayload = async (selectedUrl) => {
 };
 
 document.querySelectorAll("[data-chunk-attack-download]").forEach((link) => {
-  makeBlobLinkPreparer(link, buildChunkAttackPayload);
+  link.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const select = document.getElementById(link.getAttribute("data-source-select"));
+    if (!select) return;
+
+    link.setAttribute("aria-busy", "true");
+
+    try {
+      const payload = await buildChunkAttackPayload(select.value);
+      downloadBytes(payload.bytes, payload.filename, payload.mime);
+    } catch (error) {
+      window.alert(`Chunk test failed: ${error.message}`);
+    } finally {
+      link.removeAttribute("aria-busy");
+    }
+  });
 });
