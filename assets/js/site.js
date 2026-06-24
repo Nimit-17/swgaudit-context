@@ -3,6 +3,227 @@ const mobilePanel = document.querySelector("#mobile-panel");
 const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
 
+const testAccessGate = (() => {
+  const storageKey = "swgaudit-test-access-v1";
+  const accessLifetime = 365 * 24 * 60 * 60 * 1000;
+  let accessGranted = false;
+  let pendingAction = null;
+  let readyToContinue = false;
+  let dialog;
+  let form;
+  let status;
+  let question;
+  let nonceInput;
+  let answerInput;
+  let submitButton;
+
+  try {
+    const storedAt = Number(window.localStorage.getItem(storageKey));
+    accessGranted = storedAt > 0 && storedAt >= Date.now() - accessLifetime;
+    if (!accessGranted) window.localStorage.removeItem(storageKey);
+  } catch (error) {
+    accessGranted = false;
+  }
+
+  const setStatus = (message, type = "") => {
+    status.textContent = message;
+    status.classList.toggle("is-fail", type === "error");
+    status.classList.toggle("is-pass", type === "success");
+  };
+
+  const setChallenge = (challenge) => {
+    question.textContent = challenge.question;
+    nonceInput.value = challenge.nonce;
+    answerInput.value = "";
+    answerInput.focus();
+  };
+
+  const loadChallenge = async () => {
+    setStatus("Loading a verification question...");
+    submitButton.disabled = true;
+
+    try {
+      const response = await fetch("/test-access.php", {
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+      const payload = await response.json();
+
+      if (!response.ok) throw new Error(payload.error || "Verification is unavailable.");
+      if (payload.verified) {
+        accessGranted = true;
+        readyToContinue = true;
+        try {
+          window.localStorage.setItem(storageKey, String(Date.now()));
+        } catch (error) {
+          // The server session still grants access when browser storage is unavailable.
+        }
+        dialog.classList.add("is-verified");
+        submitButton.textContent = "Continue to test";
+        setStatus("Verification complete. Continue when you are ready.", "success");
+        return;
+      }
+
+      setChallenge(payload.challenge);
+      setStatus("Complete the short check to continue.");
+    } catch (error) {
+      setStatus(error.message || "Verification is unavailable. Please try again.", "error");
+    } finally {
+      submitButton.disabled = false;
+    }
+  };
+
+  const replayPendingAction = () => {
+    const action = pendingAction;
+    pendingAction = null;
+    if (!action) return;
+
+    if (action.type === "submit") {
+      action.target.requestSubmit(action.submitter || undefined);
+      return;
+    }
+
+    action.target.click();
+  };
+
+  const buildDialog = () => {
+    dialog = document.createElement("dialog");
+    dialog.className = "test-access-dialog";
+    dialog.setAttribute("aria-labelledby", "test-access-title");
+    dialog.innerHTML = `
+      <div class="test-access-panel">
+        <button class="test-access-close" type="button">Close</button>
+        <p class="test-access-eyebrow">One-time verification</p>
+        <h2 id="test-access-title">Run your first SWG test</h2>
+        <p class="test-access-intro">Enter your work email and complete the CAPTCHA before launching a test. You will only be asked once in this browser.</p>
+        <form class="credential-test-form" data-test-access-form>
+          <div class="test-access-fields">
+            <div class="form-row">
+              <label for="test-access-email">Work email</label>
+              <input id="test-access-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@company.com" required>
+            </div>
+            <div class="form-row test-access-captcha-row">
+              <div class="test-access-captcha-label">
+                <label for="test-access-answer" data-test-access-question>Verification question</label>
+                <button type="button" class="test-access-refresh" data-test-access-refresh>New question</button>
+              </div>
+              <input id="test-access-answer" name="captcha_answer" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" required>
+              <input name="captcha_nonce" type="hidden" data-test-access-nonce>
+            </div>
+            <div class="test-access-honeypot" aria-hidden="true">
+              <label for="test-access-company">Company website</label>
+              <input id="test-access-company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
+          </div>
+          <p class="test-note">We record this email to understand test usage. Test payloads and form data are not retained by this gate.</p>
+          <p class="test-output test-access-status" data-test-access-status aria-live="polite"></p>
+          <div class="test-actions">
+            <button class="primary-action" type="submit" data-test-access-submit>Verify and continue</button>
+          </div>
+        </form>
+      </div>`;
+    document.body.appendChild(dialog);
+
+    form = dialog.querySelector("[data-test-access-form]");
+    status = dialog.querySelector("[data-test-access-status]");
+    question = dialog.querySelector("[data-test-access-question]");
+    nonceInput = dialog.querySelector("[data-test-access-nonce]");
+    answerInput = dialog.querySelector("#test-access-answer");
+    submitButton = dialog.querySelector("[data-test-access-submit]");
+
+    dialog.querySelector(".test-access-close").addEventListener("click", () => dialog.close());
+    dialog.querySelector("[data-test-access-refresh]").addEventListener("click", loadChallenge);
+    dialog.addEventListener("close", () => {
+      if (!readyToContinue) pendingAction = null;
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (readyToContinue) {
+        dialog.close();
+        replayPendingAction();
+        return;
+      }
+
+      if (!form.reportValidity()) return;
+
+      submitButton.disabled = true;
+      setStatus("Verifying your details...");
+
+      const data = new FormData(form);
+      const payload = Object.fromEntries(data.entries());
+      payload.page = window.location.pathname;
+
+      try {
+        const response = await fetch("/test-access.php", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          if (result.challenge) setChallenge(result.challenge);
+          throw new Error(result.error || "Verification failed.");
+        }
+
+        accessGranted = true;
+        readyToContinue = true;
+        try {
+          window.localStorage.setItem(storageKey, String(Date.now()));
+        } catch (error) {
+          // The server session still grants access when browser storage is unavailable.
+        }
+        dialog.classList.add("is-verified");
+        submitButton.textContent = "Continue to test";
+        setStatus("Verified. Select continue to launch your test.", "success");
+        submitButton.focus();
+      } catch (error) {
+        setStatus(error.message || "Verification failed. Please try again.", "error");
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  };
+
+  const open = (action) => {
+    pendingAction = action;
+    readyToContinue = false;
+    if (!dialog) buildDialog();
+    dialog.classList.remove("is-verified");
+    submitButton.textContent = "Verify and continue";
+    form.reset();
+    dialog.showModal();
+    loadChallenge();
+  };
+
+  document.addEventListener("click", (event) => {
+    if (accessGranted || (dialog && dialog.contains(event.target))) return;
+
+    const target = event.target.closest(".test-card-detail .primary-action");
+    if (!target || target.disabled) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    open({ type: "click", target });
+  }, true);
+
+  document.addEventListener("submit", (event) => {
+    if (accessGranted || (dialog && dialog.contains(event.target))) return;
+    if (!event.target.closest(".test-card-detail")) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    open({ type: "submit", target: event.target, submitter: event.submitter });
+  }, true);
+
+  return { hasAccess: () => accessGranted };
+})();
+
 if (menuButton && mobilePanel) {
   menuButton.addEventListener("click", () => {
     const isOpen = menuButton.getAttribute("aria-expanded") === "true";
