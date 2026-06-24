@@ -6,6 +6,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 
 const CONFIG_FILE = '/etc/swgaudit-v2/recaptcha.php';
+const INTEGRATION_CONFIG_FILE = '/etc/swgaudit-v2/integrations.php';
 const SUBMISSION_FILE = '/var/lib/swgaudit-v2/work-email-submissions.csv';
 const TOKEN_FILE = '/var/lib/swgaudit-v2/test-access-tokens.json';
 const TOKEN_TTL = 43200;
@@ -109,7 +110,7 @@ function rememberEmail(string $email): ?string
     return $token;
 }
 
-function appendSubmission(string $email, string $page): bool
+function appendSubmission(string $email, string $page, string $submittedAt): bool
 {
     $handle = @fopen(SUBMISSION_FILE, 'c+b');
     if ($handle === false || !flock($handle, LOCK_EX)) {
@@ -122,12 +123,68 @@ function appendSubmission(string $email, string $page): bool
         fputcsv($handle, ['submitted_at_utc', 'work_email', 'page']);
     }
 
-    $written = fputcsv($handle, [gmdate('c'), $email, $page]) !== false;
+    $written = fputcsv($handle, [$submittedAt, $email, $page]) !== false;
     fflush($handle);
     flock($handle, LOCK_UN);
     fclose($handle);
 
     return $written;
+}
+
+function syncSubmissionToGoogleSheet(string $email, string $page, string $submittedAt): void
+{
+    if (!is_file(INTEGRATION_CONFIG_FILE)) {
+        return;
+    }
+
+    $config = require INTEGRATION_CONFIG_FILE;
+    $url = is_array($config) ? (string) ($config['google_sheets_webhook_url'] ?? '') : '';
+    $secret = is_array($config) ? (string) ($config['google_sheets_webhook_secret'] ?? '') : '';
+
+    if ($url === '' || $secret === '') {
+        error_log('SWG Audit Google Sheets sync is not fully configured.');
+        return;
+    }
+
+    $curl = curl_init($url);
+    if ($curl === false) {
+        error_log('SWG Audit Google Sheets sync could not initialize.');
+        return;
+    }
+
+    curl_setopt_array($curl, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode([
+            'secret' => $secret,
+            'email' => $email,
+            'page' => $page,
+            'submitted_at' => $submittedAt,
+        ], JSON_UNESCAPED_SLASHES),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS => 5,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 12,
+        CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
+        CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/json',
+            'Content-Type: application/json',
+        ],
+    ]);
+
+    $body = curl_exec($curl);
+    $curlError = curl_error($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    curl_close($curl);
+
+    $result = is_string($body) ? json_decode($body, true) : null;
+    if ($status !== 200 || !is_array($result) || empty($result['ok'])) {
+        error_log('SWG Audit Google Sheets sync failed: ' . json_encode([
+            'http_status' => $status,
+            'curl_error' => $curlError,
+        ]));
+    }
 }
 
 function verifyRecaptcha(string $secret, string $response, string $remoteIp): bool
@@ -233,9 +290,12 @@ if (!verifyRecaptcha(
 $page = substr((string) ($payload['page'] ?? '/'), 0, 255);
 
 if ($isNewEmail) {
-    if (!appendSubmission((string) $email, $page)) {
+    $submittedAt = gmdate('c');
+    if (!appendSubmission((string) $email, $page, $submittedAt)) {
         respond(['error' => 'We could not save your submission. Please try again shortly.'], 503);
     }
+
+    syncSubmissionToGoogleSheet((string) $email, $page, $submittedAt);
 
     $token = rememberEmail((string) $email);
     if ($token === null) {
