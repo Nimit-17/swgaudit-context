@@ -59,6 +59,7 @@ const testAccessGate = (() => {
     recaptchaWidgetId = window.grecaptcha.render(recaptchaContainer, {
       sitekey: siteKey,
       theme: "dark",
+      callback: () => form.requestSubmit(),
       "expired-callback": () => setStatus("reCAPTCHA expired. Complete it again.", "error"),
       "error-callback": () => setStatus("reCAPTCHA could not verify. Please try again.", "error"),
     });
@@ -85,7 +86,6 @@ const testAccessGate = (() => {
               <input id="test-access-company" name="company" type="text" tabindex="-1" autocomplete="off">
             </div>
           </div>
-          <p class="test-note test-access-new-email-note">We record your email once to understand test usage. Test payloads are not retained by this gate.</p>
           <p class="test-note test-access-remembered-note">Email remembered for this tab. Closing the tab or waiting 12 hours will require it again.</p>
           <p class="test-output test-access-status" data-test-access-status aria-live="polite"></p>
           <div class="test-actions">
@@ -196,7 +196,7 @@ const testAccessGate = (() => {
 
       syncEmailState(result.email_remembered);
       await renderRecaptcha(result.site_key);
-      setStatus("Complete reCAPTCHA to enter the site.");
+      setStatus("");
       if (!result.email_remembered) emailInput.focus();
     } catch (error) {
       setStatus(error.message || "Verification is unavailable. Please try again.", "error");

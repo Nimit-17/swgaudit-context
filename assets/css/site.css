@@ -912,8 +912,11 @@ h2 {
 }
 
 .test-access-status {
-  min-height: 1.5em;
   margin: 0;
+}
+
+.test-access-status:empty {
+  display: none;
 }
 
 .test-access-honeypot {
@@ -925,10 +928,6 @@ h2 {
 }
 
 .test-access-remembered-note {
-  display: none;
-}
-
-.test-access-dialog.has-remembered-email .test-access-new-email-note {
   display: none;
 }
 

@@ -151,18 +151,31 @@ function verifyRecaptcha(string $secret, string $response, string $remoteIp): bo
     ]);
 
     $body = curl_exec($curl);
+    $curlError = curl_error($curl);
     $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
     curl_close($curl);
 
     if (!is_string($body) || $status !== 200) {
+        error_log('SWG Audit reCAPTCHA request failed: ' . json_encode([
+            'http_status' => $status,
+            'curl_error' => $curlError,
+        ]));
         return false;
     }
 
     $result = json_decode($body, true);
     $hostname = strtolower((string) ($result['hostname'] ?? ''));
-
-    return !empty($result['success'])
+    $valid = !empty($result['success'])
         && in_array($hostname, ['www.swgaudit.com', 'swgaudit.com'], true);
+
+    if (!$valid) {
+        error_log('SWG Audit reCAPTCHA rejected: ' . json_encode([
+            'error_codes' => $result['error-codes'] ?? [],
+            'hostname' => $hostname,
+        ]));
+    }
+
+    return $valid;
 }
 
 $config = loadConfig();
