@@ -695,7 +695,159 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 </body>
 </html>`;
 
-const makeMhtmlRendererUrl = (source) => `/assets/tests/phishing/mhtml-renderer.html?src=${encodeURIComponent(source)}`;
+const makeDummyGithubCanvasHtml = () => `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWG Audit Test - Dummy GitHub Canvas Login</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0d1117; }
+    canvas { width: 100vw; height: 100vh; display: block; outline: none; }
+  </style>
+</head>
+<body>
+  <canvas id="login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered entirely on canvas"></canvas>
+  <script>
+    const canvas = document.getElementById("login-canvas");
+    const ctx = canvas.getContext("2d");
+    const state = { active: "username", username: "", password: "", submitted: false, boxes: {}, scale: 1 };
+
+    const roundedRect = (x, y, width, height, radius) => {
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, height, radius);
+    };
+
+    const write = (value, x, y, size, color, weight, align) => {
+      ctx.fillStyle = color;
+      ctx.font = (weight || "400") + " " + size + "px -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif";
+      ctx.textAlign = align || "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(value, x, y);
+    };
+
+    const drawInput = (name, label, value, x, y, width) => {
+      write(label, x, y, 15, "#f0f6fc", "600");
+      const box = { x: x, y: y + 18, width: width, height: 44 };
+      state.boxes[name] = box;
+      roundedRect(box.x, box.y, box.width, box.height, 6);
+      ctx.fillStyle = "#0d1117";
+      ctx.fill();
+      ctx.strokeStyle = state.active === name ? "#2f81f7" : "#3d444d";
+      ctx.lineWidth = state.active === name ? 2 : 1;
+      ctx.stroke();
+      write(value, box.x + 12, box.y + box.height / 2, 16, "#f0f6fc");
+    };
+
+    const draw = () => {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      state.scale = Math.min(1, viewportWidth / 460, viewportHeight / 760);
+      const width = viewportWidth / state.scale;
+      const height = viewportHeight / state.scale;
+      const panelWidth = Math.min(420, width - 36);
+      const x = (width - panelWidth) / 2;
+      let y = Math.max(44, (height - 650) / 2);
+      state.boxes = {};
+
+      ctx.clearRect(0, 0, viewportWidth, viewportHeight);
+      ctx.save();
+      ctx.scale(state.scale, state.scale);
+      ctx.fillStyle = "#0d1117";
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = "#f0f6fc";
+      ctx.beginPath();
+      ctx.arc(width / 2, y + 30, 28, 0, Math.PI * 2);
+      ctx.fill();
+      write("GH", width / 2, y + 31, 16, "#0d1117", "800", "center");
+      write("Sign in to GitHub", width / 2, y + 94, 26, "#f0f6fc", "600", "center");
+      y += 138;
+
+      if (state.submitted) {
+        roundedRect(x, y, panelWidth, 92, 6);
+        ctx.fillStyle = "#2d1519";
+        ctx.fill();
+        ctx.strokeStyle = "#f85149";
+        ctx.stroke();
+        write("Test Failed: submission was supposed to be blocked.", x + 14, y + 22, 13, "#ffb4b4", "700");
+        write("Username: " + state.username, x + 14, y + 49, 13, "#f0f6fc");
+        write("Password: " + state.password, x + 14, y + 72, 13, "#f0f6fc");
+        y += 116;
+      }
+
+      drawInput("username", "Username or email address", state.username, x, y, panelWidth);
+      y += 88;
+      write("Forgot password?", x + panelWidth, y, 14, "#2f81f7", "400", "right");
+      drawInput("password", "Password", "*".repeat(state.password.length), x, y, panelWidth);
+      y += 86;
+
+      const submit = { x: x, y: y, width: panelWidth, height: 46 };
+      state.boxes.submit = submit;
+      roundedRect(submit.x, submit.y, submit.width, submit.height, 6);
+      ctx.fillStyle = "#238636";
+      ctx.fill();
+      write("Sign in", width / 2, submit.y + submit.height / 2, 16, "#fff", "700", "center");
+      y += 82;
+
+      ctx.strokeStyle = "#3d444d";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + panelWidth * 0.44, y);
+      ctx.moveTo(x + panelWidth * 0.56, y);
+      ctx.lineTo(x + panelWidth, y);
+      ctx.stroke();
+      write("or", width / 2, y, 15, "#8b949e", "400", "center");
+      write("Continue with Google", width / 2, y + 55, 15, "#f0f6fc", "600", "center");
+      write("Continue with Apple", width / 2, y + 102, 15, "#f0f6fc", "600", "center");
+      write("New to GitHub?  Create an account", width / 2, y + 162, 15, "#2f81f7", "400", "center");
+      ctx.restore();
+    };
+
+    const resize = () => {
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * ratio);
+      canvas.height = Math.floor(window.innerHeight * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      draw();
+    };
+
+    const contains = (point, box) => box
+      && point.x >= box.x && point.x <= box.x + box.width
+      && point.y >= box.y && point.y <= box.y + box.height;
+
+    canvas.addEventListener("mousedown", (event) => {
+      const point = { x: event.clientX / state.scale, y: event.clientY / state.scale };
+      canvas.focus();
+      if (contains(point, state.boxes.username)) state.active = "username";
+      if (contains(point, state.boxes.password)) state.active = "password";
+      if (contains(point, state.boxes.submit)) state.submitted = true;
+      draw();
+    });
+
+    canvas.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        state.active = state.active === "username" ? "password" : "username";
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        state.submitted = true;
+      } else if (event.key === "Backspace") {
+        event.preventDefault();
+        state[state.active] = state[state.active].slice(0, -1);
+      } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
+        state[state.active] += event.key;
+      }
+      draw();
+    });
+
+    window.addEventListener("resize", resize);
+    resize();
+    canvas.focus();
+  <\/script>
+</body>
+</html>`;
 
 const buildClientMhtml = (html) => {
   const boundary = `----SWGAudit-${crypto.randomUUID()}`;
@@ -793,7 +945,7 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
 });
 
 document.querySelectorAll("[data-phishing-canvas-launch]").forEach((button) => {
-  button.addEventListener("click", async () => {
+  button.addEventListener("click", () => {
     const card = button.closest("[data-test-card]");
     const output = card ? card.querySelector("[data-test-output]") : null;
 
@@ -801,13 +953,13 @@ document.querySelectorAll("[data-phishing-canvas-launch]").forEach((button) => {
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = "Opening server MHTML renderer...";
+    output.textContent = "Building canvas-rendered HTML in this browser...";
 
     try {
-      const openedWindow = window.open(makeMhtmlRendererUrl("/assets/tests/phishing/github-canvas.mhtml"), "_blank");
+      const openedWindow = openClientHtml(makeDummyGithubCanvasHtml());
 
       if (openedWindow) {
-        output.textContent = "Opened dummy GitHub-style canvas rendering test in a new tab. The new tab fetches the .mhtml payload.";
+        output.textContent = "Built the canvas page entirely in this browser and opened it in a new tab.";
         return;
       }
 
