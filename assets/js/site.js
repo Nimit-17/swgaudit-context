@@ -16,10 +16,16 @@ const testAccessGate = (() => {
   let submitButton;
   let recaptchaWidgetId = null;
   let recaptchaPromise = null;
+  let navigationType = "navigate";
+  let hasSameOriginReferrer = false;
 
   try {
     window.localStorage.removeItem("swgaudit-test-access-v1");
     rememberedToken = window.sessionStorage.getItem(sessionKey) || "";
+    const navigationEntry = window.performance.getEntriesByType("navigation")[0];
+    navigationType = navigationEntry ? navigationEntry.type : "navigate";
+    hasSameOriginReferrer = document.referrer !== ""
+      && new URL(document.referrer).origin === window.location.origin;
   } catch (error) {
     rememberedToken = "";
   }
@@ -75,7 +81,7 @@ const testAccessGate = (() => {
       <div class="test-access-dialog test-access-panel">
         <p class="test-access-eyebrow">Security verification</p>
         <h2 id="test-access-title">Verify to enter SWG Audit</h2>
-        <p class="test-access-intro">Complete reCAPTCHA each time the site loads. Your work email is remembered only for this browser tab.</p>
+        <p class="test-access-intro">Complete reCAPTCHA when you first enter or refresh the site. Your work email is remembered only for this browser tab.</p>
         <form class="credential-test-form" data-test-access-form>
           <div class="test-access-fields">
             <div class="form-row" data-test-access-email-row>
@@ -249,7 +255,32 @@ const testAccessGate = (() => {
     event.stopImmediatePropagation();
   }, true);
 
-  open();
+  const initialize = async () => {
+    const canReuseVerification = rememberedToken
+      && navigationType !== "reload"
+      && (hasSameOriginReferrer || navigationType === "back_forward");
+
+    if (canReuseVerification) {
+      try {
+        const response = await fetch(`/test-access.php?token=${encodeURIComponent(rememberedToken)}`, {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+        });
+        const result = await response.json();
+
+        if (response.ok && result.email_remembered) {
+          accessGranted = true;
+          return;
+        }
+      } catch (error) {
+        // Fall through to the verification gate when the remembered token cannot be checked.
+      }
+    }
+
+    open();
+  };
+
+  initialize();
 
   return { hasAccess: () => accessGranted };
 })();
