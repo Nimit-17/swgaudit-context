@@ -288,15 +288,15 @@ if (!verifyRecaptcha(
 }
 
 $page = substr((string) ($payload['page'] ?? '/'), 0, 255);
+$submittedAt = gmdate('c');
+
+if (!appendSubmission((string) $email, $page, $submittedAt)) {
+    respond(['error' => 'We could not save your submission. Please try again shortly.'], 503);
+}
+
+syncSubmissionToGoogleSheet((string) $email, $page, $submittedAt);
 
 if ($isNewEmail) {
-    $submittedAt = gmdate('c');
-    if (!appendSubmission((string) $email, $page, $submittedAt)) {
-        respond(['error' => 'We could not save your submission. Please try again shortly.'], 503);
-    }
-
-    syncSubmissionToGoogleSheet((string) $email, $page, $submittedAt);
-
     $token = rememberEmail((string) $email);
     if ($token === null) {
         respond(['error' => 'We could not remember this tab. Please try again shortly.'], 503);
