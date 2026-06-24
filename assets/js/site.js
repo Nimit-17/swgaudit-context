@@ -85,6 +85,7 @@ const testAccessGate = (() => {
       <div class="test-access-dialog test-access-panel">
         <p class="test-access-eyebrow">Security verification</p>
         <h2 id="test-access-title">Verify to enter SWG Audit</h2>
+        <p class="test-access-safety-note">All tests are safe and no real threats are delivered.</p>
         <form class="credential-test-form" data-test-access-form>
           <div class="test-access-fields">
             <div class="form-row" data-test-access-email-row>
