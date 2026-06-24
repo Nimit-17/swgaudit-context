@@ -83,26 +83,15 @@ header('X-SWG-Audit-Cache-Phase: prime');
       background: #11151d;
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
     }
-    .eyebrow {
-      margin: 0 0 12px;
-      color: #ff2538;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
     h1 { margin: 0; font-size: clamp(30px, 7vw, 48px); line-height: 1; }
     p { margin: 20px 0 0; color: #c8d0dc; font-size: 18px; line-height: 1.6; }
     strong { color: #fff; }
-    .safe { color: #8ee6b1; }
   </style>
 </head>
 <body>
   <main>
-    <p class="eyebrow">Temporary loading issue</p>
     <h1>Page not loaded</h1>
     <p>Click <strong>Refresh</strong> in your browser to try loading this page again.</p>
-    <p class="safe">All SWG Audit tests are safe and no real threats are delivered.</p>
   </main>
 </body>
 </html>
