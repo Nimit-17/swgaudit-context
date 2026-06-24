@@ -99,9 +99,9 @@ header('X-SWG-Audit-Cache-Phase: prime');
 </head>
 <body>
   <main>
-    <p class="eyebrow">Cache primed</p>
-    <h1>Harmless initial page</h1>
-    <p>This response is intentionally cacheable. <strong>Refresh this tab once</strong> to request the changed content at this exact URL.</p>
+    <p class="eyebrow">Temporary loading issue</p>
+    <h1>Page not loaded</h1>
+    <p>Click <strong>Refresh</strong> in your browser to try loading this page again.</p>
     <p class="safe">All SWG Audit tests are safe and no real threats are delivered.</p>
   </main>
 </body>
