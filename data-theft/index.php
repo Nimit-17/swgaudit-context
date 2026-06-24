@@ -132,7 +132,7 @@ $url = "https://www.swgaudit.com/data-theft/";
   <main class="page-shell test-page" id="top">
     <section class="test-hero" aria-labelledby="page-title">
       <h1 id="page-title">Data Theft</h1>
-      <p>Use these safe data-theft test structures to validate how perimeter controls handle sensitive data movement and egress attempts.</p>
+      <p>Safe data-exfiltration simulations that test whether the SWG can detect and block sensitive data leaving the network through uploads, alternate transfer channels, and covert delivery methods.</p>
     </section>
 
     <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
@@ -305,7 +305,7 @@ $url = "https://www.swgaudit.com/data-theft/";
           <div class="test-card-summary">
             <div>
               <h3>DNS tunnelling</h3>
-              <p>Checks whether sensitive data can be encoded and sent through DNS-style channels.</p>
+              <p>Checks whether sensitive data can be encoded and sent through DNS channels.</p>
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-2-detail" hidden>
