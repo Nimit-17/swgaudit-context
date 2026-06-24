@@ -4,25 +4,24 @@ const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
 
 const testAccessGate = (() => {
-  const storageKey = "swgaudit-test-access-v1";
-  const accessLifetime = 365 * 24 * 60 * 60 * 1000;
+  const sessionKey = "swgaudit-test-session-v1";
   let accessGranted = false;
-  let pendingAction = null;
-  let readyToContinue = false;
+  let rememberedToken = "";
   let dialog;
   let form;
   let status;
-  let question;
-  let nonceInput;
-  let answerInput;
+  let emailRow;
+  let emailInput;
+  let recaptchaContainer;
   let submitButton;
+  let recaptchaWidgetId = null;
+  let recaptchaPromise = null;
 
   try {
-    const storedAt = Number(window.localStorage.getItem(storageKey));
-    accessGranted = storedAt > 0 && storedAt >= Date.now() - accessLifetime;
-    if (!accessGranted) window.localStorage.removeItem(storageKey);
+    window.localStorage.removeItem("swgaudit-test-access-v1");
+    rememberedToken = window.sessionStorage.getItem(sessionKey) || "";
   } catch (error) {
-    accessGranted = false;
+    rememberedToken = "";
   }
 
   const setStatus = (message, type = "") => {
@@ -31,59 +30,38 @@ const testAccessGate = (() => {
     status.classList.toggle("is-pass", type === "success");
   };
 
-  const setChallenge = (challenge) => {
-    question.textContent = challenge.question;
-    nonceInput.value = challenge.nonce;
-    answerInput.value = "";
-    answerInput.focus();
+  const syncEmailState = (isRemembered) => {
+    emailRow.hidden = isRemembered;
+    emailInput.required = !isRemembered;
+    dialog.classList.toggle("has-remembered-email", isRemembered);
   };
 
-  const loadChallenge = async () => {
-    setStatus("Loading a verification question...");
-    submitButton.disabled = true;
+  const loadRecaptcha = () => {
+    if (window.grecaptcha && window.grecaptcha.render) return Promise.resolve();
+    if (recaptchaPromise) return recaptchaPromise;
 
-    try {
-      const response = await fetch("/test-access.php", {
-        headers: { Accept: "application/json" },
-        cache: "no-store",
-      });
-      const payload = await response.json();
+    recaptchaPromise = new Promise((resolve, reject) => {
+      window.swgAuditRecaptchaReady = resolve;
+      const script = document.createElement("script");
+      script.src = "https://www.google.com/recaptcha/api.js?onload=swgAuditRecaptchaReady&render=explicit";
+      script.async = true;
+      script.defer = true;
+      script.onerror = () => reject(new Error("reCAPTCHA could not be loaded."));
+      document.head.appendChild(script);
+    });
 
-      if (!response.ok) throw new Error(payload.error || "Verification is unavailable.");
-      if (payload.verified) {
-        accessGranted = true;
-        readyToContinue = true;
-        try {
-          window.localStorage.setItem(storageKey, String(Date.now()));
-        } catch (error) {
-          // The server session still grants access when browser storage is unavailable.
-        }
-        dialog.classList.add("is-verified");
-        submitButton.textContent = "Continue to test";
-        setStatus("Verification complete. Continue when you are ready.", "success");
-        return;
-      }
-
-      setChallenge(payload.challenge);
-      setStatus("Complete the short check to continue.");
-    } catch (error) {
-      setStatus(error.message || "Verification is unavailable. Please try again.", "error");
-    } finally {
-      submitButton.disabled = false;
-    }
+    return recaptchaPromise;
   };
 
-  const replayPendingAction = () => {
-    const action = pendingAction;
-    pendingAction = null;
-    if (!action) return;
+  const renderRecaptcha = async (siteKey) => {
+    await loadRecaptcha();
 
-    if (action.type === "submit") {
-      action.target.requestSubmit(action.submitter || undefined);
-      return;
-    }
-
-    action.target.click();
+    recaptchaWidgetId = window.grecaptcha.render(recaptchaContainer, {
+      sitekey: siteKey,
+      theme: "dark",
+      "expired-callback": () => setStatus("reCAPTCHA expired. Complete it again.", "error"),
+      "error-callback": () => setStatus("reCAPTCHA could not verify. Please try again.", "error"),
+    });
   };
 
   const buildDialog = () => {
@@ -92,33 +70,26 @@ const testAccessGate = (() => {
     dialog.setAttribute("aria-labelledby", "test-access-title");
     dialog.innerHTML = `
       <div class="test-access-panel">
-        <button class="test-access-close" type="button">Close</button>
-        <p class="test-access-eyebrow">One-time verification</p>
-        <h2 id="test-access-title">Run your first SWG test</h2>
-        <p class="test-access-intro">Enter your work email and complete the CAPTCHA before launching a test. You will only be asked once in this browser.</p>
+        <p class="test-access-eyebrow">Security verification</p>
+        <h2 id="test-access-title">Verify to enter SWG Audit</h2>
+        <p class="test-access-intro">Complete reCAPTCHA each time the site loads. Your work email is remembered only for this browser tab.</p>
         <form class="credential-test-form" data-test-access-form>
           <div class="test-access-fields">
-            <div class="form-row">
+            <div class="form-row" data-test-access-email-row>
               <label for="test-access-email">Work email</label>
               <input id="test-access-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@company.com" required>
             </div>
-            <div class="form-row test-access-captcha-row">
-              <div class="test-access-captcha-label">
-                <label for="test-access-answer" data-test-access-question>Verification question</label>
-                <button type="button" class="test-access-refresh" data-test-access-refresh>New question</button>
-              </div>
-              <input id="test-access-answer" name="captcha_answer" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" required>
-              <input name="captcha_nonce" type="hidden" data-test-access-nonce>
-            </div>
+            <div class="test-access-recaptcha" data-test-access-recaptcha aria-label="reCAPTCHA verification"></div>
             <div class="test-access-honeypot" aria-hidden="true">
               <label for="test-access-company">Company website</label>
               <input id="test-access-company" name="company" type="text" tabindex="-1" autocomplete="off">
             </div>
           </div>
-          <p class="test-note">We record this email to understand test usage. Test payloads and form data are not retained by this gate.</p>
+          <p class="test-note test-access-new-email-note">We record your email once to understand test usage. Test payloads are not retained by this gate.</p>
+          <p class="test-note test-access-remembered-note">Email remembered for this tab. Closing the tab or waiting 12 hours will require it again.</p>
           <p class="test-output test-access-status" data-test-access-status aria-live="polite"></p>
           <div class="test-actions">
-            <button class="primary-action" type="submit" data-test-access-submit>Verify and continue</button>
+            <button class="primary-action" type="submit" data-test-access-submit>Verify and enter site</button>
           </div>
         </form>
       </div>`;
@@ -126,27 +97,24 @@ const testAccessGate = (() => {
 
     form = dialog.querySelector("[data-test-access-form]");
     status = dialog.querySelector("[data-test-access-status]");
-    question = dialog.querySelector("[data-test-access-question]");
-    nonceInput = dialog.querySelector("[data-test-access-nonce]");
-    answerInput = dialog.querySelector("#test-access-answer");
+    emailRow = dialog.querySelector("[data-test-access-email-row]");
+    emailInput = dialog.querySelector("#test-access-email");
+    recaptchaContainer = dialog.querySelector("[data-test-access-recaptcha]");
     submitButton = dialog.querySelector("[data-test-access-submit]");
 
-    dialog.querySelector(".test-access-close").addEventListener("click", () => dialog.close());
-    dialog.querySelector("[data-test-access-refresh]").addEventListener("click", loadChallenge);
-    dialog.addEventListener("close", () => {
-      if (!readyToContinue) pendingAction = null;
-    });
+    dialog.addEventListener("cancel", (event) => event.preventDefault());
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (!form.reportValidity()) return;
 
-      if (readyToContinue) {
-        dialog.close();
-        replayPendingAction();
+      const recaptchaResponse = recaptchaWidgetId === null
+        ? ""
+        : window.grecaptcha.getResponse(recaptchaWidgetId);
+      if (!recaptchaResponse) {
+        setStatus("Complete the reCAPTCHA challenge.", "error");
         return;
       }
-
-      if (!form.reportValidity()) return;
 
       submitButton.disabled = true;
       setStatus("Verifying your details...");
@@ -154,6 +122,8 @@ const testAccessGate = (() => {
       const data = new FormData(form);
       const payload = Object.fromEntries(data.entries());
       payload.page = window.location.pathname;
+      payload.token = rememberedToken;
+      payload.recaptcha_response = recaptchaResponse;
 
       try {
         const response = await fetch("/test-access.php", {
@@ -167,38 +137,72 @@ const testAccessGate = (() => {
         const result = await response.json();
 
         if (!response.ok) {
-          if (result.challenge) setChallenge(result.challenge);
+          if (result.email_required) {
+            rememberedToken = "";
+            try {
+              window.sessionStorage.removeItem(sessionKey);
+            } catch (error) {
+              // The email field is shown when session storage is unavailable.
+            }
+            syncEmailState(false);
+            emailInput.focus();
+          }
           throw new Error(result.error || "Verification failed.");
         }
 
-        accessGranted = true;
-        readyToContinue = true;
-        try {
-          window.localStorage.setItem(storageKey, String(Date.now()));
-        } catch (error) {
-          // The server session still grants access when browser storage is unavailable.
+        rememberedToken = result.token || rememberedToken;
+        if (rememberedToken) {
+          try {
+            window.sessionStorage.setItem(sessionKey, rememberedToken);
+          } catch (error) {
+            // A future page load will ask for the email again if storage is unavailable.
+          }
         }
-        dialog.classList.add("is-verified");
-        submitButton.textContent = "Continue to test";
-        setStatus("Verified. Select continue to launch your test.", "success");
-        submitButton.focus();
+        accessGranted = true;
+        dialog.close();
       } catch (error) {
         setStatus(error.message || "Verification failed. Please try again.", "error");
+        if (recaptchaWidgetId !== null) window.grecaptcha.reset(recaptchaWidgetId);
       } finally {
         submitButton.disabled = false;
       }
     });
   };
 
-  const open = (action) => {
-    pendingAction = action;
-    readyToContinue = false;
-    if (!dialog) buildDialog();
-    dialog.classList.remove("is-verified");
-    submitButton.textContent = "Verify and continue";
-    form.reset();
+  const open = async () => {
+    buildDialog();
+    syncEmailState(Boolean(rememberedToken));
     dialog.showModal();
-    loadChallenge();
+    submitButton.disabled = true;
+    setStatus("Loading reCAPTCHA...");
+
+    try {
+      const query = rememberedToken ? `?token=${encodeURIComponent(rememberedToken)}` : "";
+      const response = await fetch(`/test-access.php${query}`, {
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      });
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.error || "Verification is unavailable.");
+      if (!result.email_remembered && rememberedToken) {
+        rememberedToken = "";
+        try {
+          window.sessionStorage.removeItem(sessionKey);
+        } catch (error) {
+          // The email field is shown even if storage cleanup is unavailable.
+        }
+      }
+
+      syncEmailState(result.email_remembered);
+      await renderRecaptcha(result.site_key);
+      setStatus("Complete reCAPTCHA to enter the site.");
+      if (!result.email_remembered) emailInput.focus();
+    } catch (error) {
+      setStatus(error.message || "Verification is unavailable. Please try again.", "error");
+    } finally {
+      submitButton.disabled = false;
+    }
   };
 
   document.addEventListener("click", (event) => {
@@ -209,7 +213,6 @@ const testAccessGate = (() => {
 
     event.preventDefault();
     event.stopImmediatePropagation();
-    open({ type: "click", target });
   }, true);
 
   document.addEventListener("submit", (event) => {
@@ -218,8 +221,9 @@ const testAccessGate = (() => {
 
     event.preventDefault();
     event.stopImmediatePropagation();
-    open({ type: "submit", target: event.target, submitter: event.submitter });
   }, true);
+
+  open();
 
   return { hasAccess: () => accessGranted };
 })();

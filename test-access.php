@@ -5,19 +5,10 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 
-$isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => $isHttps,
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
-session_start();
-
+const CONFIG_FILE = '/etc/swgaudit-v2/recaptcha.php';
 const SUBMISSION_FILE = '/var/lib/swgaudit-v2/work-email-submissions.csv';
-const CAPTCHA_TTL = 600;
-const VERIFIED_TTL = 31536000;
+const TOKEN_FILE = '/var/lib/swgaudit-v2/test-access-tokens.json';
+const TOKEN_TTL = 43200;
 
 function respond(array $payload, int $status = 200): never
 {
@@ -26,37 +17,103 @@ function respond(array $payload, int $status = 200): never
     exit;
 }
 
-function isVerified(): bool
+function loadConfig(): array
 {
-    $verifiedAt = (int) ($_SESSION['test_access_verified_at'] ?? 0);
-    return $verifiedAt > 0 && $verifiedAt >= time() - VERIFIED_TTL;
+    if (!is_file(CONFIG_FILE)) {
+        respond(['error' => 'reCAPTCHA is not configured.'], 503);
+    }
+
+    $config = require CONFIG_FILE;
+    if (!is_array($config) || empty($config['site_key']) || empty($config['secret_key'])) {
+        respond(['error' => 'reCAPTCHA is not configured.'], 503);
+    }
+
+    return $config;
 }
 
-function newChallenge(): array
+function readActiveTokens($handle): array
 {
-    $left = random_int(3, 12);
-    $right = random_int(2, 9);
-    $nonce = bin2hex(random_bytes(16));
+    rewind($handle);
+    $contents = stream_get_contents($handle);
+    $records = $contents === '' ? [] : json_decode($contents, true);
+    if (!is_array($records)) {
+        $records = [];
+    }
 
-    $_SESSION['test_access_captcha'] = [
-        'answer' => $left + $right,
-        'created_at' => time(),
-        'nonce' => $nonce,
+    return array_values(array_filter(
+        $records,
+        static fn ($record): bool => is_array($record)
+            && isset($record['token_hash'], $record['email'], $record['expires_at'])
+            && (int) $record['expires_at'] >= time()
+    ));
+}
+
+function writeTokens($handle, array $records): void
+{
+    rewind($handle);
+    ftruncate($handle, 0);
+    fwrite($handle, json_encode($records, JSON_UNESCAPED_SLASHES));
+    fflush($handle);
+}
+
+function findRememberedEmail(string $token): ?string
+{
+    if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
+        return null;
+    }
+
+    $handle = @fopen(TOKEN_FILE, 'c+b');
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        if (is_resource($handle)) fclose($handle);
+        return null;
+    }
+
+    $records = readActiveTokens($handle);
+    $tokenHash = hash('sha256', $token);
+    $email = null;
+
+    foreach ($records as $record) {
+        if (hash_equals((string) $record['token_hash'], $tokenHash)) {
+            $email = (string) $record['email'];
+            break;
+        }
+    }
+
+    writeTokens($handle, $records);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+
+    return $email;
+}
+
+function rememberEmail(string $email): ?string
+{
+    $handle = @fopen(TOKEN_FILE, 'c+b');
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        if (is_resource($handle)) fclose($handle);
+        return null;
+    }
+
+    $records = readActiveTokens($handle);
+    $token = bin2hex(random_bytes(32));
+    $records[] = [
+        'token_hash' => hash('sha256', $token),
+        'email' => $email,
+        'expires_at' => time() + TOKEN_TTL,
     ];
 
-    return [
-        'question' => "What is {$left} + {$right}?",
-        'nonce' => $nonce,
-    ];
+    writeTokens($handle, $records);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+
+    return $token;
 }
 
 function appendSubmission(string $email, string $page): bool
 {
     $handle = @fopen(SUBMISSION_FILE, 'c+b');
     if ($handle === false || !flock($handle, LOCK_EX)) {
-        if (is_resource($handle)) {
-            fclose($handle);
-        }
+        if (is_resource($handle)) fclose($handle);
         return false;
     }
 
@@ -73,12 +130,49 @@ function appendSubmission(string $email, string $page): bool
     return $written;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isVerified()) {
-        respond(['verified' => true]);
+function verifyRecaptcha(string $secret, string $response, string $remoteIp): bool
+{
+    $curl = curl_init('https://www.google.com/recaptcha/api/siteverify');
+    if ($curl === false) {
+        return false;
     }
 
-    respond(['verified' => false, 'challenge' => newChallenge()]);
+    curl_setopt_array($curl, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => http_build_query([
+            'secret' => $secret,
+            'response' => $response,
+            'remoteip' => $remoteIp,
+        ]),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_HTTPHEADER => ['Accept: application/json'],
+    ]);
+
+    $body = curl_exec($curl);
+    $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    curl_close($curl);
+
+    if (!is_string($body) || $status !== 200) {
+        return false;
+    }
+
+    $result = json_decode($body, true);
+    $hostname = strtolower((string) ($result['hostname'] ?? ''));
+
+    return !empty($result['success'])
+        && in_array($hostname, ['www.swgaudit.com', 'swgaudit.com'], true);
+}
+
+$config = loadConfig();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $token = trim((string) ($_GET['token'] ?? ''));
+    respond([
+        'site_key' => (string) $config['site_key'],
+        'email_remembered' => $token !== '' && findRememberedEmail($token) !== null,
+    ]);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -96,58 +190,44 @@ if (!is_array($payload)) {
 }
 
 if (!empty($payload['company'])) {
-    respond(['error' => 'Unable to verify this submission.', 'challenge' => newChallenge()], 400);
+    respond(['error' => 'Unable to verify this submission.'], 400);
 }
 
-$attempts = array_values(array_filter(
-    $_SESSION['test_access_attempts'] ?? [],
-    static fn ($timestamp): bool => is_int($timestamp) && $timestamp >= time() - 600
-));
+$token = trim((string) ($payload['token'] ?? ''));
+$email = $token === '' ? null : findRememberedEmail($token);
+$isNewEmail = $email === null;
 
-if (count($attempts) >= 10) {
-    respond(['error' => 'Too many attempts. Please wait a few minutes and try again.'], 429);
+if ($isNewEmail) {
+    $email = strtolower(trim((string) ($payload['email'] ?? '')));
+    if (strlen($email) > 254 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        respond(['error' => 'Enter a valid work email address.', 'email_required' => true], 422);
+    }
 }
 
-$attempts[] = time();
-$_SESSION['test_access_attempts'] = $attempts;
+$recaptchaResponse = trim((string) ($payload['recaptcha_response'] ?? ''));
+if ($recaptchaResponse === '') {
+    respond(['error' => 'Complete the reCAPTCHA challenge.'], 422);
+}
 
-$email = strtolower(trim((string) ($payload['email'] ?? '')));
-$answer = trim((string) ($payload['captcha_answer'] ?? ''));
-$nonce = (string) ($payload['captcha_nonce'] ?? '');
+if (!verifyRecaptcha(
+    (string) $config['secret_key'],
+    $recaptchaResponse,
+    (string) ($_SERVER['REMOTE_ADDR'] ?? '')
+)) {
+    respond(['error' => 'reCAPTCHA verification failed. Please try again.'], 422);
+}
+
 $page = substr((string) ($payload['page'] ?? '/'), 0, 255);
-$challenge = $_SESSION['test_access_captcha'] ?? null;
 
-if (strlen($email) > 254 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    respond([
-        'error' => 'Enter a valid work email address.',
-        'challenge' => newChallenge(),
-    ], 422);
+if ($isNewEmail) {
+    if (!appendSubmission((string) $email, $page)) {
+        respond(['error' => 'We could not save your submission. Please try again shortly.'], 503);
+    }
+
+    $token = rememberEmail((string) $email);
+    if ($token === null) {
+        respond(['error' => 'We could not remember this tab. Please try again shortly.'], 503);
+    }
 }
 
-$challengeValid = is_array($challenge)
-    && isset($challenge['answer'], $challenge['created_at'], $challenge['nonce'])
-    && (int) $challenge['created_at'] >= time() - CAPTCHA_TTL
-    && hash_equals((string) $challenge['nonce'], $nonce)
-    && ctype_digit($answer)
-    && (int) $answer === (int) $challenge['answer'];
-
-if (!$challengeValid) {
-    respond([
-        'error' => 'That CAPTCHA answer was not correct. Try the new question.',
-        'challenge' => newChallenge(),
-    ], 422);
-}
-
-if (!appendSubmission($email, $page)) {
-    respond([
-        'error' => 'We could not save your submission. Please try again shortly.',
-        'challenge' => newChallenge(),
-    ], 503);
-}
-
-session_regenerate_id(true);
-$_SESSION['test_access_verified_at'] = time();
-$_SESSION['test_access_email'] = $email;
-unset($_SESSION['test_access_captcha'], $_SESSION['test_access_attempts']);
-
-respond(['verified' => true]);
+respond(['verified' => true, 'token' => $token]);

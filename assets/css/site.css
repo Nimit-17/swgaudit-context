@@ -895,29 +895,9 @@ h2 {
 }
 
 .test-access-intro {
-  margin: 0 2rem 0.35rem 0;
+  margin: 0 0 0.35rem;
   color: var(--muted);
   line-height: 1.6;
-}
-
-.test-access-close {
-  position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  min-width: 64px;
-  height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  color: var(--muted);
-  background: transparent;
-  font-size: 0.82rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.test-access-close:hover {
-  color: var(--text);
-  border-color: var(--line-strong);
 }
 
 .test-access-fields {
@@ -925,22 +905,10 @@ h2 {
   gap: 0.85rem;
 }
 
-.test-access-captcha-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.test-access-refresh {
-  border: 0;
-  color: var(--text);
-  background: transparent;
-  padding: 0;
-  font-size: 0.82rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
+.test-access-recaptcha {
+  width: 304px;
+  max-width: 100%;
+  min-height: 78px;
 }
 
 .test-access-status {
@@ -956,8 +924,16 @@ h2 {
   overflow: hidden;
 }
 
-.test-access-dialog.is-verified .test-access-fields {
+.test-access-remembered-note {
   display: none;
+}
+
+.test-access-dialog.has-remembered-email .test-access-new-email-note {
+  display: none;
+}
+
+.test-access-dialog.has-remembered-email .test-access-remembered-note {
+  display: block;
 }
 
 @media (max-width: 520px) {
@@ -970,14 +946,18 @@ h2 {
     padding: 1.25rem;
   }
 
-  .test-access-intro {
-    margin-right: 0;
+}
+
+@media (max-width: 360px) {
+  .test-access-panel {
+    padding: 1rem;
   }
 
-  .test-access-captcha-label {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.4rem;
+  .test-access-recaptcha {
+    min-height: 70px;
+    transform: scale(0.9);
+    transform-origin: left top;
+    margin-bottom: -8px;
   }
 }
 
