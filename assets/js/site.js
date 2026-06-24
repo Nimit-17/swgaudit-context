@@ -66,11 +66,13 @@ const testAccessGate = (() => {
   };
 
   const buildDialog = () => {
-    dialog = document.createElement("dialog");
-    dialog.className = "test-access-dialog";
+    dialog = document.createElement("div");
+    dialog.className = "test-access-overlay";
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
     dialog.setAttribute("aria-labelledby", "test-access-title");
     dialog.innerHTML = `
-      <div class="test-access-panel">
+      <div class="test-access-dialog test-access-panel">
         <p class="test-access-eyebrow">Security verification</p>
         <h2 id="test-access-title">Verify to enter SWG Audit</h2>
         <p class="test-access-intro">Complete reCAPTCHA each time the site loads. Your work email is remembered only for this browser tab.</p>
@@ -94,6 +96,7 @@ const testAccessGate = (() => {
         </form>
       </div>`;
     document.body.appendChild(dialog);
+    document.body.classList.add("has-test-access-gate");
 
     form = dialog.querySelector("[data-test-access-form]");
     status = dialog.querySelector("[data-test-access-status]");
@@ -102,7 +105,30 @@ const testAccessGate = (() => {
     recaptchaContainer = dialog.querySelector("[data-test-access-recaptcha]");
     submitButton = dialog.querySelector("[data-test-access-submit]");
 
-    dialog.addEventListener("cancel", (event) => event.preventDefault());
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(dialog.querySelectorAll(
+        'input:not([type="hidden"]):not([tabindex="-1"]), button:not([disabled]), iframe'
+      )).filter((element) => element.getClientRects().length > 0);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -159,7 +185,8 @@ const testAccessGate = (() => {
           }
         }
         accessGranted = true;
-        dialog.close();
+        dialog.remove();
+        document.body.classList.remove("has-test-access-gate");
       } catch (error) {
         setStatus(error.message || "Verification failed. Please try again.", "error");
         if (recaptchaWidgetId !== null) window.grecaptcha.reset(recaptchaWidgetId);
@@ -172,7 +199,6 @@ const testAccessGate = (() => {
   const open = async () => {
     buildDialog();
     syncEmailState(Boolean(rememberedToken));
-    dialog.showModal();
     submitButton.disabled = true;
     setStatus("Loading reCAPTCHA...");
 

@@ -856,20 +856,30 @@ h2 {
   color: #fecaca;
 }
 
+.has-test-access-gate {
+  overflow: hidden;
+}
+
+.test-access-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
 .test-access-dialog {
-  width: min(100% - 2rem, 560px);
-  max-height: calc(100dvh - 2rem);
+  width: min(100%, 560px);
   border: 1px solid rgba(255, 37, 56, 0.48);
   border-radius: 10px;
   color: var(--text);
   background: var(--panel-2);
   padding: 0;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.72);
-}
-
-.test-access-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
 }
 
 .test-access-panel {
@@ -931,14 +941,17 @@ h2 {
   display: none;
 }
 
-.test-access-dialog.has-remembered-email .test-access-remembered-note {
+.test-access-overlay.has-remembered-email .test-access-remembered-note {
   display: block;
 }
 
 @media (max-width: 520px) {
+  .test-access-overlay {
+    padding: 0.5rem;
+  }
+
   .test-access-dialog {
-    width: min(100% - 1rem, 560px);
-    max-height: calc(100dvh - 1rem);
+    width: 100%;
   }
 
   .test-access-panel {
