@@ -39,7 +39,6 @@ const testAccessGate = (() => {
   const syncEmailState = (isRemembered) => {
     emailRow.hidden = isRemembered;
     emailInput.required = !isRemembered;
-    dialog.classList.toggle("has-remembered-email", isRemembered);
   };
 
   const loadRecaptcha = () => {
@@ -81,7 +80,6 @@ const testAccessGate = (() => {
       <div class="test-access-dialog test-access-panel">
         <p class="test-access-eyebrow">Security verification</p>
         <h2 id="test-access-title">Verify to enter SWG Audit</h2>
-        <p class="test-access-intro">Complete reCAPTCHA when you first enter or refresh the site. Your work email is remembered only for this browser tab.</p>
         <form class="credential-test-form" data-test-access-form>
           <div class="test-access-fields">
             <div class="form-row" data-test-access-email-row>
@@ -94,7 +92,6 @@ const testAccessGate = (() => {
               <input id="test-access-company" name="company" type="text" tabindex="-1" autocomplete="off">
             </div>
           </div>
-          <p class="test-note test-access-remembered-note">Email remembered for this tab. Closing the tab or waiting 12 hours will require it again.</p>
           <p class="test-output test-access-status" data-test-access-status aria-live="polite"></p>
           <div class="test-actions">
             <button class="primary-action" type="submit" data-test-access-submit>Verify and enter site</button>
@@ -149,7 +146,6 @@ const testAccessGate = (() => {
       }
 
       submitButton.disabled = true;
-      setStatus("Verifying your details...");
 
       const data = new FormData(form);
       const payload = Object.fromEntries(data.entries());
@@ -206,7 +202,6 @@ const testAccessGate = (() => {
     buildDialog();
     syncEmailState(Boolean(rememberedToken));
     submitButton.disabled = true;
-    setStatus("Loading reCAPTCHA...");
 
     try {
       const query = rememberedToken ? `?token=${encodeURIComponent(rememberedToken)}` : "";
