@@ -130,7 +130,7 @@ $url = "https://www.swgaudit.com";
           <div>
             <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
             <h3><a class="card-title-link" href="/phishing/">Phishing</a></h3>
-            <p>Credential-theft simulations that test whether controls stop risky submissions, even when the domain looks trusted.</p>
+            <p>Simulates phishing pages and credential submission to test whether users can be steered to fake login pages or submit credentials to a safe looking page.</p>
           </div>
           <div class="card-levels">
             <a id="phishing-level-1" href="/phishing/#bare-minimum"><strong>Bare Minimum</strong></a>
@@ -143,7 +143,7 @@ $url = "https://www.swgaudit.com";
           <div>
             <img class="category-icon" src="/assets/images/malware-icon.png" alt="" width="92" height="92">
             <h3><a class="card-title-link" href="/malware/">Malware</a></h3>
-            <p>Safe malware-delivery checks that validate whether download controls, inspection, and detection policies respond.</p>
+            <p>Simulates safe malware delivery to test whether the SWG inspects, detects, and blocks malicious downloads before they reach the user. </p>
           </div>
           <div class="card-levels">
             <a id="malware-level-1" href="/malware/#bare-minimum"><strong>Bare Minimum</strong></a>
@@ -156,7 +156,7 @@ $url = "https://www.swgaudit.com";
           <div>
             <img class="category-icon" src="/assets/images/data-theft-icon.png" alt="" width="92" height="92">
             <h3><a class="card-title-link" href="/data-theft/">Data Theft</a></h3>
-            <p>DLP and egress validation for attempts to move sensitive data outside expected inspection paths.</p>
+            <p>Simulates data exfiltration attempts to test whether the SWG detects and blocks sensitive data leaving the network.</p>
           </div>
           <div class="card-levels">
             <a id="data-theft-level-1" href="/data-theft/#bare-minimum"><strong>Bare Minimum</strong></a>
@@ -169,7 +169,7 @@ $url = "https://www.swgaudit.com";
           <div>
             <img class="category-icon" src="/assets/images/cyberslacking-icon.png" alt="" width="92" height="92">
             <h3>Cyberslacking</h3>
-            <p>Acceptable-use and content-filtering validation for non-work web activity and media-category enforcement.</p>
+            <p>Tests whether browsing and content-category policies are enforced for non-work sites, streaming, and other disallowed web activity.</p>
           </div>
         </article>
       </div>
