@@ -2,8 +2,13 @@ const menuButton = document.querySelector(".mobile-toggle");
 const mobilePanel = document.querySelector("#mobile-panel");
 const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
+const TEST_ACCESS_GATE_ENABLED = false;
 
 const testAccessGate = (() => {
+  if (!TEST_ACCESS_GATE_ENABLED) {
+    return { hasAccess: () => true };
+  }
+
   const sessionKey = "swgaudit-test-session-v1";
   let accessGranted = false;
   let rememberedToken = "";
