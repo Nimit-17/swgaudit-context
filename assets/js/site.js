@@ -692,8 +692,65 @@ const makeDummyMicrosoftLoginHtml = () => `<!doctype html>
 
 const makeMhtmlRendererUrl = (source) => `/assets/tests/phishing/mhtml-renderer.html?src=${encodeURIComponent(source)}`;
 
+const buildClientMhtml = (html) => {
+  const boundary = `----SWGAudit-${crypto.randomUUID()}`;
+
+  return [
+    "MIME-Version: 1.0",
+    `Content-Type: multipart/related; boundary="${boundary}"; type="text/html"`,
+    "X-SWG-Audit-Test: Client-generated MHTML phishing page",
+    "",
+    `--${boundary}`,
+    'Content-Type: text/html; charset="utf-8"',
+    "Content-Location: https://client-generated.invalid/login.html",
+    "",
+    html,
+    `--${boundary}--`,
+    "",
+  ].join("\r\n");
+};
+
+const extractHtmlFromMhtml = (mhtml) => {
+  const boundaryMatch = mhtml.match(/boundary="?([^";\r\n]+)"?/i);
+
+  if (!boundaryMatch) {
+    throw new Error("The generated MHTML has no MIME boundary.");
+  }
+
+  const htmlPart = mhtml
+    .split(`--${boundaryMatch[1]}`)
+    .find((part) => /Content-Type:\s*text\/html\b/i.test(part));
+
+  if (!htmlPart) {
+    throw new Error("The generated MHTML has no HTML part.");
+  }
+
+  const contentStart = htmlPart.search(/\r?\n\r?\n/);
+
+  if (contentStart === -1) {
+    throw new Error("The generated MHTML HTML part is malformed.");
+  }
+
+  return htmlPart.slice(contentStart).replace(/^\r?\n\r?\n/, "").replace(/\r?\n$/, "");
+};
+
+const openClientHtml = (html) => {
+  const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
+  const openedWindow = window.open(url, "_blank");
+
+  if (!openedWindow) {
+    URL.revokeObjectURL(url);
+    return false;
+  }
+
+  openedWindow.opener = null;
+
+  window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+  return true;
+};
+
 document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button) => {
-  button.addEventListener("click", async () => {
+  button.addEventListener("click", () => {
     const card = button.closest("[data-test-card]");
     const output = card ? card.querySelector("[data-test-output]") : null;
     const select = card ? card.querySelector("[data-stored-site-format]") : null;
@@ -703,17 +760,21 @@ document.querySelectorAll("[data-phishing-stored-site-launch]").forEach((button)
 
     output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
-    output.textContent = selectedFormat === "mhtml" ? "Opening server MHTML renderer..." : "Opening dummy Microsoft login page...";
+    output.textContent = selectedFormat === "mhtml"
+      ? "Building and parsing MHTML in this browser..."
+      : "Building raw HTML in this browser...";
 
     try {
-      const openedWindow = selectedFormat === "mhtml"
-        ? window.open(makeMhtmlRendererUrl("/assets/tests/phishing/linkedin-login.mhtml"), "_blank")
-        : window.open("/phishing/rnicrosoft-Iogin/", "_blank");
+      const rawHtml = makeDummyMicrosoftLoginHtml();
+      const renderedHtml = selectedFormat === "mhtml"
+        ? extractHtmlFromMhtml(buildClientMhtml(rawHtml))
+        : rawHtml;
+      const openedWindow = openClientHtml(renderedHtml);
 
       if (openedWindow) {
         output.textContent = selectedFormat === "mhtml"
-          ? "Opened dummy MHTML phishing-page rendering test in a new tab. The new tab fetches the .mhtml payload."
-          : "Opened dummy Microsoft-style raw HTML page in a new tab.";
+          ? "Built and parsed the MHTML entirely in this browser, then opened its HTML part in a new tab."
+          : "Built the raw HTML entirely in this browser and opened it in a new tab.";
         return;
       }
 

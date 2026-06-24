@@ -219,7 +219,7 @@ $url = "https://www.swgaudit.com/phishing/";
               <label for="phishing-stored-site-format">Stored page format</label>
               <select id="phishing-stored-site-format" data-stored-site-format>
                 <option value="html">Raw HTML - dummy Microsoft-style login</option>
-                <option value="mhtml">MHTML - dummy LinkedIn-style login</option>
+                <option value="mhtml">MHTML - dummy Microsoft-style login</option>
               </select>
             </div>
             <div class="test-actions">
