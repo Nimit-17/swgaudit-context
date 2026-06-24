@@ -186,11 +186,26 @@ $url = "https://www.swgaudit.com/phishing/";
         <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-3-detail" data-test-card>
           <div class="test-card-summary">
             <div>
+              <h3>Cached content mutation</h3>
+              <p>Primes a cache with harmless content, then changes the same URL to a dummy Microsoft-style login page.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
+            <p>Open the harmless page in a new tab, then refresh that tab once. If the request reaches the origin, the same URL changes to the dummy login page.</p>
+            <div class="test-actions">
+              <button class="primary-action" type="button" data-phishing-cache-test-launch>Open Cache Test</button>
+            </div>
+            <p class="test-output" data-test-output hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-4-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
               <h3>File spoofing</h3>
               <p>Checks whether disguised or misleading files can lead users into getting phished.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
+          <div class="test-card-detail" id="phishing-evasion-detection-test-4-detail" hidden>
             <p>This safe file uses a misleading double extension to test whether controls flag executable-looking downloads that pretend to be documents.</p>
             <div class="test-actions">
               <a class="primary-action" href="/assets/test-files/phishing/file-spoofing/dummy.pdf.exe" download>Download dummy.pdf.exe</a>

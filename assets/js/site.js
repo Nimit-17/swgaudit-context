@@ -432,6 +432,29 @@ document.querySelectorAll("[data-url-manipulation-select]").forEach((select) => 
   syncUrlManipulationCase();
 });
 
+document.querySelectorAll("[data-phishing-cache-test-launch]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const card = button.closest("[data-test-card]");
+    const output = card ? card.querySelector("[data-test-output]") : null;
+    const token = crypto.randomUUID().replaceAll("-", "");
+    const openedWindow = window.open(`/phishing/cache-test.php?test=${token}`, "_blank");
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.classList.remove("is-pass", "is-fail");
+
+    if (!openedWindow) {
+      output.classList.add("is-fail");
+      output.textContent = "The cache test was blocked by the browser. Allow popups and try again.";
+      return;
+    }
+
+    openedWindow.opener = null;
+    output.textContent = "The harmless page opened in a new tab. Refresh that tab once to request the changed page at the same URL.";
+  });
+});
+
 document.querySelectorAll("[data-credential-form]").forEach((form) => {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
