@@ -112,7 +112,7 @@ $url = "https://www.swgaudit.com/phishing/";
   <main class="page-shell test-page" id="top">
     <section class="test-hero" aria-labelledby="page-title">
       <h1 id="page-title">Phishing</h1>
-      <p>Use these safe phishing test structures to validate how perimeter controls handle credential collection, deceptive navigation, and realistic social engineering flows.</p>
+      <p>Use these safe phishing tests to validate how perimeter controls handle credential collection, deceptive pages, and common evasion techniques used to deliver them.</p>
     </section>
 
     <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
@@ -141,7 +141,7 @@ $url = "https://www.swgaudit.com/phishing/";
     <section class="test-category-section" id="evasion-detection" aria-labelledby="evasion-detection-title">
       <div class="test-section-head">
         <h2 id="evasion-detection-title">Evasion Detection</h2>
-        <p>If attackers use better techniques, this level of security is needed. These tests cover disguised URLs, misclassification, and file-based deception.</p>
+        <p>If attackers use better techniques, this level of security is needed. These tests cover manipulation in URLs and file formats</p>
       </div>
 
       <div class="test-card-grid">
@@ -187,7 +187,7 @@ $url = "https://www.swgaudit.com/phishing/";
           <div class="test-card-summary">
             <div>
               <h3>File spoofing</h3>
-              <p>Checks whether disguised or misleading files can lead users into phishing flows.</p>
+              <p>Checks whether disguised or misleading files can lead users into getting phished.</p>
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
@@ -203,7 +203,7 @@ $url = "https://www.swgaudit.com/phishing/";
     <section class="test-category-section" id="advanced-threat-simulation" aria-labelledby="advanced-threat-simulation-title">
       <div class="test-section-head">
         <h2 id="advanced-threat-simulation-title">Advanced Threat Simulation</h2>
-        <p>Advanced security should handle realistic phishing paths that combine unknown infrastructure, rendering tricks, and user-flow evasion.</p>
+        <p>Advanced security should handle realistic phishing paths that combine unknown infrastructure, rendering tricks, and techniques designed to slip past inspection.</p>
       </div>
 
       <div class="test-card-grid">
