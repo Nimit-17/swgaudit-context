@@ -441,17 +441,18 @@ document.querySelectorAll("[data-phishing-cache-test-launch]").forEach((button) 
 
     if (!output) return;
 
-    output.hidden = false;
     output.classList.remove("is-pass", "is-fail");
 
     if (!openedWindow) {
+      output.hidden = false;
       output.classList.add("is-fail");
       output.textContent = "The cache test was blocked by the browser. Allow popups and try again.";
       return;
     }
 
     openedWindow.opener = null;
-    output.textContent = "The harmless page opened in a new tab. Refresh that tab once to request the changed page at the same URL.";
+    output.hidden = true;
+    output.textContent = "";
   });
 });
 
