@@ -142,22 +142,38 @@ $url = "https://www.swgaudit.com/cyberslacking/";
             <div class="test-picker">
               <label for="cyberslacking-video-category">Video category</label>
               <select id="cyberslacking-video-category" data-cyberslacking-video-select>
-                <option value="aqz-KE-bpKQ" data-description="Entertainment sample: Big Buck Bunny, a harmless public animation test video.">Entertainment</option>
-                <option value="vJG698U2Mvo" data-description="Education sample: a harmless awareness-test video often used for attention demonstrations.">Education</option>
-                <option value="dQw4w9WgXcQ" data-description="Music sample: a well-known public music video used only to test streaming category access.">Music</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="education">Education</option>
+                <option value="film-animation">Film & Animation</option>
+                <option value="autos-vehicles">Autos & Vehicles</option>
+                <option value="music">Music</option>
+                <option value="pets-animals">Pets & Animals</option>
+                <option value="sports">Sports</option>
+                <option value="travel-events">Travel & Events</option>
+                <option value="gaming">Gaming</option>
+                <option value="people-blogs">People & Blogs</option>
+                <option value="news-politics">News & Politics</option>
+                <option value="howto-style">Howto & Style</option>
+                <option value="science-technology">Science & Technology</option>
+                <option value="movies">Movies</option>
+                <option value="action-adventure">Action/Adventure</option>
+                <option value="drama">Drama</option>
+                <option value="family">Family</option>
+                <option value="foreign">Foreign</option>
+                <option value="horror">Horror</option>
+                <option value="thriller">Thriller</option>
+                <option value="trailers">Trailers</option>
               </select>
             </div>
-            <p class="test-note" data-cyberslacking-video-description>Entertainment sample: Big Buck Bunny, a harmless public animation test video.</p>
             <div class="cyberslacking-video-frame">
               <iframe
                 title="SWG Audit cyberslacking video test"
-                src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0"
+                src="https://www.youtube.com/embed/YjlgahImVwI"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
                 data-cyberslacking-video-frame></iframe>
             </div>
-            <p class="test-output" data-test-output>Try playing the video. A block page, redirect, timeout, or broken player indicates the SWG is enforcing video/media policy.</p>
           </div>
         </article>
       </div>

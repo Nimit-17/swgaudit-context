@@ -457,23 +457,11 @@ document.querySelectorAll("[data-phishing-cache-test-launch]").forEach((button) 
 });
 
 document.querySelectorAll("[data-cyberslacking-video-select]").forEach((select) => {
-  const card = select.closest("[data-test-card]");
-  const description = card ? card.querySelector("[data-cyberslacking-video-description]") : null;
-  const frame = card ? card.querySelector("[data-cyberslacking-video-frame]") : null;
-
-  const syncCyberslackingVideo = () => {
-    const selectedOption = select.options[select.selectedIndex];
-    if (!selectedOption || !frame) return;
-
-    const videoId = selectedOption.value;
-    frame.src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
-
-    if (description) {
-      description.textContent = selectedOption.dataset.description || "";
-    }
-  };
-
-  select.addEventListener("change", syncCyberslackingVideo);
+  select.addEventListener("change", () => {
+    const card = select.closest("[data-test-card]");
+    const frame = card ? card.querySelector("[data-cyberslacking-video-frame]") : null;
+    if (frame) frame.src = "https://www.youtube.com/embed/YjlgahImVwI";
+  });
 });
 
 document.querySelectorAll("[data-credential-form]").forEach((form) => {

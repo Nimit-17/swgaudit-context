@@ -858,7 +858,7 @@ h2 {
 
 .cyberslacking-video-frame {
   position: relative;
-  width: min(100%, 840px);
+  width: min(100%, 520px);
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 1px solid var(--line-strong);
