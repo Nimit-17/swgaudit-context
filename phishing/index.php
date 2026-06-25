@@ -59,7 +59,7 @@ $url = "https://www.swgaudit.com/phishing/";
             <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
-        <a class="nav-link" href="/#cyberslacking">Cyberslacking</a>
+        <a class="nav-link" href="/cyberslacking/">Cyberslacking</a>
         <a class="nav-link" href="/about/">About</a>
       </nav>
 
@@ -102,7 +102,7 @@ $url = "https://www.swgaudit.com/phishing/";
             <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
-        <a class="mobile-direct" href="/#cyberslacking">Cyberslacking</a>
+        <a class="mobile-direct" href="/cyberslacking/">Cyberslacking</a>
         <a class="mobile-direct" href="/about/">About</a>
         <a class="mobile-direct" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">GitHub</a>
       </div>

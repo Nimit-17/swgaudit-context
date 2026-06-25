@@ -1,7 +1,7 @@
 <?php
-$title = "SWG Audit | Web Threat Validation";
-$description = "Validate your perimeter security against phishing, malware delivery, data exfiltration, and cyberslacking controls.";
-$url = "https://www.swgaudit.com";
+$title = "Cyberslacking Tests - SWG Audit";
+$description = "Validate perimeter security against safe cyberslacking and streaming media access simulations.";
+$url = "https://www.swgaudit.com/cyberslacking/";
 ?>
 <!doctype html>
 <html lang="en">
@@ -52,7 +52,14 @@ $url = "https://www.swgaudit.com";
             <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
-        <a class="nav-link" href="/cyberslacking/">Cyberslacking</a>
+        <div class="nav-item">
+          <a class="nav-trigger" href="/cyberslacking/" aria-haspopup="true" aria-expanded="false" aria-current="page">Cyberslacking</a>
+          <div class="dropdown" aria-label="Cyberslacking levels">
+            <a href="/cyberslacking/#bare-minimum">Bare Minimum</a>
+            <a href="/cyberslacking/#evasion-detection">Evasion Detection</a>
+            <a href="/cyberslacking/#advanced-threat-simulation">Advanced Threat Simulation</a>
+          </div>
+        </div>
         <a class="nav-link" href="/about/">About</a>
       </nav>
 
@@ -95,88 +102,78 @@ $url = "https://www.swgaudit.com";
             <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
           </div>
         </div>
-        <a class="mobile-direct" href="/cyberslacking/">Cyberslacking</a>
+        <div class="mobile-accordion">
+          <button type="button" aria-expanded="false" aria-controls="mobile-cyberslacking">Cyberslacking</button>
+          <div id="mobile-cyberslacking">
+            <a href="/cyberslacking/">Overview</a>
+            <a href="/cyberslacking/#bare-minimum">Bare Minimum</a>
+            <a href="/cyberslacking/#evasion-detection">Evasion Detection</a>
+            <a href="/cyberslacking/#advanced-threat-simulation">Advanced Threat Simulation</a>
+          </div>
+        </div>
         <a class="mobile-direct" href="/about/">About</a>
         <a class="mobile-direct" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">GitHub</a>
       </div>
     </nav>
   </header>
 
-  <main class="page-shell" id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-inner">
-        <p class="eyebrow">Open-source initiative</p>
-        <h1 id="hero-title">Validate real world effectiveness of your perimeter security</h1>
-        <p class="hero-copy">
-          Safely simulate modern web-based threats
-        </p>
-        <div class="hero-rule" aria-hidden="true"></div>
-        <div class="hero-meta" aria-label="What SWG Audit validates">
-          <span>Phishing</span>
-          <span>Malware delivery</span>
-          <span>Data exfiltration</span>
-          <span>Cyberslacking</span>
-        </div>
+  <main class="page-shell test-page" id="top">
+    <section class="test-hero" aria-labelledby="page-title">
+      <h1 id="page-title">Cyberslacking</h1>
+      <p>Use these safe browsing and media tests to validate whether non-work content, streaming, and recreational categories are blocked by perimeter policy.</p>
+    </section>
+
+    <section class="test-category-section" id="bare-minimum" aria-labelledby="bare-minimum-title">
+      <div class="test-section-head">
+        <h2 id="bare-minimum-title">Bare Minimum</h2>
+        <p>Baseline controls should prevent users from accessing clearly non-work or streaming media destinations when policy requires blocking them.</p>
+      </div>
+
+      <div class="test-card-grid">
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="cyberslacking-video-filtering-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
+              <h3>Video content category simulation</h3>
+              <p>Loads a safe YouTube video embed so you can check whether streaming media or non-work video content is blocked by the SWG.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="cyberslacking-video-filtering-detail" hidden>
+            <p>If the video loads and plays, video streaming is allowed. If the SWG blocks, redirects, or breaks the player, the policy is enforcing this category.</p>
+            <div class="test-picker">
+              <label for="cyberslacking-video-category">Video category</label>
+              <select id="cyberslacking-video-category" data-cyberslacking-video-select>
+                <option value="aqz-KE-bpKQ" data-description="Entertainment sample: Big Buck Bunny, a harmless public animation test video.">Entertainment</option>
+                <option value="vJG698U2Mvo" data-description="Education sample: a harmless awareness-test video often used for attention demonstrations.">Education</option>
+                <option value="dQw4w9WgXcQ" data-description="Music sample: a well-known public music video used only to test streaming category access.">Music</option>
+              </select>
+            </div>
+            <p class="test-note" data-cyberslacking-video-description>Entertainment sample: Big Buck Bunny, a harmless public animation test video.</p>
+            <div class="cyberslacking-video-frame">
+              <iframe
+                title="SWG Audit cyberslacking video test"
+                src="https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                data-cyberslacking-video-frame></iframe>
+            </div>
+            <p class="test-output" data-test-output>Try playing the video. A block page, redirect, timeout, or broken player indicates the SWG is enforcing video/media policy.</p>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="categories-title">
-      <div class="section-head">
-        <h2 id="categories-title">Four ways to challenge the perimeter</h2>
+    <section class="test-category-section" id="evasion-detection" aria-labelledby="evasion-detection-title">
+      <div class="test-section-head">
+        <h2 id="evasion-detection-title">Evasion Detection</h2>
+        <p>Future tests can cover alternate video hosts, embedded players, redirects, and content-category evasion patterns.</p>
       </div>
+    </section>
 
-      <div class="category-grid">
-        <article class="card" id="phishing" role="button" tabindex="0" aria-expanded="false" data-level-card>
-          <div>
-            <img class="category-icon" src="/assets/images/phishing-icon.png" alt="" width="92" height="92">
-            <h3><a class="card-title-link" href="/phishing/">Phishing</a></h3>
-            <p>Simulates phishing pages and credential submission to test whether users can be steered to fake login pages or submit credentials to a safe looking page.</p>
-          </div>
-          <div class="card-levels">
-            <a id="phishing-level-1" href="/phishing/#bare-minimum"><strong>Bare Minimum</strong></a>
-            <a id="phishing-level-2" href="/phishing/#evasion-detection"><strong>Evasion Detection</strong></a>
-            <a id="phishing-level-3" href="/phishing/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
-          </div>
-        </article>
-
-        <article class="card" id="malware" role="button" tabindex="0" aria-expanded="false" data-level-card>
-          <div>
-            <img class="category-icon" src="/assets/images/malware-icon.png" alt="" width="92" height="92">
-            <h3><a class="card-title-link" href="/malware/">Malware</a></h3>
-            <p>Simulates safe malware delivery to test whether the SWG inspects, detects, and blocks malicious downloads before they reach the user. </p>
-          </div>
-          <div class="card-levels">
-            <a id="malware-level-1" href="/malware/#bare-minimum"><strong>Bare Minimum</strong></a>
-            <a id="malware-level-2" href="/malware/#evasion-detection"><strong>Evasion Detection</strong></a>
-            <a id="malware-level-3" href="/malware/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
-          </div>
-        </article>
-
-        <article class="card" id="data-theft" role="button" tabindex="0" aria-expanded="false" data-level-card>
-          <div>
-            <img class="category-icon" src="/assets/images/data-theft-icon.png" alt="" width="92" height="92">
-            <h3><a class="card-title-link" href="/data-theft/">Data Theft</a></h3>
-            <p>Simulates data exfiltration attempts to test whether the SWG detects and blocks sensitive data leaving the network.</p>
-          </div>
-          <div class="card-levels">
-            <a id="data-theft-level-1" href="/data-theft/#bare-minimum"><strong>Bare Minimum</strong></a>
-            <a id="data-theft-level-2" href="/data-theft/#evasion-detection"><strong>Evasion Detection</strong></a>
-            <a id="data-theft-level-3" href="/data-theft/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
-          </div>
-        </article>
-
-        <article class="card" id="cyberslacking" role="button" tabindex="0" aria-expanded="false" data-level-card>
-          <div>
-            <img class="category-icon" src="/assets/images/cyberslacking-icon.png" alt="" width="92" height="92">
-            <h3><a class="card-title-link" href="/cyberslacking/">Cyberslacking</a></h3>
-            <p>Tests whether browsing and content-category policies are enforced for non-work sites, streaming, and other disallowed web activity.</p>
-          </div>
-          <div class="card-levels">
-            <a id="cyberslacking-level-1" href="/cyberslacking/#bare-minimum"><strong>Bare Minimum</strong></a>
-            <a id="cyberslacking-level-2" href="/cyberslacking/#evasion-detection"><strong>Evasion Detection</strong></a>
-            <a id="cyberslacking-level-3" href="/cyberslacking/#advanced-threat-simulation"><strong>Advanced Threat Simulation</strong></a>
-          </div>
-        </article>
+    <section class="test-category-section" id="advanced-threat-simulation" aria-labelledby="advanced-threat-simulation-title">
+      <div class="test-section-head">
+        <h2 id="advanced-threat-simulation-title">Advanced Threat Simulation</h2>
+        <p>Future tests can simulate chained access paths and policy drift around streaming or recreational web applications.</p>
       </div>
     </section>
   </main>
