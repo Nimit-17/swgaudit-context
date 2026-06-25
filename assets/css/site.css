@@ -1041,98 +1041,142 @@ h2 {
   gap: 1rem;
 }
 
-.about-original {
+.about-page {
   display: grid;
-  gap: clamp(1.5rem, 3.5vw, 3rem);
+  gap: clamp(1rem, 2vw, 1.4rem);
+  padding-top: clamp(2.4rem, 5vw, 4.5rem);
 }
 
-.intro-section {
-  max-width: 780px;
-  margin-inline: auto;
-  text-align: center;
+.about-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: 1.1rem;
+  min-height: min(560px, calc(100svh - var(--header) - 2rem));
+  align-content: center;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 88% 15%, rgba(255, 37, 56, 0.24), transparent 22rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+  padding: clamp(1.4rem, 4vw, 3rem);
+}
+
+.about-hero::after {
+  content: "";
+  position: absolute;
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: clamp(1rem, 4vw, 3rem);
+  z-index: -1;
+  width: min(34vw, 360px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 37, 56, 0.28);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(255, 37, 56, 0.22) 50%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, rgba(255, 37, 56, 0.22) 50%, transparent 51%);
+  opacity: 0.5;
+}
+
+.about-hero h1 {
+  max-width: 980px;
+  font-size: clamp(3.2rem, 6.8vw, 7.2rem);
+  line-height: 0.92;
+  font-weight: 850;
+  letter-spacing: -0.045em;
+}
+
+.about-hero p:not(.eyebrow) {
+  max-width: 860px;
   color: var(--muted);
-  font-size: clamp(1.2rem, 2vw, 1.65rem);
-  line-height: 1.5;
+  font-size: clamp(1rem, 1.45vw, 1.22rem);
+  line-height: 1.7;
 }
 
-.warning-section {
+.about-problem-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.warning-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.about-card,
+.about-mission,
+.about-cta {
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
-  padding: 1.2rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
 }
 
-.warning-icon {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
+.about-card {
   display: grid;
-  place-items: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  align-content: start;
+  gap: 0.8rem;
+  min-height: 250px;
+  padding: clamp(1.15rem, 2.5vw, 1.65rem);
+  box-shadow: inset 3px 0 0 rgba(255, 37, 56, 0.8);
+}
+
+.about-card-kicker {
   color: var(--red);
+  font-size: 0.78rem;
   font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.warning-item p {
+.about-card h2,
+.about-mission h2 {
+  font-size: clamp(1.55rem, 3vw, 2.4rem);
+  line-height: 1.05;
+}
+
+.about-card p,
+.about-mission p,
+.about-cta p {
   color: var(--muted);
-  line-height: 1.55;
+  line-height: 1.68;
 }
 
-.about-original .article-hero {
-  margin-inline: auto;
-  text-align: center;
-}
-
-.feature-section {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.025);
-  padding: clamp(1.4rem, 3vw, 2rem);
-}
-
-.feature-container {
+.about-mission {
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 2rem);
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.25rem);
   align-items: center;
-  max-width: 880px;
-  margin-inline: auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 37, 56, 0.15), transparent 18rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014));
 }
 
-.feature-icon {
-  width: 104px;
-  height: 104px;
+.about-mission-icon {
+  width: clamp(104px, 12vw, 144px);
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
-  border: 1px solid var(--line-strong);
+  justify-self: center;
+  border: 1px solid rgba(255, 37, 56, 0.38);
   border-radius: 999px;
   color: var(--red);
+  background: rgba(255, 37, 56, 0.08);
+  box-shadow: 0 0 48px rgba(255, 37, 56, 0.08);
 }
 
-.feature-text {
+.about-mission-icon svg {
+  width: 46%;
+  height: auto;
+}
+
+.about-mission-copy {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.8rem;
+  max-width: 940px;
 }
 
-.feature-text p,
-.cta p {
-  color: var(--muted);
-  line-height: 1.65;
-}
-
-.cta {
+.about-cta {
+  padding: clamp(1.1rem, 2.8vw, 1.6rem);
   text-align: center;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
 }
 
 .site-footer {
@@ -1238,6 +1282,37 @@ h2 {
   .level-row {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  .about-page {
+    padding-top: 1rem;
+  }
+
+  .about-hero {
+    min-height: auto;
+  }
+
+  .about-hero::after {
+    width: 180px;
+    opacity: 0.26;
+  }
+
+  .about-hero h1 {
+    font-size: clamp(2.55rem, 14vw, 4rem);
+    letter-spacing: -0.035em;
+  }
+
+  .about-problem-grid,
+  .about-mission {
+    grid-template-columns: 1fr;
+  }
+
+  .about-card {
+    min-height: 0;
+  }
+
+  .about-mission-icon {
+    justify-self: start;
   }
 
   .feature-container {
