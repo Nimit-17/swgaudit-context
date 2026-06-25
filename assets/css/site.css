@@ -1052,9 +1052,10 @@ h2 {
   isolation: isolate;
   overflow: hidden;
   display: grid;
-  gap: 1.1rem;
+  grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.62fr);
+  gap: clamp(1.4rem, 5vw, 4.5rem);
+  align-items: center;
   min-height: min(560px, calc(100svh - var(--header) - 2rem));
-  align-content: center;
   border: 1px solid var(--line);
   border-radius: 10px;
   background:
@@ -1079,6 +1080,11 @@ h2 {
   opacity: 0.5;
 }
 
+.about-hero-copy {
+  display: grid;
+  gap: 1.1rem;
+}
+
 .about-hero h1 {
   max-width: 980px;
   font-size: clamp(3.2rem, 6.8vw, 7.2rem);
@@ -1092,6 +1098,53 @@ h2 {
   color: var(--muted);
   font-size: clamp(1rem, 1.45vw, 1.22rem);
   line-height: 1.7;
+}
+
+.about-proof-panel {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  justify-self: stretch;
+  border: 1px solid rgba(255, 37, 56, 0.34);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(3, 3, 4, 0.42), rgba(3, 3, 4, 0.14)),
+    rgba(255, 37, 56, 0.055);
+  padding: clamp(1rem, 2.5vw, 1.35rem);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.about-proof-panel::before {
+  content: "";
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.about-proof-panel span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0.85rem 0.95rem;
+  font-weight: 760;
+}
+
+.about-proof-panel span::before {
+  content: "";
+  width: 0.56rem;
+  height: 0.56rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--red);
+  box-shadow: 0 0 0 5px rgba(255, 37, 56, 0.12);
 }
 
 .about-problem-grid {
@@ -1112,7 +1165,7 @@ h2 {
   display: grid;
   align-content: start;
   gap: 0.8rem;
-  min-height: 250px;
+  min-height: 280px;
   padding: clamp(1.15rem, 2.5vw, 1.65rem);
   box-shadow: inset 3px 0 0 rgba(255, 37, 56, 0.8);
 }
@@ -1127,7 +1180,7 @@ h2 {
 
 .about-card h2,
 .about-mission h2 {
-  font-size: clamp(1.55rem, 3vw, 2.4rem);
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
   line-height: 1.05;
 }
 
@@ -1140,10 +1193,10 @@ h2 {
 
 .about-mission {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 2.25rem);
+  grid-template-columns: minmax(160px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
   align-items: center;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.5rem, 4vw, 2.7rem);
   background:
     radial-gradient(circle at 14% 18%, rgba(255, 37, 56, 0.15), transparent 18rem),
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014));
@@ -1170,7 +1223,7 @@ h2 {
 .about-mission-copy {
   display: grid;
   gap: 0.8rem;
-  max-width: 940px;
+  max-width: 1120px;
 }
 
 .about-cta {
@@ -1290,6 +1343,7 @@ h2 {
 
   .about-hero {
     min-height: auto;
+    grid-template-columns: 1fr;
   }
 
   .about-hero::after {
@@ -1305,6 +1359,10 @@ h2 {
   .about-problem-grid,
   .about-mission {
     grid-template-columns: 1fr;
+  }
+
+  .about-proof-panel {
+    justify-self: stretch;
   }
 
   .about-card {

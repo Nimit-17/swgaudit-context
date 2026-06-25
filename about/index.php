@@ -104,9 +104,17 @@ $url = "https://www.swgaudit.com/about/";
 
   <main class="page-shell article-page about-page">
     <section class="about-hero" aria-labelledby="about-title">
-      <p class="eyebrow">About SWG Audit</p>
-      <h1 id="about-title">Independent proof for perimeter security claims.</h1>
-      <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools. SWG Audit was created to help buyers validate real-world protection before they trust a solution.</p>
+      <div class="about-hero-copy">
+        <p class="eyebrow">About SWG Audit</p>
+        <h1 id="about-title">Independent proof for perimeter security claims.</h1>
+        <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools. SWG Audit was created to help buyers validate real-world protection before they trust a solution.</p>
+      </div>
+      <div class="about-proof-panel" aria-label="What SWG Audit validates">
+        <span>Validate before purchase</span>
+        <span>Test real web threats</span>
+        <span>Challenge vendor promises</span>
+        <span>Open-source and transparent</span>
+      </div>
     </section>
 
     <section class="about-problem-grid" aria-label="Why SWG Audit exists">
