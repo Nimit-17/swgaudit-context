@@ -132,9 +132,7 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
     status.textContent = message;
   };
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
+  const runTest = async () => {
     const file = fileInput.files[0];
     if (!file) {
       setStatus("Choose a file before running the test.");
@@ -152,6 +150,7 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
     }
 
     submitButton.disabled = true;
+    fileInput.disabled = true;
     if (resetButton) resetButton.hidden = true;
 
     try {
@@ -185,8 +184,19 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
       setStatus("Test could not complete. Please retry.");
     } finally {
       submitButton.disabled = false;
+      fileInput.disabled = false;
       if (resetButton) resetButton.hidden = false;
     }
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    runTest();
+  });
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length === 0 || submitButton.disabled) return;
+    runTest();
   });
 
   if (resetButton) {
