@@ -326,11 +326,33 @@ $url = "https://www.swgaudit.com/data-theft/";
         <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card>
           <div class="test-card-summary">
             <div>
+              <h3>HTTP path tunneling</h3>
+              <p>Checks whether sensitive data can be encoded and sent through ordinary HTTPS URL path segments.</p>
+            </div>
+          </div>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail" hidden>
+            <form class="credential-test-form" data-path-tunnel-form>
+              <div class="form-row">
+                <label class="sr-only" for="data-theft-path-tunnel-file">Choose file for HTTP path tunneling</label>
+                <input id="data-theft-path-tunnel-file" name="path_tunnel_file" type="file" required data-path-tunnel-file>
+              </div>
+              <p class="test-note">Maximum file size: 256 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
+              <div class="test-actions">
+                <button class="primary-action" type="submit" data-path-tunnel-submit>Run Test</button>
+                <button class="primary-action" type="button" hidden data-path-tunnel-reset>Reset Test</button>
+              </div>
+            </form>
+            <p class="test-output" data-path-tunnel-status hidden></p>
+          </div>
+        </article>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-4-detail" data-test-card>
+          <div class="test-card-summary">
+            <div>
               <h3>Browser session or credential theft</h3>
               <p>Represents theft of browser sessions or credentials that can enable downstream data access.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail" hidden>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-4-detail" hidden>
             <div class="test-actions">
               <button class="primary-action" type="button" data-run-test>Run Test</button>
             </div>
@@ -349,5 +371,6 @@ $url = "https://www.swgaudit.com/data-theft/";
   <script src="/assets/js/site.js"></script>
   <script src="/assets/js/data-theft-evasion.js"></script>
   <script src="/assets/js/data-theft-dns.js"></script>
+  <script src="/assets/js/data-theft-path-tunnel.js"></script>
 </body>
 </html>
