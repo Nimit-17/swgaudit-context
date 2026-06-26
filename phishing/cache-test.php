@@ -53,8 +53,7 @@ if (!$isPrimeResponse) {
     exit;
 }
 
-header('Cache-Control: public, max-age=300');
-header('ETag: "swgaudit-cache-prime-' . $token . '"');
+header('Cache-Control: no-store, max-age=0');
 header('X-SWG-Audit-Cache-Phase: prime');
 ?>
 <!doctype html>

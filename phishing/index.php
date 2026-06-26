@@ -187,11 +187,11 @@ $url = "https://www.swgaudit.com/phishing/";
           <div class="test-card-summary">
             <div>
               <h3>Cached content mutation</h3>
-              <p>Primes a cache with harmless content, then changes the same URL to a dummy Microsoft-style login page.</p>
+              <p>Shows harmless content first, then changes the same URL to a dummy Microsoft-style login page.</p>
             </div>
           </div>
           <div class="test-card-detail" id="phishing-evasion-detection-test-3-detail" hidden>
-            <p>Open the harmless page in a new tab, then refresh that tab once. If the request reaches the origin, the same URL changes to the dummy login page.</p>
+            <p>Open the harmless page in a new tab, then refresh that tab once. The same URL changes to the dummy login page without relying on cached content.</p>
             <div class="test-actions">
               <button class="primary-action" type="button" data-phishing-cache-test-launch>Open Cache Test</button>
             </div>
