@@ -168,11 +168,7 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
       if (result.success && result.reconstructed) {
         status.classList.remove("is-pass");
         status.classList.add("is-fail");
-        if (result.fileUrl) {
-          status.innerHTML = `Test Failed: the file was reconstructed from URL path chunks. <a href="${result.fileUrl}" target="_blank" rel="noopener">Open reconstructed file</a>`;
-        } else {
-          status.textContent = "Test Failed: the file was reconstructed from URL path chunks.";
-        }
+        status.textContent = "Test Failed: the file was reconstructed from URL path chunks.";
       } else {
         status.classList.remove("is-fail");
         status.classList.add("is-pass");
