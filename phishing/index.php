@@ -141,7 +141,7 @@ $url = "https://www.swgaudit.com/phishing/";
     <section class="test-category-section" id="evasion-detection" aria-labelledby="evasion-detection-title">
       <div class="test-section-head">
         <h2 id="evasion-detection-title">Evasion Detection</h2>
-        <p>If attackers use better techniques, this level of security is needed. These tests cover manipulation in URLs and file formats</p>
+        <p>If attackers use better techniques, this level of security is needed. These tests cover manipulation in URLs and page behavior.</p>
       </div>
 
       <div class="test-card-grid">
@@ -194,21 +194,6 @@ $url = "https://www.swgaudit.com/phishing/";
             <p>Open the harmless page in a new tab, then refresh that tab once. If the request reaches the origin, the same URL changes to the dummy login page.</p>
             <div class="test-actions">
               <button class="primary-action" type="button" data-phishing-cache-test-launch>Open Cache Test</button>
-            </div>
-            <p class="test-output" data-test-output hidden></p>
-          </div>
-        </article>
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="phishing-evasion-detection-test-4-detail" data-test-card>
-          <div class="test-card-summary">
-            <div>
-              <h3>File spoofing</h3>
-              <p>Checks whether disguised or misleading files can lead users into getting phished.</p>
-            </div>
-          </div>
-          <div class="test-card-detail" id="phishing-evasion-detection-test-4-detail" hidden>
-            <p>This safe file uses a misleading double extension to test whether controls flag executable-looking downloads that pretend to be documents.</p>
-            <div class="test-actions">
-              <a class="primary-action" href="/assets/test-files/phishing/file-spoofing/dummy.pdf.exe" download>Download dummy.pdf.exe</a>
             </div>
             <p class="test-output" data-test-output hidden></p>
           </div>
