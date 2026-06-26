@@ -106,27 +106,43 @@ $url = "https://www.swgaudit.com/about/";
     <section class="about-hero" aria-labelledby="about-title">
       <div class="about-hero-copy">
         <p class="eyebrow">About SWG Audit</p>
-        <h1 id="about-title">Independent proof for perimeter security claims.</h1>
-        <p>In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools. SWG Audit was created to help buyers validate real-world protection before they trust a solution.</p>
+        <h1 id="about-title">Do not buy security on promises.</h1>
+        <p>Attackers have outpaced traditional security tools. SWG Audit helps buyers validate real-world protection before they trust a perimeter security solution.</p>
       </div>
-      <div class="about-proof-panel" aria-label="What SWG Audit validates">
-        <span>Validate before purchase</span>
-        <span>Test real web threats</span>
-        <span>Challenge vendor promises</span>
-        <span>Open-source and transparent</span>
+      <div class="about-signal-panel" aria-label="SWG Audit validation signal">
+        <div class="about-signal-ring">
+          <span>SWG</span>
+          <strong>Audit</strong>
+        </div>
+        <div class="about-signal-list">
+          <span>Phishing</span>
+          <span>Malware delivery</span>
+          <span>Data theft</span>
+          <span>Cyberslacking</span>
+        </div>
       </div>
     </section>
 
-    <section class="about-problem-grid" aria-label="Why SWG Audit exists">
-      <article class="about-card">
-        <span class="about-card-kicker">The market problem</span>
-        <h2>Big claims, little proof.</h2>
+    <section class="about-bento" aria-label="Why SWG Audit exists">
+      <article class="about-bento-card about-bento-card-large">
+        <span class="about-card-kicker">Why it exists</span>
+        <h2>Marketing is not a control.</h2>
         <p>Many vendors continue to promote outdated solutions with bold marketing claims&mdash;offering little transparency or proof of actual protection.</p>
       </article>
-      <article class="about-card">
+      <article class="about-bento-card">
+        <span class="about-card-kicker">The market problem</span>
+        <h2>Bold promises.</h2>
+        <p>Security claims often sound confident even when real-world testing is thin.</p>
+      </article>
+      <article class="about-bento-card">
         <span class="about-card-kicker">The buyer problem</span>
-        <h2>Security teams are left guessing.</h2>
+        <h2>Limited visibility.</h2>
         <p>Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</p>
+      </article>
+      <article class="about-bento-card about-bento-card-accent">
+        <span class="about-card-kicker">The answer</span>
+        <h2>Test before trust.</h2>
+        <p>Use safe simulations to see how perimeter controls actually behave against modern web-based threats.</p>
       </article>
     </section>
 
@@ -138,14 +154,15 @@ $url = "https://www.swgaudit.com/about/";
       </div>
       <div class="about-mission-copy">
         <span class="about-card-kicker">Our mission</span>
-        <h2 id="mission-title">Test honestly. Buy confidently.</h2>
+        <h2 id="mission-title">Independent validation for serious security decisions.</h2>
         <p>We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.</p>
         <p>SWG Audit empowers cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats&mdash;before investing in it.</p>
       </div>
     </section>
 
     <section class="about-cta" aria-label="Call to action">
-      <p>Join the community. Test honestly. Buy confidently.</p>
+      <span>Join the community.</span>
+      <strong>Test honestly. Buy confidently.</strong>
     </section>
   </main>
 
