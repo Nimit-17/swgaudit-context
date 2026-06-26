@@ -1,4 +1,4 @@
-const pathTunnelMaxFileSize = 256 * 1024;
+const pathTunnelMaxFileSize = 200 * 1024;
 const pathTunnelChunkSize = 1500;
 
 const pathTunnelReadFile = (file) => new Promise((resolve, reject) => {
@@ -138,7 +138,7 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
     }
 
     if (file.size > pathTunnelMaxFileSize) {
-      setStatus("Choose a file smaller than 256 KB.");
+      setStatus("Choose a file smaller than 200 KB.");
       return;
     }
 
@@ -160,7 +160,6 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
           // Blocked or modified chunk requests are valid outcomes; the final status check decides pass/fail.
         } finally {
           attempted += 1;
-          status.textContent = `Running HTTP path tunneling test: ${attempted}/${chunks.length} requests attempted...`;
         }
       }
 

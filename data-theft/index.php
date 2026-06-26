@@ -336,7 +336,7 @@ $url = "https://www.swgaudit.com/data-theft/";
                 <label class="sr-only" for="data-theft-path-tunnel-file">Choose file for HTTP path tunneling</label>
                 <input id="data-theft-path-tunnel-file" name="path_tunnel_file" type="file" required data-path-tunnel-file>
               </div>
-              <p class="test-note">Maximum file size: 256 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
+              <p class="test-note">Maximum file size: 200 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
               <div class="test-actions">
                 <button class="primary-action" type="submit" data-path-tunnel-submit>Run Test</button>
                 <button class="primary-action" type="button" hidden data-path-tunnel-reset>Reset Test</button>

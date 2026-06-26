@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 
-const PATH_TUNNEL_MAX_FILE_BYTES = 262144;
+const PATH_TUNNEL_MAX_FILE_BYTES = 204800;
 const PATH_TUNNEL_MAX_CHUNK_BYTES = 4096;
 const PATH_TUNNEL_MAX_CHUNKS = 1000;
 const PATH_TUNNEL_MAX_AGE_SECONDS = 600;
