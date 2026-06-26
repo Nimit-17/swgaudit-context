@@ -1,5 +1,6 @@
 const pathTunnelMaxFileSize = 200 * 1024;
 const pathTunnelChunkSize = 1500;
+const pathTunnelRequestTimeoutMs = 8000;
 
 const pathTunnelReadFile = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -58,17 +59,25 @@ const pathTunnelBuildChunks = (id, file, encodedData) => {
 
 const pathTunnelSendChunk = async (id, chunk) => {
   const url = `/data-theft/path-tunnel.php/${encodeURIComponent(id)}/${chunk.number}/${encodeURIComponent(chunk.payload)}`;
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-store",
-    headers: { "Accept": "application/json" },
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), pathTunnelRequestTimeoutMs);
 
-  if (!response.ok) {
-    throw new Error(`Chunk ${chunk.number} returned HTTP ${response.status}`);
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      headers: { "Accept": "application/json" },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Chunk ${chunk.number} returned HTTP ${response.status}`);
+    }
+
+    return response.json();
+  } finally {
+    window.clearTimeout(timeout);
   }
-
-  return response.json();
 };
 
 const pathTunnelCheckResult = async (id, status, attempts = 5, delayMs = 1000) => {
@@ -151,15 +160,13 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
       const fileBytes = new Uint8Array(await pathTunnelReadFile(file));
       const encodedData = pathTunnelBytesToBase64Url(fileBytes);
       const chunks = pathTunnelBuildChunks(id, file, encodedData);
-      let attempted = 0;
+      setStatus("Sending URL path chunks...");
 
       for (const chunk of chunks) {
         try {
           await pathTunnelSendChunk(id, chunk);
         } catch (error) {
           // Blocked or modified chunk requests are valid outcomes; the final status check decides pass/fail.
-        } finally {
-          attempted += 1;
         }
       }
 

@@ -331,7 +331,7 @@ $url = "https://www.swgaudit.com/data-theft/";
             </div>
           </div>
           <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail" hidden>
-            <form class="credential-test-form" data-path-tunnel-form>
+            <form class="credential-test-form" novalidate data-path-tunnel-form>
               <div class="form-row">
                 <label class="sr-only" for="data-theft-path-tunnel-file">Choose file for HTTP path tunneling</label>
                 <input id="data-theft-path-tunnel-file" name="path_tunnel_file" type="file" required data-path-tunnel-file>
