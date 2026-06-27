@@ -31,6 +31,7 @@ function render_swg_category_page(string $categoryKey): void
         <a class="overview-test-card" href="<?php echo swg_test_url($test); ?>">
           <span class="overview-test-difficulty"><?php echo htmlspecialchars($test['difficulty'], ENT_QUOTES, 'UTF-8'); ?></span>
           <h3><?php echo htmlspecialchars($test['title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+          <p><?php echo htmlspecialchars($test['summary'], ENT_QUOTES, 'UTF-8'); ?></p>
         </a>
       <?php endforeach; ?>
     </div>
