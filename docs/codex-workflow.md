@@ -141,6 +141,4 @@ Update `readme.md` when a durable fact changes, such as:
 - A user preference that should guide future work.
 - A recurring risk or gotcha.
 
-Update `reports.md` for meaningful completed changes. Keep entries concise.
-
 Do not add routine command output or long activity logs.

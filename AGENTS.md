@@ -26,7 +26,6 @@ first-stop operating guide for Codex and other coding agents.
 - SSH server: `ssh -p 7575 root@167.71.228.73`
 - Shared project memory: `readme.md`
 - Workflow details: `docs/codex-workflow.md`
-- Change log: `reports.md`
 
 ## Context Files
 
@@ -34,8 +33,6 @@ first-stop operating guide for Codex and other coding agents.
   preferences, risks, and open questions.
 - `docs/codex-workflow.md` explains the repeatable loop for future work:
   read memory, query Graphify, edit narrowly, verify, commit, update memory.
-- `reports.md` is a concise log of meaningful changes. Do not turn it into a
-  transcript of routine inspection.
 
 Update these files when work creates a durable fact that future agents should
 know. Keep updates short and useful.
