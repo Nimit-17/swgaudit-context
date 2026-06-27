@@ -323,7 +323,7 @@ $url = "https://www.swgaudit.com/data-theft/";
             <p class="test-output" data-dns-tunnel-status hidden></p>
           </div>
         </article>
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card>
+        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card data-hover-open>
           <div class="test-card-summary">
             <div>
               <h3>HTTP path tunneling</h3>

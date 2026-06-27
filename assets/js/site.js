@@ -390,6 +390,20 @@ document.querySelectorAll("[data-test-card]").forEach((card) => {
     toggleCard();
   });
 
+  if (card.hasAttribute("data-hover-open")) {
+    card.addEventListener("pointerenter", () => {
+      if (card.getAttribute("aria-expanded") !== "true") {
+        toggleCard();
+      }
+    });
+
+    card.addEventListener("focusin", () => {
+      if (card.getAttribute("aria-expanded") !== "true") {
+        toggleCard();
+      }
+    });
+  }
+
   card.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     if (event.target.closest("button, a")) return;
