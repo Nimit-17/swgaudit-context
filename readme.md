@@ -54,6 +54,12 @@ For ordinary site changes:
 
 More detail lives in `docs/codex-workflow.md`.
 
+Additional context files:
+
+- `docs/current-priorities.md` captures the active focus and assumptions.
+- `docs/feature-map.md` maps major features to purpose, files, flow, and checks.
+- `docs/graphify-queries.md` provides reusable Graphify query templates.
+
 ## Graphify Codebase Memory
 
 Graphify is installed on the server to reduce repeated broad code reading.
@@ -197,6 +203,13 @@ curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-
 ```
 
 For frontend changes, use a browser or screenshot check when practical.
+
+Feature-specific check helpers:
+
+```bash
+./scripts/check-data-theft.sh
+./scripts/check-path-tunnel.sh
+```
 
 ## Preflight Command
 

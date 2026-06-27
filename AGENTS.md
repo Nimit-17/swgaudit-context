@@ -26,6 +26,9 @@ first-stop operating guide for Codex and other coding agents.
 - SSH server: `ssh -p 7575 root@167.71.228.73`
 - Shared project memory: `readme.md`
 - Workflow details: `docs/codex-workflow.md`
+- Feature map: `docs/feature-map.md`
+- Current priorities: `docs/current-priorities.md`
+- Graphify query templates: `docs/graphify-queries.md`
 - Read-only preflight: `scripts/codex-preflight.sh`
 - Conservative deploy helper: `scripts/deploy-live.sh`
 
@@ -35,6 +38,10 @@ first-stop operating guide for Codex and other coding agents.
   preferences, risks, and open questions.
 - `docs/codex-workflow.md` explains the repeatable loop for future work:
   read memory, query Graphify, edit narrowly, verify, commit, update memory.
+- `docs/feature-map.md` maps major features to product intent, key files, and
+  verification.
+- `docs/current-priorities.md` keeps the active focus short and current.
+- `docs/graphify-queries.md` stores reusable graph queries.
 
 Update these files when work creates a durable fact that future agents should
 know. Keep updates short and useful.
@@ -103,6 +110,13 @@ curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-
 ```
 
 For UI changes, verify in a browser when practical.
+
+Feature-specific checks:
+
+```bash
+./scripts/check-data-theft.sh
+./scripts/check-path-tunnel.sh
+```
 
 ## Git And Deployment
 

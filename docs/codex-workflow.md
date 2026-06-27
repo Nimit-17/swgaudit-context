@@ -17,6 +17,8 @@ Read:
 ```text
 AGENTS.md
 readme.md
+docs/current-priorities.md
+docs/feature-map.md for the feature being changed
 ```
 
 If the task touches a known feature, use Graphify before opening source files:
@@ -102,10 +104,13 @@ curl --resolve www.swgaudit.com:443:127.0.0.1 -k -I https://www.swgaudit.com/<ro
 Known path tunneling checks:
 
 ```bash
-php -l data-theft/index.php
-php -l data-theft/path-tunnel.php
-node --check assets/js/data-theft-path-tunnel.js
-curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-theft/path-tunnel.php?status=1&id=0123456789abcdef'
+./scripts/check-path-tunnel.sh
+```
+
+Known Data Theft checks:
+
+```bash
+./scripts/check-data-theft.sh
 ```
 
 For frontend behavior, use a browser check when the change affects interaction
