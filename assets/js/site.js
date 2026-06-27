@@ -361,6 +361,12 @@ document.querySelectorAll("[data-test-card]").forEach((card) => {
 
   if (!detail) return;
 
+  if (card.hasAttribute("data-static-open")) {
+    card.classList.add("is-open");
+    detail.hidden = false;
+    return;
+  }
+
   const setOpen = (open) => {
     card.classList.toggle("is-open", open);
     card.setAttribute("aria-expanded", String(open));
@@ -389,20 +395,6 @@ document.querySelectorAll("[data-test-card]").forEach((card) => {
     if (event.target.closest("button, a, .test-card-detail")) return;
     toggleCard();
   });
-
-  if (card.hasAttribute("data-hover-open")) {
-    card.addEventListener("pointerenter", () => {
-      if (card.getAttribute("aria-expanded") !== "true") {
-        toggleCard();
-      }
-    });
-
-    card.addEventListener("focusin", () => {
-      if (card.getAttribute("aria-expanded") !== "true") {
-        toggleCard();
-      }
-    });
-  }
 
   card.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;

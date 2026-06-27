@@ -323,14 +323,14 @@ $url = "https://www.swgaudit.com/data-theft/";
             <p class="test-output" data-dns-tunnel-status hidden></p>
           </div>
         </article>
-        <article class="test-card" role="button" tabindex="0" aria-expanded="false" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card data-hover-open>
+        <article class="test-card is-open" aria-controls="data-theft-advanced-threat-simulation-test-3-detail" data-test-card data-static-open>
           <div class="test-card-summary">
             <div>
               <h3>HTTP path tunneling</h3>
               <p>Checks whether sensitive data can be encoded and sent through ordinary HTTPS URL path segments.</p>
             </div>
           </div>
-          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail" hidden>
+          <div class="test-card-detail" id="data-theft-advanced-threat-simulation-test-3-detail">
             <form class="credential-test-form" novalidate data-path-tunnel-form>
               <div class="form-row">
                 <label class="sr-only" for="data-theft-path-tunnel-file">Choose file for HTTP path tunneling</label>
