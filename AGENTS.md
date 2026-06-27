@@ -26,6 +26,7 @@ first-stop operating guide for Codex and other coding agents.
 - SSH server: `ssh -p 7575 root@167.71.228.73`
 - Shared project memory: `readme.md`
 - Workflow details: `docs/codex-workflow.md`
+- Read-only preflight: `scripts/codex-preflight.sh`
 
 ## Context Files
 
@@ -108,7 +109,7 @@ Start work with:
 
 ```bash
 cd /root/codex-work/swgaudit-context
-git status --short --branch
+./scripts/codex-preflight.sh
 ```
 
 Push from the working repo with:

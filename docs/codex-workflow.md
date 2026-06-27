@@ -9,7 +9,7 @@ Run:
 
 ```bash
 cd /root/codex-work/swgaudit-context
-git status --short --branch
+./scripts/codex-preflight.sh
 ```
 
 Read:

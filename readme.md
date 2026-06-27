@@ -43,7 +43,7 @@ and pushed.
 For ordinary site changes:
 
 1. Read `AGENTS.md`, this file, and any task-specific notes.
-2. Run `git status --short --branch`.
+2. Run `./scripts/codex-preflight.sh`.
 3. Use Graphify to find relevant files and functions.
 4. Open only the exact source sections needed.
 5. Make a narrow change.
@@ -197,6 +197,19 @@ curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-
 ```
 
 For frontend changes, use a browser or screenshot check when practical.
+
+## Preflight Command
+
+Use this read-only helper at the start of a task:
+
+```bash
+cd /root/codex-work/swgaudit-context
+./scripts/codex-preflight.sh
+```
+
+It summarizes the working repo, live checkout, commit alignment, Graphify
+availability, graph timestamp, and recent rebuild log. It does not fetch, pull,
+restart services, or modify the site.
 
 ## Deployment Commands
 
