@@ -1621,10 +1621,10 @@ body.home-compact .home-categories { display: grid; align-content: start; paddin
 body.home-compact .home-categories .section-head { margin-bottom: 0.85rem; }
 body.home-compact #categories-title { color: var(--muted); font-size: clamp(0.92rem, 1.1vw, 1.06rem); font-weight: 750; text-transform: uppercase; letter-spacing: 0.08em; white-space: normal; }
 body.home-compact .category-grid { gap: 0.75rem; }
-body.home-compact .category-card { min-height: 0; display: flex; flex-direction: row; gap: 0.95rem; align-items: center; justify-content: flex-start; padding: clamp(0.95rem, 1.5vw, 1.25rem); background: rgba(255,255,255,0.026); }
+body.home-compact .category-card { min-height: 0; display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center; padding: clamp(0.95rem, 1.5vw, 1.25rem); background: rgba(255,255,255,0.026); }
 body.home-compact .category-card:hover, body.home-compact .category-card:focus-visible { border-color: rgba(255,255,255,0.34); background: rgba(255,255,255,0.055); }
-body.home-compact .category-icon { flex: 0 0 auto; width: clamp(38px, 4vw, 48px); height: clamp(38px, 4vw, 48px); object-fit: contain; object-position: center; mix-blend-mode: screen; }
-body.home-compact .category-card h3 { margin: 0; font-size: clamp(1rem, 1.3vw, 1.22rem); }
+body.home-compact .category-icon { flex: 0 0 auto; width: clamp(52px, 4.6vw, 62px); height: clamp(52px, 4.6vw, 62px); object-fit: contain; object-position: center; }
+body.home-compact .category-card h3 { margin: 0; font-size: clamp(1.05rem, 1.35vw, 1.28rem); line-height: 1; }
 
 @media (max-width: 900px) {
   body.home-compact .page-shell { min-height: auto; }
@@ -1644,6 +1644,6 @@ body.home-compact .category-card h3 { margin: 0; font-size: clamp(1rem, 1.3vw, 1
 @media (max-height: 760px) and (min-width: 901px) {
   body.home-compact .hero h1 { font-size: clamp(2.25rem, 4.2vw, 4.15rem); }
   body.home-compact .hero-copy { font-size: clamp(1rem, 1.35vw, 1.18rem); }
-  body.home-compact .category-icon { width: 40px; height: 40px; }
+  body.home-compact .category-icon { width: 50px; height: 50px; }
   body.home-compact .category-card { padding: 0.85rem 1rem; }
 }
