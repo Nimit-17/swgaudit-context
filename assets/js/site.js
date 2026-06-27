@@ -2,7 +2,7 @@ const menuButton = document.querySelector(".mobile-toggle");
 const mobilePanel = document.querySelector("#mobile-panel");
 const accordions = document.querySelectorAll(".mobile-accordion");
 const dropdownTriggers = document.querySelectorAll(".nav-trigger");
-const TEST_ACCESS_GATE_ENABLED = true;
+const TEST_ACCESS_GATE_ENABLED = false;
 
 const testAccessGate = (() => {
   if (!TEST_ACCESS_GATE_ENABLED) {
