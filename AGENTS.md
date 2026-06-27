@@ -27,6 +27,7 @@ first-stop operating guide for Codex and other coding agents.
 - Shared project memory: `readme.md`
 - Workflow details: `docs/codex-workflow.md`
 - Read-only preflight: `scripts/codex-preflight.sh`
+- Conservative deploy helper: `scripts/deploy-live.sh`
 
 ## Context Files
 
@@ -126,6 +127,15 @@ GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesO
 
 The live tree may have untracked runtime files under `data-theft/uploads/`.
 Do not delete them unless intentionally cleaning test artifacts.
+
+For the standard safe deploy path, prefer:
+
+```bash
+./scripts/deploy-live.sh
+```
+
+It refuses local tracked changes, pushes `main`, fast-forwards the live checkout,
+runs smoke checks, and confirms working/live commit alignment.
 
 ## Test Access Gate
 

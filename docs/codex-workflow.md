@@ -119,17 +119,18 @@ When the task is complete:
 git status --short
 git add <changed-files>
 git commit -m "<concise imperative message>"
-GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git push origin main
 ```
 
 Deploy when intended:
 
 ```bash
-cd /var/www/swgaudit-v2
-GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git pull --ff-only origin main
+cd /root/codex-work/swgaudit-context
+./scripts/deploy-live.sh
 ```
 
-Then run live verification for the touched route.
+The deploy helper pushes `main`, fast-forwards `/var/www/swgaudit-v2`, runs
+basic smoke checks, and confirms working/live alignment. If the changed feature
+needs deeper verification, run that after the helper completes.
 
 ## Updating Memory
 

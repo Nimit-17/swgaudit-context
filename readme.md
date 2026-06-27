@@ -213,6 +213,20 @@ restart services, or modify the site.
 
 ## Deployment Commands
 
+For the standard safe deploy path, use:
+
+```bash
+cd /root/codex-work/swgaudit-context
+./scripts/deploy-live.sh
+```
+
+The helper refuses unexpected local changes, pushes `main`, fast-forwards
+`/var/www/swgaudit-v2`, runs basic smoke checks, and confirms working/live commit
+alignment. It does not force-push, reset, delete uploads, restart services, or
+change server configuration.
+
+Manual commands:
+
 From the working repo:
 
 ```bash
