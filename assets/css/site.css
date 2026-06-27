@@ -1648,3 +1648,32 @@ body.home-compact .category-card h3 { margin: 0; font-size: clamp(1.05rem, 1.35v
   body.home-compact .category-icon { width: 50px; height: 50px; }
   body.home-compact .category-card { padding: 0.85rem 1rem; }
 }
+
+/* Plainer test pages and typography */
+body,
+body * {
+  font-weight: 400 !important;
+}
+
+.test-detail-page { gap: clamp(1rem, 2vw, 1.45rem); }
+.test-detail-hero { gap: 0; padding-bottom: 0.45rem; }
+.test-detail-hero h1 {
+  max-width: none;
+  font-size: clamp(1.75rem, 2.7vw, 2.6rem);
+  line-height: 1.08;
+  white-space: nowrap;
+}
+.test-readable-summary { display: grid; max-width: 980px; gap: 0.55rem; }
+.test-readable-summary h2 {
+  margin-top: 0.65rem;
+  color: var(--text);
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.25;
+}
+.test-readable-summary h2:first-child { margin-top: 0; }
+.test-readable-summary p { color: var(--muted); line-height: 1.6; }
+.test-readable-summary span { color: var(--text); }
+
+@media (max-width: 760px) {
+  .test-detail-hero h1 { white-space: normal; }
+}
