@@ -45,6 +45,13 @@ require_clean_except_runtime_uploads() {
   fi
 }
 
+normalize_script_modes() {
+  local path="$1"
+  if [ -d "$path/scripts" ]; then
+    find "$path/scripts" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
+  fi
+}
+
 short_head() {
   git -C "$1" rev-parse --short HEAD
 }
@@ -59,6 +66,7 @@ require_clean_except_runtime_uploads "working repo" "$WORKING_REPO"
 
 live_branch="$(branch_name "$LIVE_REPO")"
 [ "$live_branch" = "$BRANCH" ] || fail "live repo is on $live_branch, expected $BRANCH"
+normalize_script_modes "$LIVE_REPO"
 require_clean_except_runtime_uploads "live repo" "$LIVE_REPO"
 
 printf 'Working HEAD before push: %s\n' "$(short_head "$WORKING_REPO")"
@@ -69,6 +77,7 @@ GIT_SSH_COMMAND="$GIT_SSH_COMMAND_VALUE" git -C "$WORKING_REPO" push origin "$BR
 
 say "Pull Live Repo"
 GIT_SSH_COMMAND="$GIT_SSH_COMMAND_VALUE" git -C "$LIVE_REPO" pull --ff-only origin "$BRANCH"
+normalize_script_modes "$LIVE_REPO"
 
 say "Smoke Checks"
 curl --resolve www.swgaudit.com:443:127.0.0.1 -k -fsSI https://www.swgaudit.com/data-theft/ >/dev/null

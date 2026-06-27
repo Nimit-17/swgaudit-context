@@ -238,6 +238,9 @@ The helper refuses unexpected local changes, pushes `main`, fast-forwards
 alignment. It does not force-push, reset, delete uploads, restart services, or
 change server configuration.
 
+The helper normalizes executable bits for `scripts/*.sh` in the live checkout so
+mode-only drift does not block deployment.
+
 Manual commands:
 
 From the working repo:
