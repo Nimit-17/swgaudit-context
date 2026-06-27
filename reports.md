@@ -45,3 +45,8 @@ inspection.
 - Recorded the long-term product direction: SWG Audit should use authorized,
   educational simulations to demonstrate how easily common attacks can succeed
   and why defenses can fail in practice.
+
+## 2026-06-27
+
+- Rewrote AGENTS.md and readme.md around the active SWGaudit v2 repo, live path, Graphify workflow, deployment commands, and current Data Theft/path tunneling behavior.
+- Added docs/codex-workflow.md as the repeatable future-agent workflow for reading memory, querying Graphify, making narrow edits, verifying, committing, deploying, and updating context.

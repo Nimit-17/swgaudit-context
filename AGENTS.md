@@ -1,65 +1,141 @@
-# Repository Guidelines
+# SWGaudit Agent Guide
 
-## Project Structure & Module Organization
+This repository is the SWGaudit v2 development site. Treat this file as the
+first-stop operating guide for Codex and other coding agents.
 
-This repository is currently empty aside from agent metadata. When adding code, keep the layout predictable.
+## Working Agreement
 
-- `src/`: application or library source code.
-- `tests/`: automated tests that mirror `src/` structure where practical.
-- `assets/`: static images, fixtures, sample data, or other non-code files.
-- `docs/`: longer design notes, architecture decisions, and contributor references.
+- The user should not need to repeat stable project context. Read this file,
+  then `readme.md`, then use Graphify or targeted source reads to orient.
+- Do not reread the whole site for a small change. Use Graphify to narrow the
+  relevant files and functions, then open only the exact source sections needed.
+- Keep changes scoped to the requested behavior. Avoid broad refactors, visual
+  redesigns, infrastructure changes, or unrelated cleanup unless the user asks.
+- The live site is an educational security simulation site. Features should be
+  authorized, safe, explainable, and useful for demonstrating SWG/DLP behavior
+  without enabling real-world abuse.
+- Preserve unknown local changes. Always inspect `git status --short --branch`
+  before editing and work with existing modifications instead of reverting them.
 
-Prefer small, cohesive modules. Keep generated files out of source directories unless required for development or release.
+## Important Locations
 
-## Build, Test, and Development Commands
+- Server working repo: `/root/codex-work/swgaudit-context`
+- Live v2 path: `/var/www/swgaudit-v2`
+- GitHub repo: `https://github.com/Nimit-17/swgaudit-context`
+- Branch: `main`
+- SSH server: `ssh -p 7575 root@167.71.228.73`
+- Shared project memory: `readme.md`
+- Workflow details: `docs/codex-workflow.md`
+- Change log: `reports.md`
 
-No build system or package manifest is present yet. Add project-specific commands as soon as tooling is introduced:
+## Context Files
 
-- `npm test`, `pytest`, `cargo test`, or equivalent: run the full test suite.
-- `npm run build`, `make build`, or equivalent: produce distributable artifacts.
-- `npm run dev`, `make dev`, or equivalent: start a local development server or watcher.
-- `npm run lint`, `ruff check .`, or equivalent: run static analysis.
+- `readme.md` holds durable project facts, current architecture, decisions,
+  preferences, risks, and open questions.
+- `docs/codex-workflow.md` explains the repeatable loop for future work:
+  read memory, query Graphify, edit narrowly, verify, commit, update memory.
+- `reports.md` is a concise log of meaningful changes. Do not turn it into a
+  transcript of routine inspection.
 
-Keep commands reproducible from the repository root.
+Update these files when work creates a durable fact that future agents should
+know. Keep updates short and useful.
 
-## Coding Style & Naming Conventions
+## Graphify First
 
-Follow the formatter and linter configured for the language in use. Until tooling exists, use clear names, small functions, and consistent indentation within each file. Prefer descriptive module names such as `user-service.ts`, `data_loader.py`, or `auth_handler.go`.
+Graphify is installed on the server to reduce repeated broad source reads.
 
-Add comments only for non-obvious behavior, invariants, or integration constraints.
+- Install location: `/opt/graphify`
+- CLI symlink: `/usr/local/bin/graphify`
+- Skill file: `/root/.codex/skills/graphify/SKILL.md`
+- Graph output: `/root/codex-work/swgaudit-context/graphify-out/graph.json`
+- `graphify-out/` is locally ignored with `.git/info/exclude`
 
-## Testing Guidelines
+Before targeted code changes, prefer:
 
-Add tests with every behavioral change once a test framework is available. Name tests after the behavior under test, for example `test_loads_missing_config_defaults` or `auth-handler.test.ts`. Keep shared fixtures under `tests/fixtures/` or the framework’s conventional location.
+```bash
+cd /root/codex-work/swgaudit-context
+swgaudit-graph-query "What files/functions handle <feature>?"
+swgaudit-graph-explain "<file-or-function>"
+swgaudit-graph-path "<node A>" "<node B>"
+```
 
-Before opening a pull request, run the full test suite and relevant linters.
+Then read only the files and ranges the graph points to. If the graph is stale,
+run:
 
-## Commit & Pull Request Guidelines
+```bash
+swgaudit-graph-update
+```
 
-Readable Git history is not available in this checkout, so no repository-specific commit convention can be inferred. Use concise, imperative commit messages such as `Add config loader tests` or `Fix retry timeout handling`.
+## Key Application Files
 
-Pull requests should include a short summary, reason for the change, verification steps, and linked issues when applicable. Include screenshots for UI changes, and call out migrations, new environment variables, or compatibility concerns.
+- Data Theft page: `data-theft/index.php`
+- Global JS and test-access gate: `assets/js/site.js`
+- Main CSS: `assets/css/site.css`
+- DNS tunneling JS: `assets/js/data-theft-dns.js`
+- DNS endpoint: `data-theft/fetch_uploaded_data.php`
+- HTTP path tunneling JS: `assets/js/data-theft-path-tunnel.js`
+- HTTP path tunneling endpoint: `data-theft/path-tunnel.php`
+- Data theft evasion upload endpoint: `data-theft/process_evasion_upload.php`
+- Uploads and reconstructed files: `data-theft/uploads`
+- Backend CAPTCHA endpoint: `test-access.php`
+- Backend CAPTCHA config on server: `/etc/swgaudit-v2/recaptcha.php`
 
-## Security & Configuration Tips
+## UI Constraints
 
-Do not commit secrets, API keys, or local credentials. Provide `.env.example` when environment variables are required. Keep dependency and tooling updates intentional and tested.
+- Keep the dark catalog design consistent.
+- Reuse existing classes where possible:
+  `test-card`, `test-card-detail`, `credential-test-form`, `form-row`,
+  `test-actions`, `primary-action`, `test-note`, `test-output`, `is-pass`,
+  `is-fail`.
+- Keep controls keyboard accessible.
+- Do not add unrelated layout or design-system refactors while fixing a feature.
 
-## External Server Access
+## Verification
 
-The user has access to the Linux dev server for `https://www.swgaudit.com/` but does not yet know how the server is configured. Codex is launched from the `/root/nimit` folder on that server.
+Use targeted checks based on changed files. Common checks:
 
-Read-only inspection actions are allowed without asking first. This includes listing files, navigating directories, reading configuration and source files, checking service status, inspecting processes, viewing logs carefully, checking versions, and making read-only HTTP/DNS probes. The user prefers agents to freely perform non-mutating exploration instead of asking for permission for routine inspection.
+```bash
+php -l data-theft/index.php
+php -l data-theft/path-tunnel.php
+node --check assets/js/data-theft-path-tunnel.js
+node --check assets/js/site.js
+curl --resolve www.swgaudit.com:443:127.0.0.1 -k -I https://www.swgaudit.com/data-theft/
+curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-theft/path-tunnel.php?status=1&id=0123456789abcdef'
+```
 
-Do not make changes on the server without explicit user approval. This includes editing files, installing packages, pulling code, restarting services, changing permissions, running migrations, deleting files, or modifying configuration. Start with inspection and explain the purpose of commands before any action that could alter server state.
+For UI changes, verify in a browser when practical.
 
-## Context Maintenance
+## Git And Deployment
 
-Use `readme.md` as the shared project context file. Keep it current with durable facts, goals, preferences, risks, decisions, important paths, safe commands, verification steps, and open questions discovered during work.
+Start work with:
 
-Prefer concise context updates over activity logs. The goal is for future agents to understand where the project stands and what the user is trying to accomplish without requiring the user to repeat background information.
+```bash
+cd /root/codex-work/swgaudit-context
+git status --short --branch
+```
 
-When editing application code, work in `/var/www/swgaudit` only after confirming the intended target branch/state and checking for local modifications. Do not overwrite unknown local changes.
+Push from the working repo with:
 
-## Current Project Context
+```bash
+GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git push origin main
+```
 
-For current SWG Audit server state, known caveats, project goals, decisions, and open questions, read `readme.md` before taking action. Treat `readme.md` as the source of truth for evolving project context.
+Pull live from `/var/www/swgaudit-v2` with:
+
+```bash
+GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git pull --ff-only origin main
+```
+
+The live tree may have untracked runtime files under `data-theft/uploads/`.
+Do not delete them unless intentionally cleaning test artifacts.
+
+## Test Access Gate
+
+The frontend gate is controlled in `assets/js/site.js`:
+
+```js
+const TEST_ACCESS_GATE_ENABLED = false;
+```
+
+It is currently disabled. Re-enable by setting it to `true` and deploying. The
+backend endpoint and server config still exist.

@@ -1,249 +1,234 @@
-# SWG Audit Dev Server Context
+# SWGaudit v2 Project Memory
 
-This workspace is a coordination area for understanding and safely working on the
-SWG Audit dev server. It is not currently the application repository. The live
-application code appears to live separately under `/var/www/swgaudit`.
+This file is the durable memory for the SWGaudit v2 development site. It should
+help future Codex sessions understand the project without requiring the user to
+paste the same context again.
 
-The project goal is to improve the SWG Audit website so it can clearly and
-convincingly demonstrate how easily common attack scenarios can compromise users
-and organizations, and why many defenses fail in practice. The site should use
-authorized, educational simulations to make security risks tangible without
-enabling real-world abuse.
+## Project Goal
 
-The user is still learning how the site and server are set up, so the current
-phase is exploratory and cautious: understand the system, document findings, and
-make only minor, well-scoped website changes unless the user explicitly approves
-a larger step.
+SWGaudit is an educational security simulation site. Its purpose is to make
+common web, malware, data theft, phishing, cyberslacking, and policy-bypass
+scenarios tangible so users can see how SWG/DLP controls behave in practice.
 
-At this stage, avoid significant infrastructure work such as fixing HTTPS,
-changing DNS, restructuring deployment, or restarting services unless the user
-specifically asks for it and approves the exact action.
+The site should demonstrate risk clearly and convincingly while staying
+authorized, controlled, and safe. Simulations should focus on defensive testing,
+policy validation, and explainable outcomes.
 
-A second goal is to keep the user and Codex in sync. This README should be
-updated as new facts, preferences, goals, risks, and decisions are discovered so
-future sessions can understand the user's intent without requiring extremely
-specific instructions every time.
+## Current Repo And Server
 
-Use `reports.md` as the running change log for meaningful changes made during
-work. Keep `readme.md` focused on durable context and decisions; keep
-`reports.md` focused on concise change records.
+- GitHub: `https://github.com/Nimit-17/swgaudit-context`
+- Server working repo: `/root/codex-work/swgaudit-context`
+- Live v2 path: `/var/www/swgaudit-v2`
+- Branch: `main`
+- SSH server: `ssh -p 7575 root@167.71.228.73`
+- Web domain used for verification: `https://www.swgaudit.com/`
 
-## Current Situation
+The working repo is the source of truth for SWGaudit v2 development. The live
+path should be updated by pulling from `origin/main` after changes are committed
+and pushed.
 
-- The user has access to the Linux dev server behind `https://www.swgaudit.com/`.
-- Codex is launched from `/root/nimit` on that server.
-- This `/root/nimit` directory currently contains only agent/context files.
-- The `/root/nimit` context repository is pushed to
-  `git@github.com:Nimit-17/swgaudit-context.git`.
-- The actual deployed site is a traditional Apache/PHP application.
-- The dev server is not confirmed to be the canonical production host.
-- The server configuration is only partially understood, so inspection should
-  come before changes.
-- The current focus is small website improvements, learning the codebase, and
-  evolving safe educational attack simulations, not major server repair or
-  deployment cleanup.
+## User Preferences
 
-## Operating Context
+- The user does not want to keep repeating stable context.
+- Agents should read this memory, use Graphify, and inspect only relevant files
+  for each task.
+- Prefer proactive implementation once the request is clear.
+- Keep the site visually consistent with the existing dark catalog design.
+- Avoid unrelated redesigns, infrastructure changes, or broad refactors.
+- Preserve runtime artifacts and unknown local changes unless the user asks for
+  cleanup.
 
-`AGENTS.md` contains the general operating rules for agents, including the
-permission model for read-only inspection and server changes. This README should
-focus on project context: what we know, what we are trying to do, important
-risks, decisions, and open questions.
+## Repeatable Work Loop
 
-## Known Server Details
+For ordinary site changes:
 
-- Hostname: `swgaudit-dev`
-- Observed public IP on the box: `167.71.228.73`
-- SSH port: `7575`
-- Web server: Apache on ports `80` and `443`
-- PHP integration: Apache `mod_php`
-- Observed PHP CLI version: `8.4.5`
+1. Read `AGENTS.md`, this file, and any task-specific notes.
+2. Run `git status --short --branch`.
+3. Use Graphify to find relevant files and functions.
+4. Open only the exact source sections needed.
+5. Make a narrow change.
+6. Run targeted syntax checks and smoke tests.
+7. Commit and push when the work is complete.
+8. Pull into `/var/www/swgaudit-v2` when deployment is intended.
+9. Update this memory only when a durable fact changed.
 
-## Known Application Layout
-
-- Main web root: `/var/www/swgaudit`
-- Image/static host root: `/var/www/images.swgaudit.com`
-- Main Apache config: `/etc/apache2/sites-available/swgaudit.com.conf`
-- Image Apache config: `/etc/apache2/sites-available/images.swgaudit.com.conf`
-
-`swgaudit.com` and wildcard subdomains route through `/var/www/swgaudit`.
-Subdomains are rewritten to matching directories, with fallback to
-`/var/www/swgaudit/wildcard`.
-
-The deployed application directory at `/var/www/swgaudit` is a Git repository
-with origin:
-
-```text
-https://github.com/swgauditor/swgaudit.git
-```
-
-The context repository at `/root/nimit` uses:
-
-```text
-git@github.com:Nimit-17/swgaudit-context.git
-```
-
-Its local Git config sets `core.sshCommand` to use
-`/root/.ssh/swgaudit_context_github` on GitHub SSH port `22`.
-
-A GitHub deploy key pair exists at:
-
-```text
-/root/.ssh/swgaudit_context_github
-/root/.ssh/swgaudit_context_github.pub
-```
-
-GitHub SSH auth with this key returned:
-
-```text
-Hi Nimit-17/swgaudit-context! You've successfully authenticated, but GitHub does not provide shell access.
-```
-
-This suggests the deploy key is attached to `Nimit-17/swgaudit-context`. The
-actual app remote is still `swgauditor/swgaudit`; read-only access to that repo
-works, but that does not prove the deploy key can push there if the repository is
-publicly readable. The system-wide SSH client config sets `Port 7575` for all
-hosts in `/etc/ssh/ssh_config`, so GitHub SSH commands must explicitly use port
-`22` unless a host-specific SSH config is added.
-
-Read-only verification command:
-
-```bash
-GIT_SSH_COMMAND='ssh -p 22 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git ls-remote git@github.com:swgauditor/swgaudit.git HEAD
-```
-
-Observed remote refs:
-
-```text
-swgauditor/swgaudit: main=e91c78982a5d80dc3ea32194c16bdee44dafff69, dev=26bef503ffffefc903fd28b5b89efed207ce2f99
-Nimit-17/swgaudit-context: main=3b233b600e2a00c40b3cb2115f8796ded71d898d
-```
-
-Because the repo is owned outside this workspace, read-only Git inspection may
-need an ephemeral safe-directory override, for example:
-
-```bash
-git -c safe.directory=/var/www/swgaudit -C /var/www/swgaudit status --short --branch
-```
-
-At last inspection, the live tree had broad local modifications relative to
-`origin/main`. Treat those local changes as important until they are understood.
-
-## Data-Theft Simulation Notes
-
-BIND/named is installed and authoritative DNS configuration exists under
-`/etc/bind`.
-
-The app's data-theft simulation reads:
-
-```text
-/var/log/named/query.log
-```
-
-It reconstructs uploaded files into:
-
-```text
-/var/www/swgaudit/data-theft/uploads
-```
-
-A root cron job runs this cleanup script every 10 minutes:
-
-```text
-/usr/local/bin/delete_old_uploads.sh
-```
-
-The script deletes old upload files. Inspect before changing anything in this
-path because it may affect demos or active testing.
-
-## Known Caveats And Risks
-
-- Public DNS for `swgaudit.com`, `www.swgaudit.com`, and
-  `data-theft.swgaudit.com` resolved to `139.59.64.233`, while the dev server's
-  observed public IP was `167.71.228.73`.
-- BIND zone/config files also referenced `139.59.64.233`.
-- Apache was configured to use `/etc/letsencrypt/live/swgaudit.com/...`, which
-  was an expired wildcard certificate at last inspection.
-- A separate `swgaudit.com-0001` certificate existed for `swgaudit.com` and
-  `www.swgaudit.com`.
-- Apache rewrite logging was very verbose through
-  `LogLevel alert rewrite:trace6`.
-- `/etc/apache2/sites-enabled/swgaudit_dev.com.conf` appeared to be a broken
-  symlink to a missing available config.
+More detail lives in `docs/codex-workflow.md`.
 
 ## Graphify Codebase Memory
 
-Graphify is installed on this server to reduce repeated broad file reads and token usage during Codex work.
+Graphify is installed on the server to reduce repeated broad code reading.
 
 - Install location: `/opt/graphify`
 - CLI symlink: `/usr/local/bin/graphify`
 - Codex skill: `/root/.codex/skills/graphify/SKILL.md`
 - Repo graph: `/root/codex-work/swgaudit-context/graphify-out/graph.json`
-- Generated graph output is locally ignored via `.git/info/exclude`.
-- Git hooks are installed in `/root/codex-work/swgaudit-context` to refresh the graph after commits/checkouts.
+- Generated output is locally ignored through `.git/info/exclude`.
+- Git hooks refresh the graph after commits and checkouts.
 
-Before making small or targeted code changes, prefer querying Graphify first instead of rereading large files:
+Preferred commands:
 
 ```bash
 cd /root/codex-work/swgaudit-context
 swgaudit-graph-query "What files/functions handle <feature>?"
-swgaudit-graph-explain "<function-or-file>"
+swgaudit-graph-explain "<file-or-function>"
 swgaudit-graph-path "<node A>" "<node B>"
 swgaudit-graph-update
 ```
 
-Use Graphify to narrow the relevant files/functions, then open only the needed source sections for exact edits and verification.
+Use Graphify as an index, not as a replacement for reading code. After it
+identifies likely files, inspect the relevant source ranges before editing.
 
-## Recommended First Inspection Steps
+## Important Files
 
-These are read-only commands that help establish current state before proposing
-changes:
+- Homepage: `index.php`
+- About page: `about/index.php`
+- Phishing catalog: `phishing/index.php`
+- Malware catalog: `malware/index.php`
+- Data Theft catalog: `data-theft/index.php`
+- Cyberslacking catalog: `cyberslacking/index.php`
+- Global JS and CAPTCHA/test-access gate: `assets/js/site.js`
+- Main CSS: `assets/css/site.css`
+- DNS tunneling JS: `assets/js/data-theft-dns.js`
+- DNS tunneling endpoint: `data-theft/fetch_uploaded_data.php`
+- HTTP path tunneling JS: `assets/js/data-theft-path-tunnel.js`
+- HTTP path tunneling endpoint: `data-theft/path-tunnel.php`
+- Data theft evasion upload endpoint: `data-theft/process_evasion_upload.php`
+- Backend test-access endpoint: `test-access.php`
+- Server CAPTCHA config: `/etc/swgaudit-v2/recaptcha.php`
+- Uploads and reconstructed files: `data-theft/uploads`
 
-```bash
-hostname
-ip addr
-apache2ctl -S
-php -v
-systemctl status apache2 --no-pager
-systemctl status named --no-pager
-git -c safe.directory=/var/www/swgaudit -C /var/www/swgaudit status --short --branch
-git -c safe.directory=/var/www/swgaudit -C /var/www/swgaudit remote -v
+## Data Theft: HTTP Path Tunneling
+
+Current behavior:
+
+- The card appears under Data Theft -> Advanced Threat Simulation.
+- Selecting a file auto-runs the test immediately.
+- The Run Test button remains as a manual fallback.
+- A Reset Test button appears after a run.
+- Max file size is 200 KB.
+- The browser reads the file locally.
+- The browser Base64URL-encodes the file without padding.
+- The browser chunks encoded content into about 1500-character path chunks.
+- Requests look like:
+
+```text
+/data-theft/path-tunnel.php/{testId}/0/{metadata}
+/data-theft/path-tunnel.php/{testId}/1/{chunk}
 ```
 
-Useful targeted file reads:
+- Metadata chunk `0` includes filename, MIME type, size, total chunks, and
+  encoded length.
+- The endpoint reconstructs directly from received path chunks. It does not use
+  Apache access logs.
+- Status polling uses:
 
-```bash
-sed -n '1,220p' /etc/apache2/sites-available/swgaudit.com.conf
-sed -n '1,220p' /etc/apache2/sites-available/images.swgaudit.com.conf
-ls -la /var/www/swgaudit
-ls -la /etc/bind
-crontab -l
+```text
+/data-theft/path-tunnel.php?status=1&id={testId}
 ```
 
-Use care with logs. Prefer narrow reads with `tail`, `journalctl -n`, or
-specific time windows instead of dumping large files.
+- If reconstructed, the UI reports:
+
+```text
+Test Failed: the file was reconstructed from URL path chunks.
+```
+
+- If not reconstructed, the UI reports:
+
+```text
+Pass: the full file did not reach the server through URL path chunks.
+```
+
+- The reconstructed-file link is shown only when the returned URL matches
+  `/data-theft/uploads/...`.
+- Final reconstructed files are saved under `data-theft/uploads/`, so the
+  existing cleanup removes them.
+
+SWG/DLP testing note: this flow uses GET URL path chunks, no POST body and no
+multipart upload body. Blocking or detecting it likely requires URL/path
+inspection for `/data-theft/path-tunnel.php/` or suspicious long Base64URL-like
+path segments. Browser choice matters if only one browser is routed through the
+SWG.
+
+## Data Theft: DNS Tunneling
+
+The DNS tunneling simulation uses frontend JavaScript and the endpoint at
+`data-theft/fetch_uploaded_data.php`. Historical server notes indicate BIND
+query logs may be involved for DNS reconstruction. Inspect current code before
+changing this flow.
+
+## Test Access Gate
+
+The frontend gate is controlled in `assets/js/site.js`:
+
+```js
+const TEST_ACCESS_GATE_ENABLED = false;
+```
+
+It is currently disabled. The backend endpoint still exists at
+`test-access.php`, and backend configuration exists at
+`/etc/swgaudit-v2/recaptcha.php`.
+
+To re-enable, set `TEST_ACCESS_GATE_ENABLED = true`, run checks, commit, push,
+deploy, and verify the user flow.
+
+## Runtime Cleanup
+
+Uploads and reconstructed files live under:
+
+```text
+data-theft/uploads
+```
+
+Server cron deletes uploads after 10 minutes. The live path may contain
+untracked runtime files here. Do not delete them unless intentionally cleaning
+test artifacts.
+
+## Verification Commands
+
+Use only the checks relevant to changed files:
+
+```bash
+php -l data-theft/index.php
+php -l data-theft/path-tunnel.php
+node --check assets/js/data-theft-path-tunnel.js
+node --check assets/js/site.js
+curl --resolve www.swgaudit.com:443:127.0.0.1 -k -I https://www.swgaudit.com/data-theft/
+curl --resolve www.swgaudit.com:443:127.0.0.1 -k 'https://www.swgaudit.com/data-theft/path-tunnel.php?status=1&id=0123456789abcdef'
+```
+
+For frontend changes, use a browser or screenshot check when practical.
+
+## Deployment Commands
+
+From the working repo:
+
+```bash
+cd /root/codex-work/swgaudit-context
+git status --short --branch
+GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git push origin main
+```
+
+From the live path:
+
+```bash
+cd /var/www/swgaudit-v2
+GIT_SSH_COMMAND='ssh -p 443 -i /root/.ssh/swgaudit_context_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git pull --ff-only origin main
+```
+
+Then verify live with curl and browser checks appropriate to the change.
+
+## Recent Relevant Commits
+
+- `a939a92` Run path tunneling test on file selection
+- `7c8ad3a` Enable test access captcha gate
+- `6de6f29` Disable test access captcha popup
+- `c71edc3` Document Graphify codebase memory workflow
+- `f6cfec2` Show path tunnel reconstructed file link
 
 ## Open Questions
 
-- Which specific minor website change should be attempted first?
-- Is `167.71.228.73` intended to become the live host, or is it only a dev copy?
-- Should DNS point to this server, or should this server be configured to match
-  the existing public DNS target at `139.59.64.233`?
-- Which local modifications in `/var/www/swgaudit` are intentional and should be
-  preserved?
-- Are the certificates supposed to cover only `swgaudit.com` and
-  `www.swgaudit.com`, or also wildcard subdomains?
-- What user-facing flows are most important to validate after any change?
-
-## Context To Keep Current
-
-This README should stay focused on durable project context. Useful updates
-include:
-
-- The user's goals, preferences, or recurring terminology.
-- Important application routes, files, modules, or workflows.
-- Decisions the user has made about what to change or avoid.
-- Server or deployment facts that affect future work.
-- Safe commands, risky commands, and known verification steps.
-- Open questions that need the user's input later.
-
-The goal is shared understanding, not a full activity log.
+- Which simulations should be prioritized next for realism and defensive value?
+- Should the CAPTCHA/test-access gate remain disabled during development?
+- Which browser is routed through the SWG during demos: Firefox, Chrome, or both?
+- Should future simulation result pages include more explicit SWG/DLP
+  remediation hints?
