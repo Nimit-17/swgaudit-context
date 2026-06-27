@@ -856,6 +856,12 @@ h2 {
   color: #fecaca;
 }
 
+.test-output a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .cyberslacking-video-frame {
   position: relative;
   width: min(100%, 520px);

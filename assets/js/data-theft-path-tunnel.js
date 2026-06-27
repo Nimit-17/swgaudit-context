@@ -116,6 +116,11 @@ const pathTunnelCheckResult = async (id, status, attempts = 5, delayMs = 1000) =
   };
 };
 
+const pathTunnelIsSafeFileUrl = (url) => (
+  typeof url === "string"
+  && /^\/data-theft\/uploads\/[^/?#]+$/.test(url)
+);
+
 document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
   const fileInput = form.querySelector("[data-path-tunnel-file]");
   const submitButton = form.querySelector("[data-path-tunnel-submit]");
@@ -125,11 +130,21 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
 
   if (!fileInput || !submitButton || !status) return;
 
-  const setStatus = (message, state) => {
+  const setStatus = (message, state, fileUrl = null) => {
     status.hidden = false;
     status.classList.remove("is-pass", "is-fail");
     if (state) status.classList.add(state);
     status.textContent = message;
+
+    if (pathTunnelIsSafeFileUrl(fileUrl)) {
+      status.append(" ");
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "View reconstructed file";
+      status.append(link);
+    }
   };
 
   const runTest = async () => {
@@ -172,13 +187,13 @@ document.querySelectorAll("[data-path-tunnel-form]").forEach((form) => {
       const result = await pathTunnelCheckResult(id, status);
 
       if (result.success && result.reconstructed) {
-        status.classList.remove("is-pass");
-        status.classList.add("is-fail");
-        status.textContent = "Test Failed: the file was reconstructed from URL path chunks.";
+        setStatus(
+          "Test Failed: the file was reconstructed from URL path chunks.",
+          "is-fail",
+          result.fileUrl,
+        );
       } else {
-        status.classList.remove("is-fail");
-        status.classList.add("is-pass");
-        status.textContent = "Pass: the full file did not reach the server through URL path chunks.";
+        setStatus("Pass: the full file did not reach the server through URL path chunks.", "is-pass");
       }
     } catch (error) {
       setStatus("Test could not complete. Please retry.");
