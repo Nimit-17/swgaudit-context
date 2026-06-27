@@ -1621,7 +1621,7 @@ body.home-compact .home-categories { display: grid; align-content: start; paddin
 body.home-compact .home-categories .section-head { margin-bottom: 0.85rem; }
 body.home-compact #categories-title { color: var(--muted); font-size: clamp(0.92rem, 1.1vw, 1.06rem); font-weight: 750; text-transform: uppercase; letter-spacing: 0.08em; white-space: normal; }
 body.home-compact .category-grid { gap: 0.75rem; }
-body.home-compact .category-card { min-height: 0; display: flex; gap: 0.8rem; align-items: center; padding: clamp(0.95rem, 1.5vw, 1.25rem); background: rgba(255,255,255,0.026); }
+body.home-compact .category-card { min-height: 0; display: flex; flex-direction: row; gap: 0.8rem; align-items: center; padding: clamp(0.95rem, 1.5vw, 1.25rem); background: rgba(255,255,255,0.026); }
 body.home-compact .category-card:hover, body.home-compact .category-card:focus-visible { border-color: rgba(255,255,255,0.34); background: rgba(255,255,255,0.055); }
 body.home-compact .category-icon { width: clamp(44px, 5vw, 64px); height: clamp(44px, 5vw, 64px); }
 body.home-compact .category-card h3 { margin: 0; font-size: clamp(1rem, 1.3vw, 1.22rem); }
