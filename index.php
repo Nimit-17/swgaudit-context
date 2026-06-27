@@ -25,10 +25,7 @@ $activeCategory = '';
       <?php foreach (swg_categories() as $categoryKey => $category): ?>
         <a class="card category-card" href="/<?php echo htmlspecialchars($categoryKey, ENT_QUOTES, 'UTF-8'); ?>/">
           <img class="category-icon" src="<?php echo htmlspecialchars($category['icon'], ENT_QUOTES, 'UTF-8'); ?>" alt="" width="92" height="92">
-          <div>
-            <h3><?php echo htmlspecialchars($category['label'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p><?php echo htmlspecialchars($category['intro'], ENT_QUOTES, 'UTF-8'); ?></p>
-          </div>
+          <h3><?php echo htmlspecialchars($category['label'], ENT_QUOTES, 'UTF-8'); ?></h3>
         </a>
       <?php endforeach; ?>
     </div>
