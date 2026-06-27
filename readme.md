@@ -170,6 +170,29 @@ path because it may affect demos or active testing.
 - `/etc/apache2/sites-enabled/swgaudit_dev.com.conf` appeared to be a broken
   symlink to a missing available config.
 
+## Graphify Codebase Memory
+
+Graphify is installed on this server to reduce repeated broad file reads and token usage during Codex work.
+
+- Install location: `/opt/graphify`
+- CLI symlink: `/usr/local/bin/graphify`
+- Codex skill: `/root/.codex/skills/graphify/SKILL.md`
+- Repo graph: `/root/codex-work/swgaudit-context/graphify-out/graph.json`
+- Generated graph output is locally ignored via `.git/info/exclude`.
+- Git hooks are installed in `/root/codex-work/swgaudit-context` to refresh the graph after commits/checkouts.
+
+Before making small or targeted code changes, prefer querying Graphify first instead of rereading large files:
+
+```bash
+cd /root/codex-work/swgaudit-context
+swgaudit-graph-query "What files/functions handle <feature>?"
+swgaudit-graph-explain "<function-or-file>"
+swgaudit-graph-path "<node A>" "<node B>"
+swgaudit-graph-update
+```
+
+Use Graphify to narrow the relevant files/functions, then open only the needed source sections for exact edits and verification.
+
 ## Recommended First Inspection Steps
 
 These are read-only commands that help establish current state before proposing
