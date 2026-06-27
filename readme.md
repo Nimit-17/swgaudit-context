@@ -109,7 +109,7 @@ Current behavior:
 
 - The card appears under Data Theft -> Advanced Threat Simulation.
 - Selecting a file auto-runs the test immediately.
-- The Run Test button remains as a manual fallback.
+- The Upload Sample action remains as the manual fallback.
 - A Reset Test button appears after a run.
 - Max file size is 200 KB.
 - The browser reads the file locally.
@@ -275,3 +275,24 @@ Then verify live with curl and browser checks appropriate to the change.
 - Which browser is routed through the SWG during demos: Firefox, Chrome, or both?
 - Should future simulation result pages include more explicit SWG/DLP
   remediation hints?
+
+
+## Test Navigation IA
+
+Current v2 testing IA uses category overview pages plus individual physical test
+routes. Individual test URLs are category-scoped, for example:
+
+```text
+/phishing/known-phishing-domains/
+/data-theft/http-path-tunneling/
+```
+
+Shared test metadata lives in `includes/tests.php`. Individual test pages render
+through `components/test-page.php`; category overview pages render through
+`components/category-page.php`; the sidebar is `components/test-sidebar.php`.
+Run areas are partials under `includes/run-areas/` and preserve the existing JS
+data attributes used by `assets/js/site.js` and the Data Theft scripts.
+
+Top navigation links to category overview pages only. Individual test pages use
+a left/sidebar test navigator grouped by main category, not by difficulty. A
+rollback is a normal Git revert followed by `./scripts/deploy-live.sh`.

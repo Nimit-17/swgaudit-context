@@ -412,7 +412,7 @@ document.querySelectorAll("[data-run-test]").forEach((button) => {
     if (!output) return;
 
     output.hidden = false;
-    output.textContent = "Run Test selected. This flexible slot is ready for the real simulation flow for this test.";
+    output.textContent = "Run Inline selected. This flexible slot is ready for the real simulation flow for this test.";
   });
 });
 
@@ -1377,5 +1377,22 @@ document.querySelectorAll("[data-chunk-attack-download]").forEach((link) => {
     } finally {
       link.removeAttribute("aria-busy");
     }
+  });
+});
+
+
+document.querySelectorAll("[data-test-nav-toggle]").forEach((button) => {
+  const nav = document.getElementById(button.getAttribute("aria-controls"));
+  if (!nav) return;
+  button.addEventListener("click", () => {
+    const isOpen = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!isOpen));
+    nav.dataset.open = String(!isOpen);
+  });
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      button.setAttribute("aria-expanded", "false");
+      nav.dataset.open = "false";
+    });
   });
 });

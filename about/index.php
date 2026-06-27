@@ -2,107 +2,15 @@
 $title = "About - SWG Audit";
 $description = "An open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions.";
 $url = "https://www.swgaudit.com/about/";
+$activeCategory = '';
+$activePage = 'about';
 ?>
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?php echo $title; ?></title>
-  <meta name="description" content="<?php echo $description; ?>">
-  <meta name="author" content="SWG Audit">
-  <meta property="og:title" content="<?php echo $title; ?>">
-  <meta property="og:description" content="<?php echo $description; ?>">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="<?php echo $url; ?>">
-  <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
-  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="/assets/css/site.css">
-</head>
+<?php include __DIR__ . '/../components/page-head.php'; ?>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="/" aria-label="SWG Audit home">
-        <img src="/assets/icons/logo_swg_audit.png" alt="" width="34" height="34">
-        <span>SWG Audit</span>
-      </a>
-
-      <nav class="desktop-nav" aria-label="Primary">
-        <div class="nav-item">
-          <a class="nav-trigger" href="/phishing/" aria-haspopup="true" aria-expanded="false">Phishing</a>
-          <div class="dropdown" aria-label="Phishing levels">
-            <a href="/phishing/#bare-minimum">Bare Minimum</a>
-            <a href="/phishing/#evasion-detection">Evasion Detection</a>
-            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <a class="nav-trigger" href="/malware/" aria-haspopup="true" aria-expanded="false">Malware</a>
-          <div class="dropdown" aria-label="Malware levels">
-            <a href="/malware/#bare-minimum">Bare Minimum</a>
-            <a href="/malware/#evasion-detection">Evasion Detection</a>
-            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <a class="nav-trigger" href="/data-theft/" aria-haspopup="true" aria-expanded="false">Data Theft</a>
-          <div class="dropdown" aria-label="Data Theft levels">
-            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
-            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
-            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <a class="nav-link" href="/cyberslacking/">Cyberslacking</a>
-        <a class="nav-link" href="/about/" aria-current="page">About</a>
-      </nav>
-
-      <a class="github-link" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">
-        <img src="/assets/images/github-mark.svg" alt="" width="18" height="18">
-        <span class="sr-only">GitHub</span>
-      </a>
-
-      <button class="mobile-toggle" type="button" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
-        <span aria-hidden="true"></span>
-      </button>
-    </div>
-
-    <nav class="mobile-panel" id="mobile-panel" data-open="false" aria-label="Mobile primary">
-      <div class="mobile-panel-inner">
-        <div class="mobile-accordion">
-          <button type="button" aria-expanded="false" aria-controls="mobile-phishing">Phishing</button>
-          <div id="mobile-phishing">
-            <a href="/phishing/">Overview</a>
-            <a href="/phishing/#bare-minimum">Bare Minimum</a>
-            <a href="/phishing/#evasion-detection">Evasion Detection</a>
-            <a href="/phishing/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="mobile-accordion">
-          <button type="button" aria-expanded="false" aria-controls="mobile-malware">Malware</button>
-          <div id="mobile-malware">
-            <a href="/malware/">Overview</a>
-            <a href="/malware/#bare-minimum">Bare Minimum</a>
-            <a href="/malware/#evasion-detection">Evasion Detection</a>
-            <a href="/malware/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <div class="mobile-accordion">
-          <button type="button" aria-expanded="false" aria-controls="mobile-data-theft">Data Theft</button>
-          <div id="mobile-data-theft">
-            <a href="/data-theft/">Overview</a>
-            <a href="/data-theft/#bare-minimum">Bare Minimum</a>
-            <a href="/data-theft/#evasion-detection">Evasion Detection</a>
-            <a href="/data-theft/#advanced-threat-simulation">Advanced Threat Simulation</a>
-          </div>
-        </div>
-        <a class="mobile-direct" href="/cyberslacking/">Cyberslacking</a>
-        <a class="mobile-direct" href="/about/">About</a>
-        <a class="mobile-direct" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </nav>
-  </header>
-
-  <main class="page-shell article-page about-page">
+<?php include __DIR__ . '/../components/site-header.php'; ?>
+<main class="page-shell article-page about-page">
     <section class="about-hero" aria-labelledby="about-title">
       <div class="about-hero-copy">
         <p class="eyebrow">About SWG Audit</p>
@@ -165,12 +73,7 @@ $url = "https://www.swgaudit.com/about/";
       <strong>Test honestly. Buy confidently.</strong>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <p>
-      All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
-    </p>
-  </footer>
-  <script src="/assets/js/site.js"></script>
+<?php include __DIR__ . '/../components/site-footer.php'; ?>
+<script src="/assets/js/site.js"></script>
 </body>
 </html>
