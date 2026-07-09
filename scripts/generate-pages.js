@@ -55,14 +55,16 @@ const pages = [
           <div className="swg-output" data-test-output hidden />
         </form>`, "Phishing pages exist to collect real credentials. If outbound form submissions aren't inspected, a username and password can leave the network even after landing on a suspicious page.", "Submit the prefilled test credentials. The endpoint only reports whether the submission reached the server and discards the values immediately.", "The submission is blocked, disrupted, stripped, or cannot complete through the protected path.", "The submitted data reaches the server-side simulation endpoint successfully."),
 
-  page("malware/ransomware-or-personal-data-file", "Ransomware or personal-data file", "Malware", "Bare Minimum", "Risky file download policy", `
-        <div className="swg-run-pick">Choose a sample:</div>
-        <div className="swg-pick" data-pick="ransomware-or-personal-data-file">
-          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/ransomware-note-simulation.txt" data-name="ransomware-note-simulation.txt" data-desc="Downloads a harmless text file that looks like a ransom note. This checks whether the gateway blocks obvious ransomware-style content before it reaches the browser.">Ransomware note (.txt)</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/pii-file.xlsx" data-name="pii-file.xlsx" data-desc="Downloads a harmless spreadsheet shaped like sensitive personal data. This checks whether the gateway stops risky business-data files from leaving or reaching endpoints.">Personal-data file (.xlsx)</button>
+  page("malware/ransomware-file", "Ransomware file", "Malware", "Bare Minimum", "Ransomware-style file detection", `
+        <div className="swg-pick" data-pick="ransomware-file">
+          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/ransomware-note-simulation.txt" data-name="ransomware-note-simulation.txt">Ransomware note (.txt)</button>
         </div>
-        <p className="swg-pick-desc" data-pick-desc>Downloads a harmless text file that looks like a ransom note. This checks whether the gateway blocks obvious ransomware-style content before it reaches the browser.</p>
-        <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="ransomware-or-personal-data-file">Download sample</button></div>`, "Not every malicious file is an executable. Ransom notes and files shaped like sensitive personal or business data show up in real incidents but slip past filters that only look for known malware signatures.", "Pick a sample and download it. Both files are completely harmless, but each is shaped to resemble content a file download policy should catch.", "The download is blocked before it reaches your device.", "The file downloads normally with no warning."),
+        <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="ransomware-file">Download ransomware sample</button></div>`, "Ransomware incidents often leave behind instructions or warning files that are not executable but still indicate a serious compromise.", "Download the harmless ransomware-note simulation and check whether perimeter controls stop recognisable ransomware-style content.", "The download is blocked before it reaches your device.", "The ransomware-style file downloads normally with no warning."),
+  page("malware/personal-data-file", "Personal-data file", "Malware", "Bare Minimum", "Sensitive-data file detection", `
+        <div className="swg-pick" data-pick="personal-data-file">
+          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/pii-file.xlsx" data-name="pii-file.xlsx">Personal-data file (.xlsx)</button>
+        </div>
+        <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="personal-data-file">Download personal-data sample</button></div>`, "Files containing personal information can be risky even when they contain no executable code or known malware signature.", "Download the harmless spreadsheet shaped like personal data and check whether policy controls recognise and stop the sensitive file.", "The download is blocked before it reaches your device.", "The personal-data file downloads normally with no warning."),
   page("malware/different-file-formats", "Different file formats", "Malware", "Bare Minimum", "Malware file-type detection", `
         <div className="swg-run-pick">Choose a file format:</div>
         <div className="swg-pick" data-pick="different-file-formats">
@@ -91,16 +93,21 @@ const pages = [
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="http-https-and-cloud-delivery">Download sample</button></div>`, "Malware doesn't only arrive from suspicious sites. It can be delivered over cleartext HTTP, trusted HTTPS hosts, or cloud storage where domain reputation checks alone aren't enough.", "Choose a delivery channel. Each option downloads the same harmless image-style payload from a different source: cleartext HTTP on another host, HTTPS from this site, or Google Drive.", "The download is inspected and blocked regardless of where it was hosted.", "The file downloads successfully from that source."),
   page("malware/nested-file-download", "Nested file download", "Malware", "Evasion Detection", "Nested archive and document inspection", `
         <div className="swg-run-pick">Choose a nested file:</div>
-        <div className="swg-pick" data-pick="nested-file-download">
-          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-zip-eicar-txt.zip" data-name="zip-zip-eicar-txt.zip">ZIP -> ZIP -> EICAR TXT</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/iso-zip-eicar-txt.iso" data-name="iso-zip-eicar-txt.iso">ISO -> ZIP -> EICAR TXT</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-7z-eicar-docm.zip" data-name="zip-7z-eicar-docm.zip">ZIP -> 7Z -> EICAR DOCM</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/pptx-xlsx-eicar-docm.pptx" data-name="pptx-xlsx-eicar-docm.pptx">PPTX -> XLSX -> EICAR DOCM</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-docx-eicar-txt.zip" data-name="zip-docx-eicar-txt.zip">ZIP -> DOCX -> EICAR TXT</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-docx-eicar-docm.zip" data-name="zip-docx-eicar-docm.zip">ZIP -> DOCX -> EICAR DOCM</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/iso-docx-eicar-docm.iso" data-name="iso-docx-eicar-docm.iso">ISO -> DOCX -> EICAR DOCM</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-zip-zip-eicar-txt.zip" data-name="zip-zip-zip-eicar-txt.zip">ZIP -> ZIP -> ZIP -> EICAR TXT</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/nested-files/zip-misleading-invoice-pdf-docm.zip" data-name="zip-misleading-invoice-pdf-docm.zip">ZIP -> invoice.pdf.docm</button>
+        <div className="swg-dd" data-dd data-dd-dl="nested-file-download">
+          <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>ZIP -&gt; ZIP -&gt; EICAR TXT</span><span className="swg-caret" /></button>
+          <div className="swg-dd-menu" data-dd-menu hidden>
+            ${[
+              ["ZIP -> ZIP -> EICAR TXT", "direct", "/test-files/malware/nested-files/zip-zip-eicar-txt.zip", "zip-zip-eicar-txt.zip"],
+              ["ISO -> ZIP -> EICAR TXT", "direct", "/test-files/malware/nested-files/iso-zip-eicar-txt.iso", "iso-zip-eicar-txt.iso"],
+              ["ZIP -> 7Z -> EICAR DOCM", "direct", "/test-files/malware/nested-files/zip-7z-eicar-docm.zip", "zip-7z-eicar-docm.zip"],
+              ["PPTX -> XLSX -> EICAR DOCM", "direct", "/test-files/malware/nested-files/pptx-xlsx-eicar-docm.pptx", "pptx-xlsx-eicar-docm.pptx"],
+              ["ZIP -> DOCX -> EICAR TXT", "direct", "/test-files/malware/nested-files/zip-docx-eicar-txt.zip", "zip-docx-eicar-txt.zip"],
+              ["ZIP -> DOCX -> EICAR DOCM", "direct", "/test-files/malware/nested-files/zip-docx-eicar-docm.zip", "zip-docx-eicar-docm.zip"],
+              ["ISO -> DOCX -> EICAR DOCM", "direct", "/test-files/malware/nested-files/iso-docx-eicar-docm.iso", "iso-docx-eicar-docm.iso"],
+              ["ZIP -> ZIP -> ZIP -> EICAR TXT", "direct", "/test-files/malware/nested-files/zip-zip-zip-eicar-txt.zip", "zip-zip-zip-eicar-txt.zip"],
+              ["ZIP -> invoice.pdf.docm", "direct", "/test-files/malware/nested-files/zip-misleading-invoice-pdf-docm.zip", "zip-misleading-invoice-pdf-docm.zip"],
+            ].map(([label, kind, url, name], i) => `<button className="swg-dd-opt${i === 0 ? " is-active" : ""}" type="button" data-dd-opt data-kind="${kind}" data-url="${url}" data-name="${name}">${label}</button>`).join("\n            ")}
+          </div>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="nested-file-download">Download nested sample</button></div>`, "Wrapping a payload inside layers of archives or documents, a ZIP inside an ISO inside a document, can cause scanners that only check the outer file to miss what's buried inside.", "Choose a nesting pattern and download it. Each sample buries the same test payload two or three layers deep inside different container formats.", "The gateway unpacks the layers and blocks the file based on what's inside.", "The nested file downloads without being unpacked or flagged."),
   page("malware/password-protected-file", "Password-protected file", "Malware", "Evasion Detection", "Protected archive inspection", `
@@ -124,18 +131,19 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="encrypted-files">Run encrypted-file test</button></div>`, "Encrypting a payload before transfer hides its contents from anything that inspects traffic in transit. Since the data only becomes readable after decryption, gateways that only scan network traffic can miss it entirely.", "Choose a payload or archive. Some options decrypt AES-GCM ciphertext directly in the browser before download, others download an archive that's already encrypted.", "The transfer or the resulting file is blocked despite the encryption.", "The encrypted or decrypted file downloads with no warning."),
   page("malware/browser-open-docm", "Browser-opened macro document", "Malware", "Advanced Threat Simulation", "Direct DOCM delivery detection", `
-        <p className="swg-run-hint">The browser will request the macro-enabled document in a new tab. Because browsers cannot render DOCM files, a successful request normally becomes a download.</p>
         <div className="swg-dl-row"><a className="swg-dl" href="/test-files/malware/file-formats/eicar.docm" target="_blank" rel="noreferrer" data-reveal>Open EICAR DOCM</a></div>`, "A macro-enabled Office document can reach an endpoint through an ordinary browser navigation. Even though the browser cannot display the file, it can hand it off as a download, creating a path for document-borne malware.", "Click the button to fetch eicar.docm from this server and ask the browser to open it in a new tab. The browser cannot render DOCM content, so an allowed response should trigger a download instead.", "The gateway or browser security control blocks the request, displays a warning, or prevents the DOCM from downloading.", "The DOCM request succeeds and the browser downloads the file without a security warning."),
   page("malware/webassembly-eicar", "WebAssembly EICAR assembly", "Malware", "Advanced Threat Simulation", "WebAssembly malware reconstruction detection", `
-        <p className="swg-run-hint">The browser fetches a harmless WebAssembly module, executes it locally, and uses its memory output to construct eicar.txt.</p>
         <div className="swg-pick" data-pick="webassembly-eicar">
           <button className="swg-chip is-active" type="button" data-chip data-kind="wasm" data-url="/test-files/malware/wasm/eicar.wasm" data-name="eicar.txt" data-mime="text/plain">WebAssembly module</button>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="webassembly-eicar">Assemble and download EICAR</button></div>`, "A web page can fetch code that looks harmless in transit and use WebAssembly to construct a known malicious payload entirely inside the browser. A gateway that only scans complete downloadable files may never see the final content.", "Run the test to fetch and instantiate the WebAssembly module from the original SWG Audit test. The module writes the standard harmless EICAR test string into browser memory; JavaScript reads that memory and creates eicar.txt locally.", "The WebAssembly module, browser-side reconstruction, or resulting EICAR download is blocked or warned on.", "The browser executes the module, assembles eicar.txt locally, and downloads it without a security warning."),
   page("malware/chunk-attacks-different-orders", "Chunk attacks - different orders", "Malware", "Advanced Threat Simulation", "Chunk reconstruction detection", `
         <div className="swg-run-pick">Choose a chunking pattern:</div>
-        <div className="swg-pick" data-pick="chunk-attacks-different-orders">
-          ${["straight-split","reverse-order","randomized-size","mixed-noise","parallel-burst"].map((mode, i) => `<button className="swg-chip${i === 0 ? " is-active" : ""}" type="button" data-chip data-kind="chunk" data-url="/test-files/malware/chunk-attacks/${mode}/manifest.json">${mode.replaceAll("-", " ")}</button>`).join("\n          ")}
+        <div className="swg-dd" data-dd data-dd-dl="chunk-attacks-different-orders">
+          <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Straight split</span><span className="swg-caret" /></button>
+          <div className="swg-dd-menu" data-dd-menu hidden>
+            ${["straight-split","reverse-order","randomized-size","mixed-noise","parallel-burst"].map((mode, i) => `<button className="swg-dd-opt${i === 0 ? " is-active" : ""}" type="button" data-dd-opt data-kind="chunk" data-url="/test-files/malware/chunk-attacks/${mode}/manifest.json">${mode.replaceAll("-", " ")}</button>`).join("\n            ")}
+          </div>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="chunk-attacks-different-orders">Reassemble chunks</button></div>`, "Splitting a file into small pieces and fetching them separately can keep size- or signature-based scanners from ever seeing the complete payload in one request.", "Choose a chunking pattern. The browser fetches every chunk for that pattern, in order, reversed, resized, mixed with decoy data, or fetched in parallel, then reassembles the original file.", "The gateway spots the reconstruction pattern and blocks the reassembled file.", "All chunks are fetched and reassembled into a working file with no interruption."),
   page("malware/smuggling-html-js-css-or-svg", "Smuggling - HTML, JS, CSS, or SVG", "Malware", "Advanced Threat Simulation", "HTML/JS/CSS/SVG smuggling detection", `
@@ -150,14 +158,14 @@ const pages = [
 
   page("data-theft/personal-data-submission-in-normal-file", "Personal-data submission in normal file", "Data Theft", "Bare Minimum", "Sensitive file upload detection", `
         <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>
-          <label className="swg-field">Choose a file <input type="file" name="personal_data_file" /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="personal_data_file" /></label>
           <p className="swg-run-hint">Submitted files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row"><button className="swg-dl" type="submit">Upload file</button></div>
           <div className="swg-output" data-test-output hidden />
         </form>`, "Sensitive data doesn't have to look like a spreadsheet full of numbers to be a data-loss risk. It can be pasted into an ordinary-looking document and uploaded without ever tripping a keyword-based filter.", "Choose any file and upload it. The form simulates submitting a file that contains personal or business data to an outside destination.", "The upload is blocked or intercepted before it leaves the browser.", "The file uploads successfully with no interruption."),
   page("data-theft/file-encoding", "File encoding", "Data Theft", "Evasion Detection", "Encoded exfiltration detection", `
         <form className="swg-form" data-data-theft-encoding-form>
-          <label className="swg-field">Choose a file <input type="file" name="source_file" /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
           <div className="swg-run-pick">Choose encoding:</div>
           <div className="swg-pick" data-pick="file-encoding">
             <button className="swg-chip is-active" type="button" data-chip data-mode="base64">Base64</button>
@@ -171,7 +179,7 @@ const pages = [
         </form>`, "Encoding a file with Base64 or hex before uploading it can defeat simple content matching, since the sensitive data no longer appears in its original, readable form.", "Choose a file and an encoding method, then submit. The file is encoded in the browser and sent to a test endpoint that tries to decode and reconstruct it.", "The upload is blocked, or the server can't reconstruct the original file.", "The server successfully reconstructs the original file from the encoded upload."),
   page("data-theft/file-encrypting", "File encrypting", "Data Theft", "Evasion Detection", "Encrypted exfiltration detection", `
         <form className="swg-form" data-data-theft-encryption-form>
-          <label className="swg-field">Choose a file <input type="file" name="source_file" /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
           <div className="swg-run-pick">Choose encryption:</div>
           <div className="swg-pick" data-pick="file-encrypting">
             <button className="swg-chip is-active" type="button" data-chip data-mode="aes-gcm">AES-GCM</button>
@@ -183,10 +191,13 @@ const pages = [
         </form>`, "Encrypting a file before upload hides its content from inspection entirely, since only someone with the key can read it. Attackers use this to move data past scanners that rely on reading file contents.", "Choose a file and an encryption method, then submit. The file is encrypted in the browser with AES-GCM and sent along with the metadata needed to decrypt it on the server.", "The upload is blocked, or the server can't decrypt and reconstruct the file.", "The server successfully decrypts and reconstructs the original file."),
   page("data-theft/file-chunking", "File chunking", "Data Theft", "Evasion Detection", "Chunked exfiltration detection", `
         <form className="swg-form" data-data-theft-chunking-form>
-          <label className="swg-field">Choose a file <input type="file" name="source_file" /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
           <div className="swg-run-pick">Choose chunking:</div>
-          <div className="swg-pick" data-pick="file-chunking">
-            ${["straight-split","reverse-order","randomized-size","mixed-noise","parallel-burst"].map((mode, i) => `<button className="swg-chip${i === 0 ? " is-active" : ""}" type="button" data-chip data-mode="${mode}">${mode.replaceAll("-", " ")}</button>`).join("\n            ")}
+          <div className="swg-dd" data-dd data-dd-dl="file-chunking">
+            <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Straight split</span><span className="swg-caret" /></button>
+            <div className="swg-dd-menu" data-dd-menu hidden>
+              ${["straight-split","reverse-order","randomized-size","mixed-noise","parallel-burst"].map((mode, i) => `<button className="swg-dd-opt${i === 0 ? " is-active" : ""}" type="button" data-dd-opt data-mode="${mode}">${mode.replaceAll("-", " ")}</button>`).join("\n              ")}
+            </div>
           </div>
           <p className="swg-run-hint">Reconstructed files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row"><button className="swg-dl" type="submit">Submit</button></div>
@@ -194,7 +205,7 @@ const pages = [
         </form>`, "Splitting a file into small pieces before upload can help it slip past size limits or pattern matching that only looks at complete files in a single request.", "Choose a file and a chunking pattern, then submit. The file is split and uploaded piece by piece using that pattern, and the server tries to reassemble it.", "The upload is blocked, or the server can't reassemble the complete file.", "The server successfully reassembles the original file from the chunks."),
   page("data-theft/dns-tunneling", "DNS tunneling", "Data Theft", "Advanced Threat Simulation", "DNS exfiltration detection", `
         <form className="swg-form" data-dns-tunnel-form>
-          <label className="swg-field">Choose a file <input type="file" data-dns-tunnel-file /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" data-dns-tunnel-file /></label>
           <p className="swg-run-hint">Use a file under 100 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row">
             <button className="swg-dl" type="submit" data-dns-tunnel-submit>Run DNS tunnel</button>
@@ -204,7 +215,7 @@ const pages = [
         </form>`, "DNS queries are rarely inspected as closely as normal web traffic. Encoding stolen data into a series of DNS lookups can move information out of a network even when every other outbound channel is locked down.", "Choose a file and run the test. The file is encoded and sent out as a sequence of DNS queries, then reconstruction is attempted on the receiving end.", "The DNS queries are blocked, or the file can't be reconstructed.", "The file is successfully reconstructed from the DNS queries."),
   page("data-theft/http-path-tunneling", "HTTP path tunneling", "Data Theft", "Advanced Threat Simulation", "HTTP path exfiltration detection", `
         <form className="swg-form" data-path-tunnel-form>
-          <label className="swg-field">Choose a file <input type="file" data-path-tunnel-file /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" data-path-tunnel-file /></label>
           <p className="swg-run-hint">Use a file under 200 KB. Reconstructed files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row">
             <button className="swg-dl" type="submit" data-path-tunnel-submit>Run path tunnel</button>
@@ -316,6 +327,30 @@ const pickDescriptions = {
     "parallel burst": "Submits a burst-style chunk set using the same reconstruction mechanism.",
   },
 };
+
+const descriptionlessRunSlugs = new Set([
+  "phishing/site-stored-as-mhtml-or-raw-html",
+  "phishing/canvas-engine",
+  "malware/ransomware-file",
+  "malware/personal-data-file",
+  "malware/executable-files",
+  "malware/http-https-and-cloud-delivery",
+  "malware/nested-file-download",
+  "malware/encoded-files",
+  "malware/encrypted-files",
+  "malware/browser-open-docm",
+  "malware/webassembly-eicar",
+]);
+
+const compactRunSlugs = new Set([
+  "phishing/cached-content-mutation",
+  "malware/password-protected-file",
+  "malware/file-spoofing",
+]);
+
+const noTerminalSlugs = new Set([
+  "cyberslacking/video-content-category-simulation",
+]);
 
 function escapeAttr(value) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
@@ -440,7 +475,7 @@ function splitRunAction(run) {
 }
 
 function banner() {
-  return `              <div className="swg-banner swg-banner-fail" hidden><span className="swg-banner-text">Test failed.</span></div>`;
+  return "";
 }
 
 function smuggleRunArea(p, run, extra) {
@@ -470,17 +505,20 @@ function runAreaHtml(p, run, extra) {
     return smuggleRunArea(p, run, extra);
   }
 
-  const { lead, action, tail } = splitRunAction(addPickDescriptions(p.slug, run));
+  const preparedRun = descriptionlessRunSlugs.has(p.slug) ? run : addPickDescriptions(p.slug, run);
+  const { lead, action, tail } = splitRunAction(preparedRun);
   const serverBtn = p.category === "Data Theft" ? serverFileBtn() : "";
   const blocks = [lead, passFailHtml(p), action, tail, serverBtn, banner()].filter(Boolean);
+  const compactClass = compactRunSlugs.has(p.slug) ? " swg-run--compact" : "";
+  const noTerminal = noTerminalSlugs.has(p.slug);
 
-  return `        <div className="swg-run">
+  return `        <div className="swg-run${compactClass}${noTerminal ? " swg-run--no-terminal" : ""}">
           <div className="swg-run-label">Try it yourself</div>
-          <div className="swg-run-body">
+          <div className="swg-run-body${noTerminal ? " swg-run-body--solo" : ""}">
             <div className="swg-run-controls">
 ${blocks.join("\n")}
             </div>
-            <div className="swg-console" data-test-console></div>
+            ${noTerminal ? "" : '<div className="swg-console" data-test-console></div>'}
           </div>
         </div>`;
 }

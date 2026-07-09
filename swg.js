@@ -80,11 +80,16 @@
   }
 
   function terminalPass(el, text) {
-    terminalLine(el, "PASS - " + text, "pass");
+    terminalLine(el, "Your perimeter security has passed. " + sentenceCase(text), "pass");
   }
 
   function terminalFail(el, text) {
-    terminalLine(el, "FAIL - " + text, "fail");
+    terminalLine(el, "Your perimeter security has failed. " + sentenceCase(text), "fail");
+  }
+
+  function sentenceCase(text) {
+    var value = String(text || "").trim();
+    return value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
   }
 
   function hideBanner(fromEl) {
@@ -426,11 +431,7 @@
   }
 
   function revealBanner(fromEl) {
-    var run = fromEl && fromEl.closest && fromEl.closest(".swg-run");
-    var banner = run && run.querySelector(".swg-banner");
-    if (!banner) return;
-    banner.hidden = false;
-    banner.removeAttribute("hidden");
+    hideBanner(fromEl);
   }
 
   function closeAllDropdowns() {
@@ -509,6 +510,7 @@
 
   var outputState = {};
   var serverFileState = {};
+  var selectedFileState = {};
 
   function outputMarker(out) {
     if (!out) return "swg-output";
@@ -547,10 +549,19 @@
   }
 
   function setPersistentOutput(out, text, state, pagePath) {
-    setOutput(out, text, state);
-    if (state !== "is-pass" && state !== "is-fail") return;
     var key = (pagePath || pagePathFor(out)) + "::" + outputMarker(out);
-    if (key) outputState[key] = { text: text, state: state || "" };
+    if (state === "is-pass" || state === "is-fail") {
+      if (key) delete outputState[key];
+      if (out) {
+        out.hidden = true;
+        out.setAttribute("hidden", "");
+        out.style.display = "";
+        out.textContent = "";
+        out.classList.remove("is-pass", "is-fail");
+      }
+      return;
+    }
+    setOutput(out, text, state);
   }
 
   function serverFileKey(button) {
@@ -591,6 +602,59 @@
     button.setAttribute("hidden", "");
   }
 
+  function fileInputKey(input) {
+    if (!input) return "";
+    var marker =
+      input.getAttribute("name") ||
+      (input.hasAttribute("data-dns-tunnel-file") ? "dns-tunnel-file" : "") ||
+      (input.hasAttribute("data-path-tunnel-file") ? "path-tunnel-file" : "") ||
+      "file";
+    return pagePathFor(input) + "::" + marker;
+  }
+
+  function selectedFile(input) {
+    if (!input) return null;
+    var nativeFile = input.files && input.files[0];
+    var key = fileInputKey(input);
+    if (nativeFile) {
+      selectedFileState[key] = nativeFile;
+      return nativeFile;
+    }
+    return selectedFileState[key] || null;
+  }
+
+  function updateFileLabel(input, file) {
+    var field = input && input.closest(".swg-file-field");
+    var label = field && field.querySelector("[data-file-name]");
+    if (label) label.textContent = file ? file.name : "No file chosen";
+  }
+
+  function restoreFileInput(input, file) {
+    if (!input || !file || (input.files && input.files[0])) return;
+    try {
+      var transfer = new DataTransfer();
+      transfer.items.add(file);
+      input.files = transfer.files;
+    } catch (error) {
+      // The cached File is still used by the submit handlers if assignment is restricted.
+    }
+  }
+
+  function initFileControls() {
+    document.querySelectorAll('.swg-file-field input[type="file"]').forEach(function (input) {
+      var file = selectedFile(input);
+      if (file) restoreFileInput(input, file);
+      updateFileLabel(input, file);
+    });
+  }
+
+  function clearSelectedFile(input) {
+    if (!input) return;
+    delete selectedFileState[fileInputKey(input)];
+    input.value = "";
+    updateFileLabel(input, null);
+  }
+
   function fileBytes(file) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
@@ -613,8 +677,12 @@
   }
 
   function activeMode(form) {
-    var chip = form.querySelector("[data-chip].is-active") || form.querySelector("[data-chip]");
-    return chip ? chip.getAttribute("data-mode") : "";
+    var option =
+      form.querySelector("[data-dd-opt].is-active") ||
+      form.querySelector("[data-chip].is-active") ||
+      form.querySelector("[data-dd-opt]") ||
+      form.querySelector("[data-chip]");
+    return option ? option.getAttribute("data-mode") : "";
   }
 
   function metadata(file) {
@@ -646,7 +714,7 @@
     var out = cardOutput(form);
     var button = form.querySelector('button[type="submit"]');
     var input = form.querySelector('input[type="file"]');
-    var file = input && input.files[0];
+    var file = selectedFile(input);
     if (!file) {
       setOutput(out, "Choose a file before running the test.");
       return;
@@ -877,7 +945,7 @@
     var input = form.querySelector("[data-dns-tunnel-file]");
     var submit = form.querySelector("[data-dns-tunnel-submit]");
     var reset = form.querySelector("[data-dns-tunnel-reset]");
-    var file = input && input.files[0];
+    var file = selectedFile(input);
     if (!file) {
       return setOutput(out, "Choose a file before running the test.");
     }
@@ -956,7 +1024,7 @@
     var input = form.querySelector("[data-path-tunnel-file]");
     var submit = form.querySelector("[data-path-tunnel-submit]");
     var reset = form.querySelector("[data-path-tunnel-reset]");
-    var file = input && input.files[0];
+    var file = selectedFile(input);
     if (!file) {
       return setOutput(out, "Choose a file before running the test.");
     }
@@ -1333,6 +1401,16 @@
       });
   });
 
+  document.addEventListener("change", function (event) {
+    var fileInput = event.target.closest('.swg-file-field input[type="file"]');
+    if (!fileInput) return;
+    var file = fileInput.files && fileInput.files[0];
+    var key = fileInputKey(fileInput);
+    if (file) selectedFileState[key] = file;
+    else delete selectedFileState[key];
+    updateFileLabel(fileInput, file || null);
+  });
+
   document.addEventListener("submit", function (event) {
     var credential = event.target.closest("[data-credential-form]");
     if (credential) {
@@ -1378,16 +1456,21 @@
       var uploadPagePath = location.pathname;
       var fileOut = cardOutput(normalFile);
       var fileInput = normalFile.querySelector('input[type="file"]');
-      if (!fileInput || !fileInput.files[0]) {
+      var normalSelectedFile = selectedFile(fileInput);
+      if (!fileInput || !normalSelectedFile) {
         setOutput(fileOut, "Choose a file before running the test.");
         return;
       }
-      startConsole(normalFile, "swg-audit file-upload --file=" + fileInput.files[0].name);
+      startConsole(normalFile, "swg-audit file-upload --file=" + normalSelectedFile.name);
       terminalLine(normalFile, "uploading selected file to server ...");
       setOutput(fileOut, "Uploading selected file...");
+      var normalFormData = new FormData(normalFile);
+      if (!fileInput.files || !fileInput.files[0]) {
+        normalFormData.set(fileInput.name || "personal_data_file", normalSelectedFile, normalSelectedFile.name);
+      }
       fetch(normalFile.action || "/data-theft/upload.php", {
         method: "post",
-        body: new FormData(normalFile),
+        body: normalFormData,
         headers: { Accept: "application/json, text/plain, */*" },
       })
         .then(function (response) {
@@ -1455,6 +1538,7 @@
       var dnsForm = dnsReset.closest("[data-dns-tunnel-form]");
       var dnsOut = dnsForm && cardOutput(dnsForm, "[data-dns-tunnel-status]");
       if (dnsForm) dnsForm.reset();
+      clearSelectedFile(dnsForm && dnsForm.querySelector('input[type="file"]'));
       if (dnsOut) {
         clearPersistentOutput(dnsOut);
         dnsOut.hidden = true;
@@ -1471,6 +1555,7 @@
       var pathForm = pathReset.closest("[data-path-tunnel-form]");
       var pathOut = pathForm && cardOutput(pathForm, "[data-path-tunnel-status]");
       if (pathForm) pathForm.reset();
+      clearSelectedFile(pathForm && pathForm.querySelector('input[type="file"]'));
       if (pathOut) {
         clearPersistentOutput(pathOut);
         pathOut.hidden = true;
@@ -1485,6 +1570,7 @@
   function initConsoles() {
     initSmugglingConsoles();
     initTestConsoles();
+    initFileControls();
     restorePersistentResults();
   }
 

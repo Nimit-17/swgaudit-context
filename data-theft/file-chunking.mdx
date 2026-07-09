@@ -42,7 +42,8 @@ mode: "custom"
         </button>
       </div>
       <div className="swg-sb-group is-collapsed" id="sbg-malware">
-        <a className="swg-si" href="/malware/ransomware-or-personal-data-file">Ransomware or personal-data file</a>
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware file</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data file</a>
         <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
         <a className="swg-si" href="/malware/executable-files">Executable files</a>
         <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud delivery</a>
@@ -108,14 +109,17 @@ mode: "custom"
           <div className="swg-run-body">
             <div className="swg-run-controls">
 <form className="swg-form" data-data-theft-chunking-form>
-          <label className="swg-field">Choose a file <input type="file" name="source_file" /></label>
+          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
           <div className="swg-run-pick">Choose chunking:</div>
-          <div className="swg-pick" data-pick="file-chunking">
-            <button className="swg-chip is-active" type="button" data-chip data-mode="straight-split" data-desc="Splits the selected file into ordered chunks and submits a manifest for reconstruction.">straight split</button>
-            <button className="swg-chip" type="button" data-chip data-mode="reverse-order" data-desc="Submits the chunks in reverse order while preserving manifest order for reconstruction.">reverse order</button>
-            <button className="swg-chip" type="button" data-chip data-mode="randomized-size" data-desc="Uses uneven chunk sizes to avoid a simple fixed-size split pattern.">randomized size</button>
-            <button className="swg-chip" type="button" data-chip data-mode="mixed-noise" data-desc="Adds decoy chunks before and after the real data to test whether reconstruction ignores noise.">mixed noise</button>
-            <button className="swg-chip" type="button" data-chip data-mode="parallel-burst" data-desc="Submits a burst-style chunk set using the same reconstruction mechanism.">parallel burst</button>
+          <div className="swg-dd" data-dd data-dd-dl="file-chunking">
+            <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Straight split</span><span className="swg-caret" /></button>
+            <div className="swg-dd-menu" data-dd-menu hidden>
+              <button className="swg-dd-opt is-active" type="button" data-dd-opt data-mode="straight-split" data-desc="Splits the selected file into ordered chunks and submits a manifest for reconstruction.">straight split</button>
+              <button className="swg-dd-opt" type="button" data-dd-opt data-mode="reverse-order" data-desc="Submits the chunks in reverse order while preserving manifest order for reconstruction.">reverse order</button>
+              <button className="swg-dd-opt" type="button" data-dd-opt data-mode="randomized-size" data-desc="Uses uneven chunk sizes to avoid a simple fixed-size split pattern.">randomized size</button>
+              <button className="swg-dd-opt" type="button" data-dd-opt data-mode="mixed-noise" data-desc="Adds decoy chunks before and after the real data to test whether reconstruction ignores noise.">mixed noise</button>
+              <button className="swg-dd-opt" type="button" data-dd-opt data-mode="parallel-burst" data-desc="Submits a burst-style chunk set using the same reconstruction mechanism.">parallel burst</button>
+            </div>
           </div>
           <p className="swg-pick-desc" data-pick-desc>Splits the selected file into ordered chunks and submits a manifest for reconstruction.</p>
           <p className="swg-run-hint">Reconstructed files are deleted from the server after 10 minutes.</p>
@@ -139,7 +143,6 @@ mode: "custom"
 <div className="swg-output" data-test-output hidden />
         </form>
               <div className="swg-dl-row"><button className="swg-dl swg-dl-alt" type="button" data-open-server-file hidden>Open reconstructed file</button></div>
-              <div className="swg-banner swg-banner-fail" hidden><span className="swg-banner-text">Test failed.</span></div>
             </div>
             <div className="swg-console" data-test-console></div>
           </div>

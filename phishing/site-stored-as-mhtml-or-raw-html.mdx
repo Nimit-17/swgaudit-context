@@ -42,7 +42,8 @@ mode: "custom"
         </button>
       </div>
       <div className="swg-sb-group is-collapsed" id="sbg-malware">
-        <a className="swg-si" href="/malware/ransomware-or-personal-data-file">Ransomware or personal-data file</a>
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware file</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data file</a>
         <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
         <a className="swg-si" href="/malware/executable-files">Executable files</a>
         <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud delivery</a>
@@ -109,10 +110,9 @@ mode: "custom"
             <div className="swg-run-controls">
 <div className="swg-run-pick">Choose a stored page format:</div>
         <div className="swg-pick" data-pick="stored-site">
-          <button className="swg-chip is-active" type="button" data-chip data-format="raw-html" data-desc="Builds the phishing-style page directly as local HTML in the browser, then opens it in a new tab.">Raw HTML</button>
-          <button className="swg-chip" type="button" data-chip data-format="mhtml" data-desc="Builds the same page as a browser-generated MHTML-style payload, extracts its HTML part, then opens it in a new tab.">MHTML</button>
+          <button className="swg-chip is-active" type="button" data-chip data-format="raw-html">Raw HTML</button>
+          <button className="swg-chip" type="button" data-chip data-format="mhtml">MHTML</button>
         </div>
-        <p className="swg-pick-desc" data-pick-desc>Builds the phishing-style page directly as local HTML in the browser, then opens it in a new tab.</p>
               <div className="swg-pf">
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
@@ -132,7 +132,6 @@ mode: "custom"
 <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-stored-launch="stored-site">Open stored page</button>
         </div>
-              <div className="swg-banner swg-banner-fail" hidden><span className="swg-banner-text">Test failed.</span></div>
             </div>
             <div className="swg-console" data-test-console></div>
           </div>

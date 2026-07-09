@@ -42,7 +42,8 @@ mode: "custom"
         </button>
       </div>
       <div className="swg-sb-group is-collapsed" id="sbg-malware">
-        <a className="swg-si" href="/malware/ransomware-or-personal-data-file">Ransomware or personal-data file</a>
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware file</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data file</a>
         <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
         <a className="swg-si" href="/malware/executable-files">Executable files</a>
         <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud delivery</a>
@@ -103,9 +104,9 @@ mode: "custom"
             <p className="swg-block-text">Choose a video category from the dropdown. The embedded player loads the same sample video used by the v2 site so you can check what your policy actually allows through.</p>
           </section>
         </div>
-        <div className="swg-run">
+        <div className="swg-run swg-run--no-terminal">
           <div className="swg-run-label">Try it yourself</div>
-          <div className="swg-run-body">
+          <div className="swg-run-body swg-run-body--solo">
             <div className="swg-run-controls">
 <div className="swg-dd" data-dd data-dd-frame="video-frame">
           <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Entertainment</span><span className="swg-caret" /></button>
@@ -150,9 +151,8 @@ mode: "custom"
                   </div>
                 </div>
               </div>
-              <div className="swg-banner swg-banner-fail" hidden><span className="swg-banner-text">Test failed.</span></div>
             </div>
-            <div className="swg-console" data-test-console></div>
+            
           </div>
         </div>
         <script src="/swg.js" defer></script>
