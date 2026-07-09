@@ -494,11 +494,11 @@ div[class*="max-w-8xl"] {
   max-width: 780px;
 }
 .swg-about-feature-card {
-  width: min(1032px, 100%);
+  width: min(680px, 100%);
   display: grid;
   justify-items: center;
-  gap: 24px;
-  padding: clamp(28px, 4vw, 48px);
+  gap: 18px;
+  padding: clamp(22px, 3vw, 34px);
   border: 1px solid var(--sm-line);
   border-top-color: var(--sm-line-2);
   border-radius: 10px;
@@ -506,8 +506,8 @@ div[class*="max-w-8xl"] {
   text-align: center;
 }
 .swg-about-lock {
-  width: 132px;
-  height: 132px;
+  width: 92px;
+  height: 92px;
   display: grid;
   place-items: center;
   position: relative;
@@ -517,19 +517,19 @@ div[class*="max-w-8xl"] {
 }
 .swg-about-lock-shackle {
   position: absolute;
-  top: 30px;
-  width: 42px;
-  height: 42px;
-  border: 9px solid var(--sm-amber);
+  top: 21px;
+  width: 30px;
+  height: 30px;
+  border: 6px solid var(--sm-amber);
   border-bottom: 0;
-  border-radius: 24px 24px 0 0;
+  border-radius: 17px 17px 0 0;
 }
 .swg-about-lock-body {
   position: absolute;
-  top: 60px;
-  width: 68px;
-  height: 52px;
-  border-radius: 12px;
+  top: 42px;
+  width: 48px;
+  height: 37px;
+  border-radius: 9px;
   background: linear-gradient(180deg, #f0b25e, #d97a52);
 }
 .swg-about-text {
@@ -1253,31 +1253,36 @@ a.swg-brand { cursor: pointer; }
 
 /* Home & About now sit inside the sidebar shell. Drop the test-page main
    padding, let the body be a flex column (footer pinned to the bottom), and
-   keep the content width relative to the main column instead of the viewport. */
-.swg-audit-ui .swg-main.swg-home-body,
-.swg-audit-ui .swg-main.swg-about-body {
+   keep the content width relative to the main column instead of the viewport.
+   NOTE: swg-audit-ui and swg-app--home/swg-about-page live on the SAME node,
+   so these must be written as the page class alone (no descendant combinator). */
+.swg-main.swg-home-body,
+.swg-main.swg-about-body {
   padding: 0;
   display: flex;
   flex-direction: column;
 }
-.swg-audit-ui .swg-app--home .swg-container {
+.swg-app--home .swg-main .swg-container {
   width: 100%;
   max-width: 1160px;
   margin-inline: auto;
-  padding-inline: clamp(1.4rem, 4vw, 3rem);
+  padding-inline: clamp(1.6rem, 4vw, 3.25rem);
 }
-.swg-audit-ui .swg-app--home .swg-hero-copy {
+.swg-app--home .swg-main .swg-hero-copy {
   width: 100%;
   max-width: 1160px;
 }
-.swg-audit-ui .swg-about-page .swg-about-main {
+.swg-app--home .swg-main .swg-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 15vw, 230px), 1fr));
+}
+.swg-about-page .swg-main .swg-about-main {
   padding-inline: 0;
 }
-.swg-audit-ui .swg-about-page .swg-container.swg-about-wrap {
+.swg-about-page .swg-main .swg-container.swg-about-wrap {
   width: 100%;
-  max-width: 980px;
+  max-width: 940px;
   margin-inline: auto;
-  padding-inline: clamp(1.4rem, 4vw, 3rem);
+  padding-inline: clamp(1.6rem, 4vw, 3.25rem);
 }
 .swg-audit-ui .swg-bc {
   gap: 0;

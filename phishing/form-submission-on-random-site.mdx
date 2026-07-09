@@ -104,9 +104,9 @@ mode: "custom"
             <p className="swg-block-text">Submit the prefilled test credentials. The endpoint only reports whether the submission reached the server and discards the values immediately.</p>
           </section>
         </div>
-        <div className="swg-run">
+        <div className="swg-run swg-run--no-terminal">
           <div className="swg-run-label">Try it yourself</div>
-          <div className="swg-run-body">
+          <div className="swg-run-body swg-run-body--solo">
             <div className="swg-run-controls">
 <form className="swg-form" method="post" action="/phishing/credential-submit.php" autoComplete="off" data-credential-form>
           <label className="swg-field">Username <input name="swg_audit_username" defaultValue="user@example.com" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
@@ -134,7 +134,7 @@ mode: "custom"
 <div className="swg-output" data-test-output hidden />
         </form>
             </div>
-            <div className="swg-console" data-test-console></div>
+            
           </div>
         </div>
         <script src="/swg.js" defer></script>

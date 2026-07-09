@@ -156,37 +156,23 @@
     if (!url) return;
     if (revealFrom) {
       startConsole(revealFrom, command || "swg-audit fetch --channel=external");
-      terminalLine(revealFrom, "requesting external file ...");
+      terminalLine(revealFrom, "requesting external file: " + url);
     }
-    return fetch(url, { cache: "no-store" })
-      .then(function (response) {
-        if (!response.ok) throw new Error("Download request failed: HTTP " + response.status);
-        return response.blob().then(function (blob) {
-          return blob.arrayBuffer().then(function (buffer) {
-            downloadBytes(new Uint8Array(buffer), name || "download", blob.type || "application/octet-stream");
-            terminalFail(revealFrom, "download request was allowed.");
-            terminalLine(revealFrom, "file was downloaded: " + (name || "download"));
-            revealBanner(revealFrom);
-          });
-        });
-      })
-      .catch(function (err) {
-        if (isBlockedFetchError(err)) {
-          terminalPass(revealFrom, "the download was blocked or could not complete.");
-          hideBanner(revealFrom);
-          return;
-        }
-        var a = document.createElement("a");
-        a.href = url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        if (name) a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        terminalLine(revealFrom, "cross-origin response could not be verified; link opened for manual check.");
-        hideBanner(revealFrom);
-      });
+    // These channels are cross-origin (cleartext HTTP host or cloud storage), so
+    // the browser's same-origin policy blocks a fetch() and we cannot read the
+    // response. Navigate a real anchor instead so the request still traverses the
+    // gateway exactly as a normal delivery would.
+    var a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    if (name) a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    terminalLine(revealFrom, "delivery requested in a new tab.");
+    terminalLine(revealFrom, "cross-origin delivery cannot be auto-verified: if the file downloads or opens, the gateway allowed it; if nothing arrives, it was blocked.");
+    hideBanner(revealFrom);
   }
 
   function openProtectedUrl(url, revealFrom, failText, passText) {
@@ -1254,7 +1240,7 @@
     var open = event.target.closest("[data-open]");
     if (open) {
       event.preventDefault();
-      var openChip = activeChip(open.getAttribute("data-open"));
+      var openChip = activePick(open.getAttribute("data-open"));
       if (openChip) {
         startConsole(open, "swg-audit open-url");
         var openedTab = openNewTab(openChip.getAttribute("data-url"));
@@ -1284,34 +1270,27 @@
       var storedChip = activeChip(stored.getAttribute("data-stored-launch"));
       var format = storedChip ? storedChip.getAttribute("data-format") : "raw-html";
       startConsole(stored, "swg-audit stored-page --format=" + format);
-      terminalLine(stored, format === "mhtml" ? "building and parsing MHTML locally ..." : "building raw HTML locally ...");
-      fetch("/phishing/rnicrosoft-Iogin/index.html", { cache: "no-store" })
-        .then(function (response) {
-          if (!response.ok) throw new Error("Unable to load phishing page HTML.");
-          return response.text();
-        })
-        .then(function (rawHtml) {
-          var renderedHtml = format === "mhtml"
-            ? extractHtmlFromMhtml(buildClientMhtml(rawHtml))
-            : rawHtml;
-          var opened = openClientHtml(renderedHtml);
-          if (opened) {
-            terminalFail(stored, "stored phishing page opened in a new tab.");
-            revealBanner(stored);
-          }
-          else {
-            terminalPass(stored, "stored phishing page was blocked by the browser.");
-            hideBanner(stored);
-          }
-        })
-        .catch(function (err) {
-          if (isBlockedFetchError(err)) {
-            terminalPass(stored, "stored phishing page could not be loaded.");
-            hideBanner(stored);
-            return;
-          }
-          reportIncompleteSubmission(stored, null, "stored phishing page could not be built.");
-        });
+      terminalLine(stored, format === "mhtml" ? "assembling MHTML payload in the browser ..." : "assembling raw HTML in the browser ...");
+      try {
+        // The phishing page is built entirely client-side (no server fetch),
+        // then assembled into a blob and opened, mirroring an opened local file.
+        var localHtml = makeDummyMicrosoftLoginHtml();
+        var renderedHtml = format === "mhtml"
+          ? extractHtmlFromMhtml(buildClientMhtml(localHtml))
+          : localHtml;
+        terminalLine(stored, "building blob from locally assembled " + (format === "mhtml" ? "MHTML" : "HTML") + " ...");
+        var opened = openClientHtml(renderedHtml);
+        if (opened) {
+          terminalFail(stored, "locally assembled phishing page opened in a new tab.");
+          revealBanner(stored);
+        }
+        else {
+          terminalPass(stored, "locally assembled phishing page was blocked by the browser.");
+          hideBanner(stored);
+        }
+      } catch (err) {
+        reportIncompleteSubmission(stored, null, "stored phishing page could not be built.");
+      }
       return;
     }
 

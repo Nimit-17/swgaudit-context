@@ -18,11 +18,14 @@ const page = (slug, title, category, tier, control, run, threat, how, pass, fail
 const pages = [
   page("phishing/url-manipulation", "URL manipulation", "Phishing", "Bare Minimum", "Suspicious URL and redirect detection", `
         <div className="swg-run-pick">Choose a manipulated URL:</div>
-        <div className="swg-pick" data-pick="url-manipulation">
-          <button className="swg-chip is-active" type="button" data-chip data-url="/phishing/rnicrosoft-Iogin/">Typo lookalike URL</button>
-          <button className="swg-chip" type="button" data-chip data-url="/phishing/micrоsoft-Iogin/">Homograph URL</button>
-          <button className="swg-chip" type="button" data-chip data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/">Redirect to lookalike</button>
-          <button className="swg-chip" type="button" data-chip data-url="/go/ms-login/">Short URL redirect</button>
+        <div className="swg-dd" data-dd data-dd-dl="url-manipulation">
+          <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Typo lookalike URL</span><span className="swg-caret" /></button>
+          <div className="swg-dd-menu" data-dd-menu hidden>
+            <button className="swg-dd-opt is-active" type="button" data-dd-opt data-url="/phishing/rnicrosoft-Iogin/">Typo lookalike URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/micrоsoft-Iogin/">Homograph URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/">Redirect to lookalike</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/go/ms-login/">Short URL redirect</button>
+          </div>
         </div>
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-open="url-manipulation">Open selected URL</button>
@@ -56,15 +59,9 @@ const pages = [
         </form>`, "Phishing pages exist to collect real credentials. If outbound form submissions aren't inspected, a username and password can leave the network even after landing on a suspicious page.", "Submit the prefilled test credentials. The endpoint only reports whether the submission reached the server and discards the values immediately.", "The submission is blocked, disrupted, stripped, or cannot complete through the protected path.", "The submitted data reaches the server-side simulation endpoint successfully."),
 
   page("malware/ransomware-file", "Ransomware file", "Malware", "Bare Minimum", "Ransomware-style file detection", `
-        <div className="swg-pick" data-pick="ransomware-file">
-          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/ransomware-note-simulation.txt" data-name="ransomware-note-simulation.txt">Ransomware note (.txt)</button>
-        </div>
-        <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="ransomware-file">Download ransomware sample</button></div>`, "Ransomware incidents often leave behind instructions or warning files that are not executable but still indicate a serious compromise.", "Download the harmless ransomware-note simulation and check whether perimeter controls stop recognisable ransomware-style content.", "The download is blocked before it reaches your device.", "The ransomware-style file downloads normally with no warning."),
+        <div className="swg-dl-row"><button className="swg-dl" type="button" data-single-download data-url="/test-files/malware/bare-minimum/ransomware-note-simulation.txt" data-name="ransomware-note-simulation.txt">Download ransomware sample</button></div>`, "Ransomware incidents often leave behind instructions or warning files that are not executable but still indicate a serious compromise.", "Download the harmless ransomware-note simulation and check whether perimeter controls stop recognisable ransomware-style content.", "The download is blocked before it reaches your device.", "The ransomware-style file downloads normally with no warning."),
   page("malware/personal-data-file", "Personal-data file", "Malware", "Bare Minimum", "Sensitive-data file detection", `
-        <div className="swg-pick" data-pick="personal-data-file">
-          <button className="swg-chip is-active" type="button" data-chip data-kind="direct" data-url="/test-files/malware/bare-minimum/pii-file.xlsx" data-name="pii-file.xlsx">Personal-data file (.xlsx)</button>
-        </div>
-        <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="personal-data-file">Download personal-data sample</button></div>`, "Files containing personal information can be risky even when they contain no executable code or known malware signature.", "Download the harmless spreadsheet shaped like personal data and check whether policy controls recognise and stop the sensitive file.", "The download is blocked before it reaches your device.", "The personal-data file downloads normally with no warning."),
+        <div className="swg-dl-row"><button className="swg-dl" type="button" data-single-download data-url="/test-files/malware/bare-minimum/pii-file.xlsx" data-name="pii-file.xlsx">Download personal-data sample</button></div>`, "Files containing personal information can be risky even when they contain no executable code or known malware signature.", "Download the harmless spreadsheet shaped like personal data and check whether policy controls recognise and stop the sensitive file.", "The download is blocked before it reaches your device.", "The personal-data file downloads normally with no warning."),
   page("malware/different-file-formats", "Different file formats", "Malware", "Bare Minimum", "Malware file-type detection", `
         <div className="swg-run-pick">Choose a file format:</div>
         <div className="swg-pick" data-pick="different-file-formats">
@@ -78,7 +75,6 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="different-file-formats">Download selected format</button></div>`, "Malware scanners sometimes lean too heavily on file extension instead of inspecting what's actually inside. A payload wrapped in a document, spreadsheet, or archive can slip past extension-based rules.", "Choose a file format and download it. Every format wraps the same harmless EICAR test signature, so any difference in outcome comes from how that format is handled, not the payload itself.", "The download is blocked for that format.", "The file downloads with no warning, regardless of its format."),
   page("malware/executable-files", "Executable files", "Malware", "Bare Minimum", "Executable download blocking", `
-        <div className="swg-run-pick">Choose an executable format:</div>
         <div className="swg-pick" data-pick="executable-files">
           ${["exe","scr","bat","cmd","ps1","js","vbs","hta","iso"].map((ext, i) => `<button className="swg-chip${i === 0 ? " is-active" : ""}" type="button" data-chip data-kind="direct" data-url="/test-files/malware/executable-files/test.${ext}" data-name="test.${ext}">${ext.toUpperCase()}</button>`).join("\n          ")}
         </div>
@@ -350,6 +346,7 @@ const compactRunSlugs = new Set([
 
 const noTerminalSlugs = new Set([
   "cyberslacking/video-content-category-simulation",
+  "phishing/form-submission-on-random-site",
 ]);
 
 function escapeAttr(value) {

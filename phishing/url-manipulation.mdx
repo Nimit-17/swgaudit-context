@@ -109,11 +109,14 @@ mode: "custom"
           <div className="swg-run-body">
             <div className="swg-run-controls">
 <div className="swg-run-pick">Choose a manipulated URL:</div>
-        <div className="swg-pick" data-pick="url-manipulation">
-          <button className="swg-chip is-active" type="button" data-chip data-url="/phishing/rnicrosoft-Iogin/" data-desc="Lookalike path: 'rn' mimics 'm' and a capital I stands in for a lowercase L, so rnicrosoft-Iogin reads as 'microsoft-login' at a glance.">Typo lookalike URL</button>
-          <button className="swg-chip" type="button" data-chip data-url="/phishing/micrоsoft-Iogin/" data-desc="Homograph path: the Latin 'o' is replaced with a Cyrillic 'o' lookalike. The text looks identical but uses a different character, defeating simple string matching.">Homograph URL</button>
-          <button className="swg-chip" type="button" data-chip data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/" data-desc="Redirect parameter: a clean-looking URL carries a destination value that forwards to the lookalike page, hiding the real target from a quick glance.">Redirect to lookalike</button>
-          <button className="swg-chip" type="button" data-chip data-url="/go/ms-login/" data-desc="Short URL: a short, friendly path redirects to the phishing page, masking the final URL behind a shortener-style link.">Short URL redirect</button>
+        <div className="swg-dd" data-dd data-dd-dl="url-manipulation">
+          <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Typo lookalike URL</span><span className="swg-caret" /></button>
+          <div className="swg-dd-menu" data-dd-menu hidden>
+            <button className="swg-dd-opt is-active" type="button" data-dd-opt data-url="/phishing/rnicrosoft-Iogin/" data-desc="Lookalike path: 'rn' mimics 'm' and a capital I stands in for a lowercase L, so rnicrosoft-Iogin reads as 'microsoft-login' at a glance.">Typo lookalike URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/micrоsoft-Iogin/" data-desc="Homograph path: the Latin 'o' is replaced with a Cyrillic 'o' lookalike. The text looks identical but uses a different character, defeating simple string matching.">Homograph URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/" data-desc="Redirect parameter: a clean-looking URL carries a destination value that forwards to the lookalike page, hiding the real target from a quick glance.">Redirect to lookalike</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/go/ms-login/" data-desc="Short URL: a short, friendly path redirects to the phishing page, masking the final URL behind a shortener-style link.">Short URL redirect</button>
+          </div>
         </div>
         <p className="swg-pick-desc" data-pick-desc>Lookalike path: 'rn' mimics 'm' and a capital I stands in for a lowercase L, so rnicrosoft-Iogin reads as 'microsoft-login' at a glance.</p>
               <div className="swg-pf">
