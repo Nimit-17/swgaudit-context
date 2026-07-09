@@ -1,0 +1,13 @@
+{
+  "name": "swgaudit-mintlify-v3",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SWG Audit Mintlify site with homepage, about page, and 23 security test pages",
+  "scripts": {
+    "dev": "mint dev",
+    "check": "mint broken-links"
+  },
+  "devDependencies": {
+    "mint": "4.2.655"
+  }
+}

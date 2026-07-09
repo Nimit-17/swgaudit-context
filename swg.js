@@ -1,0 +1,1505 @@
+/* =========================================================================
+   SWG Audit v3 — Mintlify prototype client logic (Phase 1)
+   Loaded once; uses document-level event delegation so it keeps working
+   across Mintlify's client-side (SPA) navigation. No backend required:
+   every test either downloads a static file or reconstructs one in the
+   browser (base64 decode, AES-GCM decrypt, or chunk reassembly).
+   ========================================================================= */
+(function () {
+  if (window.__swgInit) return;
+  window.__swgInit = true;
+
+  /* ---- helpers --------------------------------------------------------- */
+  function base64ToBytes(value) {
+    var binary = window.atob(value.replace(/\s+/g, ""));
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  function base32ToBytes(value) {
+    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    var clean = value.toUpperCase().replace(/=+$/g, "").replace(/\s+/g, "");
+    var bits = "";
+    var out = [];
+    for (var i = 0; i < clean.length; i += 1) {
+      var index = alphabet.indexOf(clean.charAt(i));
+      if (index === -1) throw new Error("Invalid Base32 payload.");
+      bits += index.toString(2).padStart(5, "0");
+      while (bits.length >= 8) {
+        out.push(parseInt(bits.slice(0, 8), 2));
+        bits = bits.slice(8);
+      }
+    }
+    return new Uint8Array(out);
+  }
+
+  function downloadBytes(bytes, filename, mime) {
+    var blob = new Blob([bytes], { type: mime || "application/octet-stream" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename || "download";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  function runConsoleFor(el) {
+    var run = el && el.closest && el.closest(".swg-run");
+    return run ? run.querySelector("[data-smuggle-console], [data-test-console]") : null;
+  }
+
+  function clearTimers(consoleEl) {
+    if (!consoleEl) return;
+    (consoleEl.__swgTimers || []).forEach(function (timer) { clearTimeout(timer); });
+    consoleEl.__swgTimers = [];
+  }
+
+  function startConsole(el, command) {
+    var consoleEl = runConsoleFor(el);
+    if (!consoleEl) return null;
+    clearTimers(consoleEl);
+    consoleEl.innerHTML =
+      '<div class="swg-console-line"><span class="swg-console-prompt">$</span> ' +
+      command +
+      "</div>";
+    return consoleEl;
+  }
+
+  function terminalLine(el, text, state) {
+    var consoleEl = runConsoleFor(el);
+    if (!consoleEl) return;
+    var line = document.createElement("div");
+    line.className = "swg-console-line";
+    if (state) line.classList.add("swg-console-" + state);
+    line.textContent = text;
+    consoleEl.appendChild(line);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+  }
+
+  function terminalPass(el, text) {
+    terminalLine(el, "PASS - " + text, "pass");
+  }
+
+  function terminalFail(el, text) {
+    terminalLine(el, "FAIL - " + text, "fail");
+  }
+
+  function hideBanner(fromEl) {
+    var run = fromEl && fromEl.closest && fromEl.closest(".swg-run");
+    var banner = run && run.querySelector(".swg-banner");
+    if (!banner) return;
+    banner.hidden = true;
+    banner.setAttribute("hidden", "");
+  }
+
+  function isBlockedFetchError(err) {
+    if (!err) return false;
+    var msg = String(err.message || err);
+    if (err instanceof TypeError) return true;
+    if (msg === "Failed to fetch" || msg.indexOf("NetworkError") !== -1) return true;
+    if (/Download request failed|Manifest request failed|Chunk request failed|WebAssembly module request failed|Unable to load|Request blocked/.test(msg)) return true;
+    if (/HTTP (403|451|502|503)\b/.test(msg)) return true;
+    return false;
+  }
+
+  function isBlockedHttpError(err) {
+    if (!err) return false;
+    if (isBlockedFetchError(err)) return true;
+    var msg = String(err.message || err);
+    if (/HTTP (400|403|404|405|408|410|451|502|503)\b/.test(msg)) return true;
+    return false;
+  }
+
+  function reportBlockedSubmission(el, out, pagePath, passText, outputText) {
+    terminalPass(el, passText);
+    setPersistentOutput(out, outputText || "Test passed.", "is-pass", pagePath);
+  }
+
+  function reportIncompleteSubmission(el, out, detail) {
+    terminalLine(el, detail || "submission could not complete.");
+    setOutput(out, "Test could not complete. Please retry.");
+  }
+
+  function runDownloadTest(url, name, mime, revealFrom, command) {
+    if (!url) return;
+    if (revealFrom) {
+      startConsole(revealFrom, command || "swg-audit fetch");
+      terminalLine(revealFrom, "requesting file ...");
+    }
+    return buildDirect(url, name, mime)
+      .then(function (out) {
+        downloadBytes(out.bytes, name || out.filename, mime || out.mime);
+        terminalFail(revealFrom, "download request was allowed.");
+        terminalLine(revealFrom, "file was downloaded: " + (name || out.filename));
+        revealBanner(revealFrom);
+      })
+      .catch(function (err) {
+        if (isBlockedFetchError(err)) {
+          terminalPass(revealFrom, "the download was blocked or could not complete.");
+          hideBanner(revealFrom);
+          return;
+        }
+        terminalLine(revealFrom, "download result could not be verified automatically.");
+        hideBanner(revealFrom);
+      });
+  }
+
+  function runLinkDownload(url, name, revealFrom, command) {
+    if (!url) return;
+    if (revealFrom) {
+      startConsole(revealFrom, command || "swg-audit fetch --channel=external");
+      terminalLine(revealFrom, "requesting external file ...");
+    }
+    return fetch(url, { cache: "no-store" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Download request failed: HTTP " + response.status);
+        return response.blob().then(function (blob) {
+          return blob.arrayBuffer().then(function (buffer) {
+            downloadBytes(new Uint8Array(buffer), name || "download", blob.type || "application/octet-stream");
+            terminalFail(revealFrom, "download request was allowed.");
+            terminalLine(revealFrom, "file was downloaded: " + (name || "download"));
+            revealBanner(revealFrom);
+          });
+        });
+      })
+      .catch(function (err) {
+        if (isBlockedFetchError(err)) {
+          terminalPass(revealFrom, "the download was blocked or could not complete.");
+          hideBanner(revealFrom);
+          return;
+        }
+        var a = document.createElement("a");
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        if (name) a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        terminalLine(revealFrom, "cross-origin response could not be verified; link opened for manual check.");
+        hideBanner(revealFrom);
+      });
+  }
+
+  function openProtectedUrl(url, revealFrom, failText, passText) {
+    if (!url) return;
+    return fetch(url, { cache: "no-store" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("Request blocked: HTTP " + response.status);
+        var opened = openNewTab(url);
+        if (!opened) {
+          terminalPass(revealFrom, passText || "request was blocked by the browser.");
+          hideBanner(revealFrom);
+          return;
+        }
+        terminalFail(revealFrom, failText);
+        revealBanner(revealFrom);
+      })
+      .catch(function (err) {
+        if (isBlockedFetchError(err)) {
+          terminalPass(revealFrom, passText || "request was blocked or could not complete.");
+          hideBanner(revealFrom);
+          return;
+        }
+        terminalLine(revealFrom, "request result could not be verified automatically.");
+        hideBanner(revealFrom);
+      });
+  }
+
+  function derivePayloadKey(password, salt) {
+    return crypto.subtle
+      .importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"])
+      .then(function (material) {
+        return crypto.subtle.deriveKey(
+          { name: "PBKDF2", hash: "SHA-256", salt: salt, iterations: 200000 },
+          material,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+      });
+  }
+
+  /* ---- payload builders (mirror the live app's client-side tests) ------ */
+  function buildAssembled(url) {
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (p) {
+        if (p.mode === "decode-base64") {
+          return { bytes: base64ToBytes(p.payload), filename: p.filename, mime: p.mime };
+        }
+        if (p.mode === "decode-base32") {
+          return { bytes: base32ToBytes(p.payload), filename: p.filename, mime: p.mime };
+        }
+        if (p.mode === "decrypt-aes-gcm") {
+          var salt = base64ToBytes(p.salt);
+          var iv = base64ToBytes(p.iv);
+          var ct = base64ToBytes(p.payload);
+          return derivePayloadKey(p.password || "123456", salt).then(function (key) {
+            return crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct).then(function (out) {
+              return { bytes: new Uint8Array(out), filename: p.filename, mime: p.mime };
+            });
+          });
+        }
+        throw new Error("Unsupported assembly mode.");
+      });
+  }
+
+  function buildChunk(url) {
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("Manifest request failed.");
+        return r.json();
+      })
+      .then(function (manifest) {
+        function fetchChunk(chunk) {
+          return fetch(chunk.url, { cache: "no-store" }).then(function (r) {
+            if (!r.ok) throw new Error("Chunk request failed: " + chunk.url);
+            return r.text().then(function (text) {
+              return {
+                include: chunk.include !== false,
+                order: Number(chunk.order),
+                text: text.replace(/\r?\n$/, ""),
+                transform: chunk.transform || "none",
+              };
+            });
+          });
+        }
+        var seq;
+        if (manifest.fetchMode === "parallel") {
+          seq = Promise.all(manifest.chunks.map(fetchChunk));
+        } else {
+          seq = manifest.chunks.reduce(function (acc, chunk) {
+            return acc.then(function (list) {
+              return fetchChunk(chunk).then(function (c) { list.push(c); return list; });
+            });
+          }, Promise.resolve([]));
+        }
+        return seq.then(function (chunks) {
+          var text = chunks
+            .filter(function (c) { return c.include; })
+            .sort(function (a, b) { return a.order - b.order; })
+            .map(function (c) {
+              return c.transform === "reverse-content"
+                ? Array.from(c.text).reverse().join("")
+                : c.text;
+            })
+            .join("");
+          return {
+            bytes: new TextEncoder().encode(text),
+            filename: manifest.filename || "eicar-chunk-attack.txt",
+            mime: manifest.mime || "text/plain",
+          };
+        });
+      });
+  }
+
+  function buildDirect(url, name, mime) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("Download request failed: " + url);
+      return r.arrayBuffer().then(function (buf) {
+        return { bytes: new Uint8Array(buf), filename: name || url.split("/").pop(), mime: mime };
+      });
+    });
+  }
+
+  function buildWasm(url, name, mime) {
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("WebAssembly module request failed.");
+        return r.arrayBuffer();
+      })
+      .then(function (buffer) {
+        return WebAssembly.instantiate(buffer, {});
+      })
+      .then(function (result) {
+        var exports = result.instance.exports;
+        if (!exports.a || typeof exports.c !== "function") {
+          throw new Error("Unexpected WebAssembly module exports.");
+        }
+        if (typeof exports.b === "function") exports.b();
+        var pointer = exports.c();
+        var memory = new Uint8Array(exports.a.buffer);
+        var end = pointer;
+        while (end < memory.length && memory[end] !== 0) end += 1;
+        if (end === pointer) throw new Error("WebAssembly module returned an empty payload.");
+        return {
+          bytes: memory.slice(pointer, end),
+          filename: name || "eicar.txt",
+          mime: mime || "text/plain",
+        };
+      });
+  }
+
+  function clickDownloadLink(url, name, revealFrom, command, mime) {
+    return runDownloadTest(url, name, mime, revealFrom, command);
+  }
+
+  function extractSmugglingPayload(format) {
+    var carrier = document.querySelector('[data-smuggling-carrier="' + format + '"]');
+    if (!carrier && format === "css") {
+      carrier = document.querySelector('[data-smuggling-carrier="html"]');
+      return carrier ? carrier.getAttribute("data-smuggling-payload") || "" : "";
+    }
+    if (!carrier) return "";
+
+    if (format === "html" || format === "js") {
+      return carrier.getAttribute("data-smuggling-payload") || "";
+    }
+
+    if (format === "css") {
+      var cssMatch = carrier.textContent.match(/--smuggled-payload:\s*["']([A-Za-z0-9+/=\s]+)["']/);
+      return cssMatch ? cssMatch[1] : "";
+    }
+
+    if (format === "svg") {
+      var payload = carrier.querySelector("metadata");
+      return payload ? payload.textContent : "";
+    }
+
+    return "";
+  }
+
+  function buildSmuggled(format, name) {
+    var payload = extractSmugglingPayload(format).replace(/\s+/g, "");
+    if (!payload) throw new Error(format.toUpperCase() + " smuggling payload was not found.");
+    return Promise.resolve({
+      bytes: base64ToBytes(payload),
+      filename: name || format + "_smuggling.docm",
+      mime: "application/vnd.ms-word.document.macroEnabled.12",
+    });
+  }
+
+  /* ---- chip pickers ---------------------------------------------------- */
+  function activeChip(groupId) {
+    var group = document.querySelector('[data-pick="' + groupId + '"]');
+    if (!group) return null;
+    return group.querySelector("[data-chip].is-active") || group.querySelector("[data-chip]");
+  }
+
+
+  function activeDropdownOption(groupId) {
+    var dd = document.querySelector('[data-dd-dl="' + groupId + '"]');
+    if (!dd) return null;
+    return dd.querySelector("[data-dd-opt].is-active") || dd.querySelector("[data-dd-opt]");
+  }
+
+  function activePick(groupId) {
+    return activeDropdownOption(groupId) || activeChip(groupId);
+  }
+
+  function smugglingConsoleFor(el) {
+    var run = el && el.closest(".swg-run");
+    return run ? run.querySelector("[data-smuggle-console]") : null;
+  }
+
+  function smugglingCarrierLabel(chip) {
+    return (chip && (chip.textContent || chip.getAttribute("data-carrier")) || "html").trim().toLowerCase();
+  }
+
+  function resetSmugglingConsole(chip) {
+    var consoleEl = smugglingConsoleFor(chip);
+    if (!consoleEl) return;
+    consoleEl.innerHTML =
+      '<div class="swg-console-line"><span class="swg-console-prompt">$</span> swg-audit run --carrier=' +
+      smugglingCarrierLabel(chip) +
+      '<span class="swg-console-cursor"></span></div>';
+  }
+
+  function initSmugglingConsoles() {
+    document.querySelectorAll("[data-smuggle-console]").forEach(function (consoleEl) {
+      var run = consoleEl.closest(".swg-run");
+      var chip = run && run.querySelector("[data-chip].is-active");
+      if (chip && !consoleEl.textContent.trim()) resetSmugglingConsole(chip);
+    });
+  }
+
+  function initTestConsoles() {
+    document.querySelectorAll("[data-test-console]").forEach(function (consoleEl) {
+      if (!consoleEl.textContent.trim()) {
+        consoleEl.innerHTML = '<div class="swg-console-line"><span class="swg-console-prompt">$</span> swg-audit ready</div>';
+      }
+    });
+  }
+
+  function revealBanner(fromEl) {
+    var run = fromEl && fromEl.closest && fromEl.closest(".swg-run");
+    var banner = run && run.querySelector(".swg-banner");
+    if (!banner) return;
+    banner.hidden = false;
+    banner.removeAttribute("hidden");
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll("[data-dd].is-open").forEach(function (dd) {
+      dd.classList.remove("is-open");
+      var m = dd.querySelector("[data-dd-menu]");
+      if (m) m.hidden = true;
+    });
+  }
+
+  function openNewTab(url) {
+    window.open(url, "_blank", "noopener");
+  }
+
+  function testId() {
+    if (crypto.randomUUID) return crypto.randomUUID().replaceAll("-", "");
+    var bytes = crypto.getRandomValues(new Uint8Array(16));
+    return Array.from(bytes, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+  }
+
+  function makeDummyMicrosoftLoginHtml() {
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<title>Microsoft sign in</title><style>*{box-sizing:border-box}body{min-height:100vh;margin:0;display:grid;place-items:center;color:#1b1b1b;background:linear-gradient(135deg,#f6f8fc,#fff);font-family:"Segoe UI",Arial,sans-serif}main{width:min(440px,calc(100% - 36px))}.panel{width:100%;min-height:338px;padding:44px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.22)}.brand{display:flex;align-items:center;gap:7px;color:#737373;font-size:26px;font-weight:600}.mark{width:24px;height:24px;display:grid;grid-template-columns:repeat(2,1fr);gap:2px}.mark span:nth-child(1){background:#f35325}.mark span:nth-child(2){background:#81bc06}.mark span:nth-child(3){background:#05a6f0}.mark span:nth-child(4){background:#ffba08}h1{margin:24px 0 16px;font-size:24px;font-weight:600;line-height:1.18}input{width:100%;height:36px;border:0;border-bottom:1px solid #666;color:#1b1b1b;font-size:15px;outline:0}input+input{margin-top:18px}input:focus{border-bottom-color:#0067b8}.links{display:grid;gap:18px;margin:18px 0 0;font-size:13px}.links a{color:#0067b8;text-decoration:none}.actions{display:flex;justify-content:flex-end;gap:4px;margin-top:34px}button{min-width:108px;min-height:32px;border:0;font-size:15px;cursor:pointer}.back{background:#ccc}.next{color:#fff;background:#0067b8}.options{display:flex;align-items:center;gap:14px;min-height:48px;margin-top:20px;padding:0 44px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:15px}.key{font-size:24px;line-height:1}@media(max-width:640px){.panel{min-height:auto;padding:42px 28px 48px}.actions{flex-direction:column}button{width:100%}.options{padding:0 28px}}</style></head>' +
+      '<body><main><section class="panel" aria-labelledby="login-title"><div class="brand" aria-label="Microsoft"><span class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span><span>Microsoft</span></div><h1 id="login-title">Sign in</h1><form><input name="loginfmt" autocomplete="off" inputmode="email" placeholder="Email, phone, or Skype" aria-label="Email, phone, or Skype"><input name="passwd" type="password" autocomplete="off" placeholder="Password" aria-label="Password"><div class="links"><span>No account? <a href="#">Create one!</a></span><a href="#">Cannot access your account?</a></div><div class="actions"><button class="back" type="button">Back</button><button class="next" type="submit">Next</button></div></form></section><section class="options" aria-label="Sign-in options"><span class="key" aria-hidden="true">&#128273;</span><span>Sign-in options</span></section></main></body></html>';
+  }
+
+  function openClientHtml(html) {
+    var blob = new Blob([html], { type: "text/html" });
+    return window.open(URL.createObjectURL(blob), "_blank", "noopener");
+  }
+
+  function buildClientMhtml(html) {
+    var boundary = "----SWG-Audit-" + testId();
+    return [
+      "MIME-Version: 1.0",
+      'Content-Type: multipart/related; boundary="' + boundary + '"; type="text/html"',
+      "X-SWG-Audit-Test: Client-generated MHTML phishing page",
+      "",
+      "--" + boundary,
+      'Content-Type: text/html; charset="utf-8"',
+      "Content-Location: https://client-generated.invalid/login.html",
+      "",
+      html,
+      "--" + boundary + "--",
+      "",
+    ].join("\r\n");
+  }
+
+  function extractHtmlFromMhtml(mhtml) {
+    var boundaryMatch = mhtml.match(/boundary="?([^";\r\n]+)"?/i);
+    if (!boundaryMatch) throw new Error("The generated MHTML has no MIME boundary.");
+    var htmlPart = mhtml
+      .split("--" + boundaryMatch[1])
+      .find(function (part) { return /Content-Type:\s*text\/html\b/i.test(part); });
+    if (!htmlPart) throw new Error("The generated MHTML has no HTML part.");
+    var contentStart = htmlPart.search(/\r?\n\r?\n/);
+    if (contentStart === -1) throw new Error("The generated MHTML HTML part is malformed.");
+    return htmlPart.slice(contentStart).replace(/^\r?\n\r?\n/, "").replace(/\r?\n$/, "");
+  }
+
+  function buildCanvasHtml() {
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SWG Audit Test - Dummy GitHub Canvas Login</title><style>html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0d1117}canvas{width:100vw;height:100vh;display:block;outline:none}</style></head><body><canvas id="login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered entirely on canvas"></canvas><script>' +
+      'const canvas=document.getElementById("login-canvas"),ctx=canvas.getContext("2d"),state={active:"username",username:"",password:"",submitted:false,boxes:{},scale:1};' +
+      'const rr=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r)};' +
+      'const write=(v,x,y,s,c,w,a)=>{ctx.fillStyle=c;ctx.font=(w||"400")+" "+s+"px -apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif";ctx.textAlign=a||"left";ctx.textBaseline="middle";ctx.fillText(v,x,y)};' +
+      'const input=(n,l,v,x,y,w)=>{write(l,x,y,15,"#f0f6fc","600");const b={x:x,y:y+18,width:w,height:44};state.boxes[n]=b;rr(b.x,b.y,b.width,b.height,6);ctx.fillStyle="#0d1117";ctx.fill();ctx.strokeStyle=state.active===n?"#2f81f7":"#3d444d";ctx.lineWidth=state.active===n?2:1;ctx.stroke();write(v,b.x+12,b.y+b.height/2,16,"#f0f6fc")};' +
+      'const draw=()=>{const vw=innerWidth,vh=innerHeight;state.scale=Math.min(1.14,vw/390,vh/650);const w=vw/state.scale,h=vh/state.scale,pw=Math.min(420,w-36),x=(w-pw)/2;let y=Math.max(44,(h-650)/2);state.boxes={};ctx.clearRect(0,0,vw,vh);ctx.save();ctx.scale(state.scale,state.scale);ctx.fillStyle="#0d1117";ctx.fillRect(0,0,w,h);ctx.fillStyle="#f0f6fc";ctx.beginPath();ctx.arc(w/2,y+30,28,0,Math.PI*2);ctx.fill();write("GH",w/2,y+31,16,"#0d1117","800","center");write("Sign in to GitHub",w/2,y+94,26,"#f0f6fc","600","center");y+=138;if(state.submitted){rr(x,y,pw,92,6);ctx.fillStyle="#2d1519";ctx.fill();ctx.strokeStyle="#f85149";ctx.stroke();write("Test Failed: submission was supposed to be blocked.",x+14,y+22,13,"#ffb4b4","700");write("Username: "+state.username,x+14,y+49,13,"#f0f6fc");write("Password: "+state.password,x+14,y+72,13,"#f0f6fc");y+=116}input("username","Username or email address",state.username,x,y,pw);y+=88;write("Forgot password?",x+pw,y,14,"#2f81f7","400","right");input("password","Password","*".repeat(state.password.length),x,y,pw);y+=86;const sub={x:x,y:y,width:pw,height:46};state.boxes.submit=sub;rr(sub.x,sub.y,sub.width,sub.height,6);ctx.fillStyle="#238636";ctx.fill();write("Sign in",w/2,sub.y+sub.height/2,16,"#fff","700","center");y+=82;ctx.strokeStyle="#3d444d";ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+pw*.44,y);ctx.moveTo(x+pw*.56,y);ctx.lineTo(x+pw,y);ctx.stroke();write("or",w/2,y,15,"#8b949e","400","center");write("Continue with Google",w/2,y+55,15,"#f0f6fc","600","center");write("Continue with Apple",w/2,y+102,15,"#f0f6fc","600","center");write("New to GitHub?  Create an account",w/2,y+162,15,"#2f81f7","400","center");ctx.restore()};' +
+      'const resize=()=>{const r=devicePixelRatio||1;canvas.width=Math.floor(innerWidth*r);canvas.height=Math.floor(innerHeight*r);ctx.setTransform(r,0,0,r,0,0);draw()};const contains=(p,b)=>b&&p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;canvas.addEventListener("mousedown",e=>{const p={x:e.clientX/state.scale,y:e.clientY/state.scale};canvas.focus();if(contains(p,state.boxes.username))state.active="username";if(contains(p,state.boxes.password))state.active="password";if(contains(p,state.boxes.submit))state.submitted=true;draw()});canvas.addEventListener("keydown",e=>{if(e.key==="Tab"){e.preventDefault();state.active=state.active==="username"?"password":"username"}else if(e.key==="Enter"){e.preventDefault();state.submitted=true}else if(e.key==="Backspace"){e.preventDefault();state[state.active]=state[state.active].slice(0,-1)}else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();state[state.active]+=e.key}draw()});addEventListener("resize",resize);resize();canvas.focus();' +
+      '</script></body></html>';
+  }
+
+  function cardOutput(form, selector) {
+    var run = form.closest(".swg-run") || form;
+    return run.querySelector(selector || "[data-test-output]");
+  }
+
+  var outputState = {};
+  var serverFileState = {};
+
+  function outputMarker(out) {
+    if (!out) return "swg-output";
+    if (out.hasAttribute("data-test-output")) return "data-test-output";
+    if (out.hasAttribute("data-dns-tunnel-status")) return "data-dns-tunnel-status";
+    if (out.hasAttribute("data-path-tunnel-status")) return "data-path-tunnel-status";
+    return "swg-output";
+  }
+
+  function pagePathFor(el) {
+    var run = el && el.closest && el.closest(".swg-run");
+    return (run && run.getAttribute("data-page-path")) || location.pathname;
+  }
+
+  function bindRunPage(runOrChild) {
+    var run = runOrChild && runOrChild.closest ? (runOrChild.closest(".swg-run") || runOrChild) : runOrChild;
+    if (run && !run.getAttribute("data-page-path")) {
+      run.setAttribute("data-page-path", location.pathname);
+    }
+    return run;
+  }
+
+  function outputKey(out) {
+    if (!out) return "";
+    return pagePathFor(out) + "::" + outputMarker(out);
+  }
+
+  function setOutput(out, text, state) {
+    if (!out) return;
+    out.hidden = false;
+    out.removeAttribute("hidden");
+    out.style.display = "block";
+    out.classList.remove("is-pass", "is-fail");
+    if (state) out.classList.add(state);
+    out.textContent = text;
+  }
+
+  function setPersistentOutput(out, text, state, pagePath) {
+    setOutput(out, text, state);
+    if (state !== "is-pass" && state !== "is-fail") return;
+    var key = (pagePath || pagePathFor(out)) + "::" + outputMarker(out);
+    if (key) outputState[key] = { text: text, state: state || "" };
+  }
+
+  function serverFileKey(button) {
+    return button ? pagePathFor(button) + "::open-server-file" : "";
+  }
+
+  function showServerFileButton(button, fileUrl) {
+    if (!button || !safeUploadUrl(fileUrl)) return;
+    button.hidden = false;
+    button.removeAttribute("hidden");
+    button.style.display = "block";
+    button.setAttribute("data-file-url", fileUrl);
+    serverFileState[serverFileKey(button)] = fileUrl;
+  }
+
+  function restorePersistentResults() {
+    document.querySelectorAll(".swg-output").forEach(function (out) {
+      var saved = outputState[outputKey(out)];
+      if (saved) setOutput(out, saved.text, saved.state);
+    });
+    document.querySelectorAll("[data-open-server-file]").forEach(function (button) {
+      var fileUrl = serverFileState[serverFileKey(button)];
+      if (fileUrl) showServerFileButton(button, fileUrl);
+    });
+  }
+
+  function clearPersistentOutput(out) {
+    var key = outputKey(out);
+    if (key) delete outputState[key];
+  }
+
+  function clearServerFileButton(button) {
+    if (!button) return;
+    delete serverFileState[serverFileKey(button)];
+    button.removeAttribute("data-file-url");
+    button.style.display = "";
+    button.hidden = true;
+    button.setAttribute("hidden", "");
+  }
+
+  function fileBytes(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.addEventListener("load", function () { resolve(new Uint8Array(reader.result)); });
+      reader.addEventListener("error", function () { reject(reader.error); });
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  function bytesToBase64(bytes) {
+    var binary = "";
+    for (var offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(offset, offset + 0x8000));
+    }
+    return window.btoa(binary);
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes, function (byte) { return byte.toString(16).padStart(2, "0"); }).join("");
+  }
+
+  function activeMode(form) {
+    var chip = form.querySelector("[data-chip].is-active") || form.querySelector("[data-chip]");
+    return chip ? chip.getAttribute("data-mode") : "";
+  }
+
+  function metadata(file) {
+    return JSON.stringify({ name: file.name, type: file.type || "application/octet-stream", size: file.size });
+  }
+
+  function submitEvasion(formData) {
+    return fetch("/data-theft/process_evasion_upload.php", {
+      method: "post",
+      body: formData,
+      headers: { Accept: "application/json" },
+    }).then(function (response) {
+      if (!response.ok) throw new Error("Submission returned HTTP " + response.status);
+      return response.json();
+    });
+  }
+
+  function readJson(response) {
+    return response.text().then(function (text) {
+      if (!text) return {};
+      try { return JSON.parse(text); }
+      catch (error) { return { raw: text }; }
+    });
+  }
+
+  function runDataTheftForm(form, build, preparingText) {
+    bindRunPage(form);
+    var pagePath = location.pathname;
+    var out = cardOutput(form);
+    var button = form.querySelector('button[type="submit"]');
+    var input = form.querySelector('input[type="file"]');
+    var file = input && input.files[0];
+    if (!file) {
+      setOutput(out, "Choose a file before running the test.");
+      return;
+    }
+    startConsole(form, "swg-audit data-theft submit --file=" + file.name);
+    terminalLine(form, preparingText);
+    setOutput(out, preparingText);
+    if (button) button.disabled = true;
+    build(file, form)
+      .then(function (formData) {
+        terminalLine(form, "submitting transformed file to server ...");
+        setOutput(out, "Submitting transformed file...");
+        return submitEvasion(formData);
+      })
+      .then(function (result) {
+        if (result && result.reconstructed) {
+          terminalFail(form, "server reconstructed the submitted file.");
+          revealServerFile(form, result.fileUrl);
+          setPersistentOutput(out, "Test failed.", "is-fail", pagePath);
+          return;
+        }
+        terminalPass(form, "the server could not reconstruct the submitted file.");
+        setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
+      })
+      .catch(function (err) {
+        if (isBlockedHttpError(err)) {
+          reportBlockedSubmission(form, out, pagePath, "the server could not reconstruct the submitted file.");
+          return;
+        }
+        reportIncompleteSubmission(form, out, "submission could not complete.");
+      })
+      .finally(function () {
+        if (button) button.disabled = false;
+      });
+  }
+
+  function buildEncodingForm(file, form) {
+    return fileBytes(file).then(function (bytes) {
+      var mode = activeMode(form) || "base64";
+      var encoded;
+      var filename = file.name + "." + mode + ".txt";
+      if (mode === "base64") encoded = bytesToBase64(bytes);
+      else if (mode === "double-base64") encoded = window.btoa(bytesToBase64(bytes));
+      else if (mode === "hex") { encoded = bytesToHex(bytes); filename = file.name + ".hex.txt"; }
+      else if (mode === "url") encoded = encodeURIComponent(bytesToBase64(bytes));
+      else throw new Error("Unsupported encoding mode.");
+      var formData = new FormData();
+      formData.append("test_type", "encoding");
+      formData.append("encoding_mode", mode);
+      formData.append("metadata", metadata(file));
+      formData.append("encoded_payload", new Blob([encoded], { type: "text/plain" }), filename);
+      return formData;
+    });
+  }
+
+  function buildEncryptionForm(file, form) {
+    return fileBytes(file).then(function (bytes) {
+      var salt = crypto.getRandomValues(new Uint8Array(16));
+      var iv = crypto.getRandomValues(new Uint8Array(12));
+      return crypto.subtle.importKey("raw", new TextEncoder().encode("123456"), "PBKDF2", false, ["deriveKey"])
+        .then(function (material) {
+          return crypto.subtle.deriveKey(
+            { name: "PBKDF2", hash: "SHA-256", salt: salt, iterations: 200000 },
+            material,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt"]
+          );
+        })
+        .then(function (key) { return crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, bytes); })
+        .then(function (encryptedBuffer) {
+          var encrypted = new Uint8Array(encryptedBuffer);
+          var tagLength = 16;
+          var formData = new FormData();
+          formData.append("test_type", "encryption");
+          formData.append("encryption_mode", activeMode(form) || "aes-gcm");
+          formData.append("metadata", metadata(file));
+          formData.append("password", "123456");
+          formData.append("salt", bytesToBase64(salt));
+          formData.append("iv", bytesToBase64(iv));
+          formData.append("tag", bytesToBase64(encrypted.subarray(encrypted.length - tagLength)));
+          formData.append("ciphertext", new Blob([encrypted.subarray(0, encrypted.length - tagLength)], { type: "application/octet-stream" }), file.name + ".aes-gcm");
+          return formData;
+        });
+    });
+  }
+
+  function makeChunks(bytes, mode) {
+    var base = Math.max(1, Math.ceil(bytes.length / 6));
+    var chunks = [];
+    if (mode === "randomized-size") {
+      var ratios = [0.09, 0.21, 0.13, 0.27, 0.17, 0.13];
+      var offset = 0;
+      ratios.forEach(function (ratio, index) {
+        var remaining = bytes.length - offset;
+        var size = index === ratios.length - 1 ? remaining : Math.max(1, Math.min(remaining, Math.floor(bytes.length * ratio)));
+        chunks.push({ order: index + 1, include: true, bytes: bytes.subarray(offset, offset + size) });
+        offset += size;
+      });
+    } else {
+      for (var start = 0, order = 1; start < bytes.length; start += base, order += 1) {
+        chunks.push({ order: order, include: true, bytes: bytes.subarray(start, Math.min(bytes.length, start + base)) });
+      }
+    }
+    if (mode === "reverse-order") return chunks.reverse();
+    if (mode === "mixed-noise") {
+      return [{ order: 0, include: false, bytes: new TextEncoder().encode("benign decoy before file\n") }]
+        .concat(chunks)
+        .concat([{ order: 999, include: false, bytes: new TextEncoder().encode("benign decoy after file\n") }]);
+    }
+    return chunks;
+  }
+
+  function buildChunkingForm(file, form) {
+    return fileBytes(file).then(function (bytes) {
+      var mode = activeMode(form) || "straight-split";
+      var chunks = makeChunks(bytes, mode);
+      var formData = new FormData();
+      formData.append("test_type", "chunking");
+      formData.append("chunking_mode", mode);
+      formData.append("metadata", metadata(file));
+      formData.append("manifest", JSON.stringify(chunks.map(function (chunk, index) {
+        return { field: "chunk_" + index, order: chunk.order, include: chunk.include };
+      })));
+      chunks.forEach(function (chunk, index) {
+        formData.append("chunk_" + index, new Blob([chunk.bytes], { type: "application/octet-stream" }), "chunk-" + (index + 1) + ".part");
+      });
+      return formData;
+    });
+  }
+
+  var dnsAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  function base32(bytes) {
+    var output = "";
+    var value = 0;
+    var bits = 0;
+    bytes.forEach(function (byte) {
+      value = (value << 8) | byte;
+      bits += 8;
+      while (bits >= 5) {
+        output += dnsAlphabet[(value >>> (bits - 5)) & 31];
+        bits -= 5;
+      }
+    });
+    if (bits > 0) output += dnsAlphabet[(value << (5 - bits)) & 31];
+    return output;
+  }
+
+  function wait(ms) {
+    return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
+  }
+
+  function safeUploadUrl(url) {
+    return typeof url === "string" && /^\/data-theft\/uploads\/[^/?#]+$/.test(url);
+  }
+
+  function setTunnelStatus(out, message, state, fileUrl) {
+    setPersistentOutput(out, message, state);
+  }
+
+  function revealServerFile(fromEl, fileUrl) {
+    if (!safeUploadUrl(fileUrl)) return;
+    var run = fromEl.closest(".swg-run");
+    var button = run && run.querySelector("[data-open-server-file]");
+    if (!button) return;
+    showServerFileButton(button, fileUrl);
+    terminalLine(fromEl, "server file is available at " + fileUrl);
+  }
+
+  function buildDnsChunks(id, file, encodedData) {
+    var suffix = ".swgaudit.com";
+    var maxDataLength = 253 - id.length - suffix.length - 5;
+    var chunks = [];
+    for (var offset = 0, chunkNumber = 1; offset < encodedData.length; chunkNumber += 1) {
+      var labels = [];
+      var remainingLength = maxDataLength;
+      while (offset < encodedData.length && remainingLength > 0) {
+        var labelLength = Math.min(60, remainingLength, encodedData.length - offset);
+        labels.push(encodedData.slice(offset, offset + labelLength));
+        remainingLength -= labelLength + 1;
+        offset += labelLength;
+      }
+      chunks.push({ number: chunkNumber, labels: labels });
+    }
+    var meta = new TextEncoder().encode(JSON.stringify({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      totalDataChunks: chunks.length,
+      encodedLength: encodedData.length,
+    }));
+    return [{ number: 0, labels: (base32(meta).match(/.{1,60}/g) || []) }].concat(chunks);
+  }
+
+  function checkDnsResult(id, form, attempts, pagePath) {
+    var out = cardOutput(form, "[data-dns-tunnel-status]");
+    var last = null;
+    var chain = Promise.resolve();
+    for (var i = 1; i <= attempts; i += 1) {
+      (function (attempt) {
+        chain = chain.then(function () {
+          setOutput(out, "Checking server result (" + attempt + "/" + attempts + ")...");
+          terminalLine(form, "checking server result (" + attempt + "/" + attempts + ") ...");
+          return fetch("/data-theft/fetch_uploaded_data.php?id=" + encodeURIComponent(id), { headers: { Accept: "application/json" } })
+            .then(function (r) { return r.json(); })
+            .then(function (result) {
+              last = result;
+              if (result.success && result.fileUrl) return result;
+              if (result.partial) return result;
+              if (attempt < attempts) return wait(2000);
+              return null;
+            });
+        }).then(function (result) {
+          if (result && ((result.success && result.fileUrl) || result.partial)) {
+            throw { done: true, result: result };
+          }
+        });
+      })(i);
+    }
+    return chain.then(function () { return last || { success: false, message: "No complete file could be reconstructed from the received DNS chunks." }; })
+      .catch(function (marker) { if (marker.done) return marker.result; throw marker; });
+  }
+
+  function runDnsTunnel(form) {
+    bindRunPage(form);
+    var pagePath = location.pathname;
+    var out = cardOutput(form, "[data-dns-tunnel-status]");
+    var input = form.querySelector("[data-dns-tunnel-file]");
+    var submit = form.querySelector("[data-dns-tunnel-submit]");
+    var reset = form.querySelector("[data-dns-tunnel-reset]");
+    var file = input && input.files[0];
+    if (!file) {
+      return setOutput(out, "Choose a file before running the test.");
+    }
+    if (file.size > 100 * 1024) {
+      startConsole(form, "swg-audit dns-tunnel --file=" + file.name);
+      terminalLine(form, "file exceeds 100 KB limit.");
+      return setOutput(out, "Choose a file smaller than 100 KB.");
+    }
+    submit.disabled = true;
+    if (reset) reset.hidden = true;
+    startConsole(form, "swg-audit dns-tunnel --file=" + file.name);
+    terminalLine(form, "encoding file into DNS labels ...");
+    setOutput(out, "Preparing DNS tunnelling test...");
+    var id = testId().slice(0, 16);
+    fileBytes(file)
+      .then(function (bytes) {
+        var chunks = buildDnsChunks(id, file, base32(bytes));
+        var attempted = 0;
+        return Promise.all(chunks.map(function (chunk) {
+          var url = "https://" + id + "." + chunk.number + "." + chunk.labels.join(".") + ".swgaudit.com";
+          return fetch(url, { mode: "no-cors" }).catch(function () {}).finally(function () {
+            attempted += 1;
+            setOutput(out, "Running DNS tunnelling test: " + attempted + "/" + chunks.length + " requests attempted...");
+            if (attempted === 1 || attempted === chunks.length || attempted % 10 === 0) {
+              terminalLine(form, "attempted " + attempted + "/" + chunks.length + " DNS requests ...");
+            }
+          });
+        }));
+      })
+      .then(function () { return checkDnsResult(id, form, 5, pagePath); })
+      .then(function (result) {
+        if (result.success && result.fileUrl) {
+          terminalFail(form, "server reconstructed the full file from DNS queries.");
+          revealServerFile(form, result.fileUrl);
+          setPersistentOutput(out, "Test failed: the full file was reconstructed from DNS queries.", "is-fail", pagePath);
+        }
+        else if (result.partial) {
+          terminalPass(form, "the file was not fully reconstructed from DNS queries.");
+          setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
+        }
+        else {
+          terminalPass(form, "the file was not reconstructed from DNS queries.");
+          setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
+        }
+      })
+      .catch(function () {
+        terminalLine(form, "DNS tunnel test could not complete.");
+        setOutput(out, "Test could not complete. Please retry.");
+      })
+      .finally(function () {
+        submit.disabled = false;
+        if (reset) reset.hidden = false;
+      });
+  }
+
+  function buildPathChunks(file, bytes) {
+    var encoded = bytesToBase64(bytes).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+    var chunks = [];
+    for (var offset = 0, num = 1; offset < encoded.length; offset += 1500, num += 1) {
+      chunks.push({ number: num, payload: encoded.slice(offset, offset + 1500) });
+    }
+    var meta = bytesToBase64(new TextEncoder().encode(JSON.stringify({
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      size: file.size,
+      totalDataChunks: chunks.length,
+      encodedLength: encoded.length,
+    }))).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+    return [{ number: 0, payload: meta }].concat(chunks);
+  }
+
+  function runPathTunnel(form) {
+    bindRunPage(form);
+    var pagePath = location.pathname;
+    var out = cardOutput(form, "[data-path-tunnel-status]");
+    var input = form.querySelector("[data-path-tunnel-file]");
+    var submit = form.querySelector("[data-path-tunnel-submit]");
+    var reset = form.querySelector("[data-path-tunnel-reset]");
+    var file = input && input.files[0];
+    if (!file) {
+      return setOutput(out, "Choose a file before running the test.");
+    }
+    if (file.size === 0) {
+      startConsole(form, "swg-audit path-tunnel --file=" + file.name);
+      terminalLine(form, "empty file was not sent.");
+      return setOutput(out, "Choose a non-empty file before running the test.");
+    }
+    if (file.size > 200 * 1024) {
+      startConsole(form, "swg-audit path-tunnel --file=" + file.name);
+      terminalLine(form, "file exceeds 200 KB limit.");
+      return setOutput(out, "Choose a file smaller than 200 KB.");
+    }
+    var id = testId().slice(0, 16);
+    submit.disabled = true;
+    input.disabled = true;
+    if (reset) reset.hidden = true;
+    startConsole(form, "swg-audit path-tunnel --file=" + file.name);
+    terminalLine(form, "encoding file into URL path chunks ...");
+    setOutput(out, "Preparing HTTP path tunneling test...");
+    fileBytes(file)
+      .then(function (bytes) {
+        var chunks = buildPathChunks(file, bytes);
+        var delivered = 0;
+        var chain = Promise.resolve();
+        chunks.forEach(function (chunk) {
+          chain = chain.then(function () {
+            var url = "/data-theft/path-tunnel.php/" + encodeURIComponent(id) + "/" + chunk.number + "/" + encodeURIComponent(chunk.payload);
+            terminalLine(form, "sending path chunk " + chunk.number + "/" + (chunks.length - 1) + " ...");
+            return fetch(url, { method: "GET", cache: "no-store", headers: { Accept: "application/json" } })
+              .then(function (response) {
+                if (response.ok) delivered += 1;
+              })
+              .catch(function () {});
+          });
+        });
+        return chain.then(function () { return { total: chunks.length, delivered: delivered }; });
+      })
+      .then(function (delivery) {
+        var last = null;
+        var chain = Promise.resolve();
+        for (var i = 1; i <= 5; i += 1) {
+          (function (attempt) {
+            chain = chain.then(function () {
+              setOutput(out, "Checking server result (" + attempt + "/5)...");
+              terminalLine(form, "checking server result (" + attempt + "/5) ...");
+              return fetch("/data-theft/path-tunnel.php?status=1&id=" + encodeURIComponent(id), { cache: "no-store", headers: { Accept: "application/json" } })
+                .then(function (r) { return r.json(); })
+                .then(function (result) {
+                  last = result;
+                  if (result.success && result.reconstructed) return result;
+                  if (result.partial) return result;
+                  if (attempt < 5) return wait(1000);
+                  return null;
+                })
+                .catch(function () { last = { success: false, reconstructed: false }; });
+            }).then(function (result) {
+              if (result && ((result.success && result.reconstructed) || result.partial)) {
+                throw { done: true, result: result };
+              }
+            });
+          })(i);
+        }
+        return chain.then(function () { return { result: last, delivery: delivery }; })
+          .catch(function (marker) { if (marker.done) return { result: marker.result, delivery: delivery }; throw marker; });
+      })
+      .then(function (payload) {
+        var result = payload && payload.result;
+        var partialExfil = result && result.partial;
+        var fullReconstruction = result && result.success && result.reconstructed;
+        if (fullReconstruction) {
+          terminalFail(form, "server reconstructed the file from URL path chunks.");
+          revealServerFile(form, result.fileUrl);
+          setPersistentOutput(out, "Test failed: the full file was reconstructed from URL path chunks.", "is-fail", pagePath);
+        }
+        else if (partialExfil) {
+          terminalPass(form, "the file was not fully reconstructed from URL path chunks.");
+          setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
+        }
+        else {
+          terminalPass(form, "the file was not reconstructed from URL path chunks.");
+          setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
+        }
+      })
+      .catch(function () {
+        terminalLine(form, "HTTP path tunnel test could not complete.");
+        setOutput(out, "Test could not complete. Please retry.");
+      })
+      .finally(function () {
+        submit.disabled = false;
+        input.disabled = false;
+        if (reset) reset.hidden = false;
+      });
+  }
+
+  /* ---- delegated click handler ---------------------------------------- */
+  document.addEventListener("click", function (event) {
+    // 0a) collapsible sidebar category; the adjacent category name remains a link.
+    var sbToggle = event.target.closest("[data-sb-toggle]");
+    if (sbToggle) {
+      var groupId = sbToggle.getAttribute("data-sb-toggle");
+      var sidebarGroup = document.getElementById(groupId);
+      var categoryRow = sbToggle.closest(".swg-sb-cat");
+      var willOpen = sidebarGroup && sidebarGroup.classList.contains("is-collapsed");
+      if (sidebarGroup) sidebarGroup.classList.toggle("is-collapsed", !willOpen);
+      if (categoryRow) {
+        categoryRow.classList.toggle("is-open", willOpen);
+        categoryRow.classList.toggle("is-collapsed", !willOpen);
+      }
+      sbToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      sbToggle.setAttribute(
+        "aria-label",
+        (willOpen ? "Collapse " : "Expand ") + sbToggle.getAttribute("aria-label").replace(/^(Collapse|Expand) /, "")
+      );
+      return;
+    }
+
+    // 0b) custom dropdown open/close
+    var ddToggle = event.target.closest("[data-dd-toggle]");
+    if (ddToggle) {
+      var dd = ddToggle.closest("[data-dd]");
+      var wasOpen = dd.classList.contains("is-open");
+      closeAllDropdowns();
+      if (!wasOpen) {
+        dd.classList.add("is-open");
+        var menu = dd.querySelector("[data-dd-menu]");
+        if (menu) menu.hidden = false;
+      }
+      return;
+    }
+
+    // 0c) dropdown option chosen
+    var ddOpt = event.target.closest("[data-dd-opt]");
+    if (ddOpt) {
+      var ddo = ddOpt.closest("[data-dd]");
+      ddo.querySelectorAll("[data-dd-opt]").forEach(function (o) {
+        o.classList.toggle("is-active", o === ddOpt);
+      });
+      var label = ddo.querySelector("[data-dd-label]");
+      if (label) label.textContent = ddOpt.textContent;
+      var ddDesc = ddo.parentElement && ddo.parentElement.querySelector("[data-dd-desc]");
+      if (ddDesc && ddOpt.getAttribute("data-desc")) ddDesc.textContent = ddOpt.getAttribute("data-desc");
+      if (ddo.getAttribute("data-dd-dl")) {
+        var pickDesc = ddo.parentElement && ddo.parentElement.querySelector("[data-pick-desc]");
+        if (pickDesc && ddOpt.getAttribute("data-desc")) pickDesc.textContent = ddOpt.getAttribute("data-desc");
+      }
+      if (ddo.getAttribute("data-dd-dl")) {
+        var pickDesc = ddo.parentElement && ddo.parentElement.querySelector("[data-pick-desc]");
+        if (pickDesc && ddOpt.getAttribute("data-desc")) pickDesc.textContent = ddOpt.getAttribute("data-desc");
+      }
+      var frameId = ddo.getAttribute("data-dd-frame");
+      if (frameId) {
+        var frame = document.getElementById(frameId);
+        var src = ddOpt.getAttribute("data-video");
+        if (frame && src) {
+          frame.src = src;
+        }
+      }
+      closeAllDropdowns();
+      return;
+    }
+
+    // 0d) click anywhere else closes any open dropdown
+    if (!event.target.closest("[data-dd]")) closeAllDropdowns();
+
+    // 1) chip selection
+    var chip = event.target.closest("[data-chip]");
+    if (chip) {
+      var group = chip.closest("[data-pick]");
+      if (group) {
+        group.querySelectorAll("[data-chip]").forEach(function (c) {
+          c.classList.toggle("is-active", c === chip);
+        });
+        // reflect choice in a sibling description, if present
+        var desc =
+          (group.closest(".swg-run") && group.closest(".swg-run").querySelector("[data-pick-desc]")) ||
+          (group.parentElement && group.parentElement.querySelector("[data-pick-desc]"));
+        if (desc && chip.getAttribute("data-desc")) desc.textContent = chip.getAttribute("data-desc");
+      }
+      if (smugglingConsoleFor(chip)) resetSmugglingConsole(chip);
+      return;
+    }
+
+    // 2) plain static download link — verify fetch before opening
+    var plain = event.target.closest("[data-reveal]");
+    if (plain) {
+      event.preventDefault();
+      var revealUrl = plain.getAttribute("href");
+      var revealName = (revealUrl || "").split("/").pop();
+      startConsole(plain, "swg-audit fetch");
+      openProtectedUrl(
+        revealUrl,
+        plain,
+        "download request was allowed.",
+        "download request was blocked or could not complete."
+      );
+      return;
+    }
+
+    var single = event.target.closest("[data-single-download]");
+    if (single) {
+      event.preventDefault();
+      clickDownloadLink(
+        single.getAttribute("data-url"),
+        single.getAttribute("data-name"),
+        single,
+        "swg-audit fetch --file=" + (single.getAttribute("data-name") || "sample")
+      );
+      return;
+    }
+
+    var serverFile = event.target.closest("[data-open-server-file]");
+    if (serverFile) {
+      event.preventDefault();
+      var serverUrl = serverFile.getAttribute("data-file-url");
+      if (safeUploadUrl(serverUrl)) {
+        terminalLine(serverFile, "opening " + serverUrl);
+        openNewTab(serverUrl);
+      }
+      return;
+    }
+
+    var open = event.target.closest("[data-open]");
+    if (open) {
+      event.preventDefault();
+      var openChip = activeChip(open.getAttribute("data-open"));
+      if (openChip) {
+        startConsole(open, "swg-audit open-url");
+        openProtectedUrl(
+          openChip.getAttribute("data-url"),
+          open,
+          "selected URL opened in a new tab.",
+          "selected URL was blocked or could not load."
+        );
+      }
+      return;
+    }
+
+    var cache = event.target.closest("[data-cache-launch]");
+    if (cache) {
+      event.preventDefault();
+      startConsole(cache, "swg-audit cache-mutation");
+      openNewTab("/phishing/cache-test.php?test=" + testId());
+      terminalFail(cache, "content-change test page opened in a new tab.");
+      return;
+    }
+
+    var stored = event.target.closest("[data-stored-launch]");
+    if (stored) {
+      event.preventDefault();
+      var storedChip = activeChip(stored.getAttribute("data-stored-launch"));
+      var format = storedChip ? storedChip.getAttribute("data-format") : "raw-html";
+      startConsole(stored, "swg-audit stored-page --format=" + format);
+      terminalLine(stored, format === "mhtml" ? "building and parsing MHTML locally ..." : "building raw HTML locally ...");
+      fetch("/phishing/rnicrosoft-Iogin/index.html", { cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Unable to load phishing page HTML.");
+          return response.text();
+        })
+        .then(function (rawHtml) {
+          var renderedHtml = format === "mhtml"
+            ? extractHtmlFromMhtml(buildClientMhtml(rawHtml))
+            : rawHtml;
+          var opened = openClientHtml(renderedHtml);
+          if (opened) {
+            terminalFail(stored, "stored phishing page opened in a new tab.");
+            revealBanner(stored);
+          }
+          else {
+            terminalPass(stored, "stored phishing page was blocked by the browser.");
+            hideBanner(stored);
+          }
+        })
+        .catch(function (err) {
+          if (isBlockedFetchError(err)) {
+            terminalPass(stored, "stored phishing page could not be loaded.");
+            hideBanner(stored);
+            return;
+          }
+          reportIncompleteSubmission(stored, null, "stored phishing page could not be built.");
+        });
+      return;
+    }
+
+    var canvas = event.target.closest("[data-canvas-launch]");
+    if (canvas) {
+      event.preventDefault();
+      startConsole(canvas, "swg-audit canvas-page");
+      var openedCanvas = openClientHtml(buildCanvasHtml());
+      if (openedCanvas) {
+        terminalFail(canvas, "canvas-rendered phishing page opened in a new tab.");
+        revealBanner(canvas);
+      }
+      else {
+        terminalPass(canvas, "canvas-rendered phishing page was blocked by the browser.");
+        hideBanner(canvas);
+      }
+      return;
+    }
+
+    // 3) JS download button driven by a chip group
+    var dl = event.target.closest("[data-dl]");
+    if (!dl) return;
+    event.preventDefault();
+
+    var groupId = dl.getAttribute("data-dl");
+    var sel = activePick(groupId);
+    if (!sel) return;
+
+    var kind = sel.getAttribute("data-kind") || "direct";
+    var url = sel.getAttribute("data-url");
+    var name = sel.getAttribute("data-name");
+    var mime = sel.getAttribute("data-mime");
+
+    startConsole(dl, "swg-audit run --test=" + groupId);
+    if (kind === "smuggle") {
+      terminalLine(dl, "embedding payload in " + (sel.getAttribute("data-carrier") || "html") + " carrier ...");
+      terminalLine(dl, "browser will attempt last-mile reassembly ...");
+    }
+
+    // cross-origin channels can't be fetched (CORS) — navigate a real anchor so
+    // the request still traverses the SWG, matching the live delivery test.
+    if (kind === "link") {
+      runLinkDownload(url, name, dl, "swg-audit fetch --channel=external");
+      return;
+    }
+
+    if (kind === "direct") {
+      runDownloadTest(url, name, mime, dl, "swg-audit fetch --file=" + (name || "sample"));
+      return;
+    }
+
+    dl.setAttribute("aria-busy", "true");
+    var work;
+    if (kind === "assemble") {
+      terminalLine(dl, "fetching encoded or encrypted payload ...");
+      work = buildAssembled(url);
+    }
+    else if (kind === "wasm") {
+      terminalLine(dl, "fetching and instantiating WebAssembly module ...");
+      terminalLine(dl, "assembling EICAR test string from WebAssembly memory ...");
+      work = buildWasm(url, name, mime);
+    }
+    else if (kind === "chunk") {
+      terminalLine(dl, "fetching file chunks ...");
+      work = buildChunk(url);
+    }
+    else if (kind === "smuggle") work = buildSmuggled(sel.getAttribute("data-carrier") || "html", name);
+    else work = buildDirect(url, name, mime);
+
+    work
+      .then(function (out) {
+        terminalLine(dl, "file was successfully assembled in the browser.");
+        try {
+          downloadBytes(out.bytes, name || out.filename, mime || out.mime);
+          terminalFail(dl, "file was successfully assembled in the browser and downloaded.");
+          revealBanner(dl);
+        } catch (error) {
+          terminalFail(dl, "file was successfully assembled in the browser but not downloaded.");
+          revealBanner(dl);
+        }
+      })
+      .catch(function (err) {
+        if (isBlockedFetchError(err)) {
+          terminalPass(dl, "the file was not assembled in the browser.");
+          hideBanner(dl);
+          return;
+        }
+        terminalLine(dl, "assembly result could not be verified automatically.");
+        hideBanner(dl);
+      })
+      .finally(function () {
+        dl.removeAttribute("aria-busy");
+      });
+  });
+
+  document.addEventListener("submit", function (event) {
+    var credential = event.target.closest("[data-credential-form]");
+    if (credential) {
+      event.preventDefault();
+      bindRunPage(credential);
+      var credPagePath = location.pathname;
+      var credOut = cardOutput(credential);
+      startConsole(credential, "swg-audit credential-submit");
+      terminalLine(credential, "submitting credentials ...");
+      setOutput(credOut, "Submitting credentials...");
+      fetch(credential.action || "/phishing/credential-submit.php", {
+        method: "post",
+        body: new FormData(credential),
+        headers: { Accept: "application/json, text/plain, */*" },
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Submission returned HTTP " + response.status);
+          return readJson(response);
+      })
+        .then(function (result) {
+          terminalFail(credential, "credentials reached the submission endpoint.");
+          setPersistentOutput(credOut, "Test failed.", "is-fail", credPagePath);
+        })
+        .catch(function (err) {
+          if (isBlockedHttpError(err)) {
+            reportBlockedSubmission(
+              credential,
+              credOut,
+              credPagePath,
+              "credential submission was blocked or interrupted."
+            );
+            return;
+          }
+          reportIncompleteSubmission(credential, credOut, "credential submission could not complete.");
+        });
+      return;
+    }
+
+    var normalFile = event.target.closest("[data-file-submission-form]");
+    if (normalFile) {
+      event.preventDefault();
+      bindRunPage(normalFile);
+      var uploadPagePath = location.pathname;
+      var fileOut = cardOutput(normalFile);
+      var fileInput = normalFile.querySelector('input[type="file"]');
+      if (!fileInput || !fileInput.files[0]) {
+        setOutput(fileOut, "Choose a file before running the test.");
+        return;
+      }
+      startConsole(normalFile, "swg-audit file-upload --file=" + fileInput.files[0].name);
+      terminalLine(normalFile, "uploading selected file to server ...");
+      setOutput(fileOut, "Uploading selected file...");
+      fetch(normalFile.action || "/data-theft/upload.php", {
+        method: "post",
+        body: new FormData(normalFile),
+        headers: { Accept: "application/json, text/plain, */*" },
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Upload returned HTTP " + response.status);
+          return readJson(response);
+      })
+        .then(function (result) {
+          terminalFail(normalFile, "server received and stored the uploaded file.");
+          revealServerFile(normalFile, result.fileUrl);
+          setPersistentOutput(fileOut, "Test failed.", "is-fail", uploadPagePath);
+        })
+        .catch(function (err) {
+          if (isBlockedHttpError(err)) {
+            reportBlockedSubmission(
+              normalFile,
+              fileOut,
+              uploadPagePath,
+              "file upload was blocked or interrupted."
+            );
+            return;
+          }
+          reportIncompleteSubmission(normalFile, fileOut, "file upload could not complete.");
+        });
+      return;
+    }
+
+    var encoding = event.target.closest("[data-data-theft-encoding-form]");
+    if (encoding) {
+      event.preventDefault();
+      runDataTheftForm(encoding, buildEncodingForm, "Encoding selected file...");
+      return;
+    }
+
+    var encryption = event.target.closest("[data-data-theft-encryption-form]");
+    if (encryption) {
+      event.preventDefault();
+      runDataTheftForm(encryption, buildEncryptionForm, "Encrypting selected file...");
+      return;
+    }
+
+    var chunking = event.target.closest("[data-data-theft-chunking-form]");
+    if (chunking) {
+      event.preventDefault();
+      runDataTheftForm(chunking, buildChunkingForm, "Chunking selected file...");
+      return;
+    }
+
+    var dns = event.target.closest("[data-dns-tunnel-form]");
+    if (dns) {
+      event.preventDefault();
+      runDnsTunnel(dns);
+      return;
+    }
+
+    var pathForm = event.target.closest("[data-path-tunnel-form]");
+    if (pathForm) {
+      event.preventDefault();
+      runPathTunnel(pathForm);
+    }
+  }, true);
+
+  document.addEventListener("click", function (event) {
+    var dnsReset = event.target.closest("[data-dns-tunnel-reset]");
+    if (dnsReset) {
+      var dnsForm = dnsReset.closest("[data-dns-tunnel-form]");
+      var dnsOut = dnsForm && cardOutput(dnsForm, "[data-dns-tunnel-status]");
+      if (dnsForm) dnsForm.reset();
+      if (dnsOut) {
+        clearPersistentOutput(dnsOut);
+        dnsOut.hidden = true;
+        dnsOut.textContent = "";
+        dnsOut.classList.remove("is-pass", "is-fail");
+      }
+      clearServerFileButton(dnsForm && dnsForm.querySelector("[data-open-server-file]"));
+      dnsReset.hidden = true;
+      return;
+    }
+
+    var pathReset = event.target.closest("[data-path-tunnel-reset]");
+    if (pathReset) {
+      var pathForm = pathReset.closest("[data-path-tunnel-form]");
+      var pathOut = pathForm && cardOutput(pathForm, "[data-path-tunnel-status]");
+      if (pathForm) pathForm.reset();
+      if (pathOut) {
+        clearPersistentOutput(pathOut);
+        pathOut.hidden = true;
+        pathOut.textContent = "";
+        pathOut.classList.remove("is-pass", "is-fail");
+      }
+      clearServerFileButton(pathForm && pathForm.querySelector("[data-open-server-file]"));
+      pathReset.hidden = true;
+    }
+  });
+
+  function initConsoles() {
+    initSmugglingConsoles();
+    initTestConsoles();
+    restorePersistentResults();
+  }
+
+  initConsoles();
+  setTimeout(initConsoles, 100);
+  setTimeout(initConsoles, 600);
+  if (window.MutationObserver) {
+    var initQueued = false;
+    new MutationObserver(function () {
+      if (initQueued) return;
+      initQueued = true;
+      setTimeout(function () {
+        initQueued = false;
+        initConsoles();
+      }, 50);
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();
