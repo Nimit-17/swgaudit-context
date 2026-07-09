@@ -259,7 +259,7 @@ div[class*="max-w-8xl"] {
   min-height: 100vh;
 }
 .swg-app--home .swg-home-main {
-  justify-content: flex-start;
+  justify-content: center;
 }
 .swg-app--home .swg-hero {
   padding-block: clamp(28px, 5vh, 56px) clamp(14px, 2vh, 28px);
@@ -1373,10 +1373,15 @@ a.swg-brand { cursor: pointer; }
 .swg-app--home .swg-main .swg-hero-copy {
   width: 100%;
   max-width: 1160px;
+  text-align: center;
+}
+.swg-app--home .swg-main .swg-hero-sub {
+  margin-inline: auto;
 }
 .swg-app--home .swg-main .swg-card-grid {
   grid-template-columns: repeat(2, 1fr);
   max-width: 720px;
+  margin-inline: auto;
 }
 .swg-about-page .swg-main .swg-about-main {
   padding-inline: 0;
