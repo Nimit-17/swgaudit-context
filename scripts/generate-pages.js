@@ -441,14 +441,14 @@ function passFailHtml(p) {
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
-                    <div className="swg-pf-label">Pass</div>
+                    <div className="swg-pf-label">Test pass condition</div>
                     <p className="swg-pf-text">${p.pass}</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
-                    <div className="swg-pf-label">Fail</div>
+                    <div className="swg-pf-label">Test fail condition</div>
                     <p className="swg-pf-text">${p.fail}</p>
                   </div>
                 </div>

@@ -443,7 +443,9 @@
   }
 
   function openNewTab(url) {
-    window.open(url, "_blank", "noopener");
+    var opened = window.open(url, "_blank");
+    if (opened) { try { opened.opener = null; } catch (e) {} }
+    return opened;
   }
 
   function testId() {
@@ -460,7 +462,9 @@
 
   function openClientHtml(html) {
     var blob = new Blob([html], { type: "text/html" });
-    return window.open(URL.createObjectURL(blob), "_blank", "noopener");
+    var opened = window.open(URL.createObjectURL(blob), "_blank");
+    if (opened) { try { opened.opener = null; } catch (e) {} }
+    return opened;
   }
 
   function buildClientMhtml(html) {
@@ -1253,12 +1257,14 @@
       var openChip = activeChip(open.getAttribute("data-open"));
       if (openChip) {
         startConsole(open, "swg-audit open-url");
-        openProtectedUrl(
-          openChip.getAttribute("data-url"),
-          open,
-          "selected URL opened in a new tab.",
-          "selected URL was blocked or could not load."
-        );
+        var openedTab = openNewTab(openChip.getAttribute("data-url"));
+        if (openedTab) {
+          terminalFail(open, "selected URL opened in a new tab.");
+          revealBanner(open);
+        } else {
+          terminalPass(open, "selected URL was blocked before it could open.");
+          hideBanner(open);
+        }
       }
       return;
     }
