@@ -1375,7 +1375,8 @@ a.swg-brand { cursor: pointer; }
   max-width: 1160px;
 }
 .swg-app--home .swg-main .swg-card-grid {
-  grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 15vw, 230px), 1fr));
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 720px;
 }
 .swg-about-page .swg-main .swg-about-main {
   padding-inline: 0;
