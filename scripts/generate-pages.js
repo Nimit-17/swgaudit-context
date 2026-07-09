@@ -181,7 +181,7 @@ const pages = [
             <button className="swg-chip is-active" type="button" data-chip data-mode="aes-gcm">AES-GCM</button>
             <button className="swg-chip" type="button" data-chip data-mode="aes-gcm-password">AES-GCM with password</button>
           </div>
-          <p className="swg-run-hint">Password for password mode: 123456. Reconstructed files are deleted from the server after 10 minutes.</p>
+          <p className="swg-run-hint">Password: 123456. Reconstructed files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row"><button className="swg-dl" type="submit">Submit</button></div>
           <div className="swg-output" data-test-output hidden />
         </form>`, "Encrypting a file before upload hides its content from inspection entirely, since only someone with the key can read it. Attackers use this to move data past scanners that rely on reading file contents.", "Choose a file and an encryption method, then submit. The file is encrypted in the browser with AES-GCM and sent along with the metadata needed to decrypt it on the server.", "The upload is blocked, or the server can't decrypt and reconstruct the file.", "The server successfully decrypts and reconstructs the original file."),
@@ -342,6 +342,7 @@ const compactRunSlugs = new Set([
   "phishing/cached-content-mutation",
   "malware/password-protected-file",
   "malware/file-spoofing",
+  "malware/browser-open-docm",
 ]);
 
 const noTerminalSlugs = new Set([
@@ -457,6 +458,11 @@ function serverFileBtn() {
   return `              <div className="swg-dl-row"><button className="swg-dl swg-dl-alt" type="button" data-open-server-file hidden>Open reconstructed file</button></div>`;
 }
 
+function stripRunPick(html) {
+  // Drop every "Choose ..." label above the pickers/dropdowns across all tests.
+  return html.replace(/\s*<div className="swg-run-pick">[\s\S]*?<\/div>/g, "");
+}
+
 function splitRunAction(run) {
   const trimmed = run.trim();
   const match = trimmed.match(
@@ -477,8 +483,8 @@ function banner() {
 }
 
 function smuggleRunArea(p, run, extra) {
-  const controls = addPickDescriptions(p.slug, run)
-    .replace("Choose a smuggling carrier:", "Carrier format")
+  // Smuggling: no "Carrier format" label and no per-option descriptions.
+  const controls = stripRunPick(run)
     .replace(/<div className="swg-dl-row">[\s\S]*?<\/div>\s*$/, "")
     .trim();
 
@@ -503,7 +509,7 @@ function runAreaHtml(p, run, extra) {
     return smuggleRunArea(p, run, extra);
   }
 
-  const preparedRun = descriptionlessRunSlugs.has(p.slug) ? run : addPickDescriptions(p.slug, run);
+  const preparedRun = stripRunPick(descriptionlessRunSlugs.has(p.slug) ? run : addPickDescriptions(p.slug, run));
   const { lead, action, tail } = splitRunAction(preparedRun);
   const serverBtn = p.category === "Data Theft" ? serverFileBtn() : "";
   const blocks = [lead, passFailHtml(p), action, tail, serverBtn, banner()].filter(Boolean);
