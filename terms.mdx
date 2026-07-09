@@ -1,10 +1,10 @@
 ---
-title: "File encrypting"
-description: "Encrypted exfiltration detection"
+title: "Terms of Use"
+description: "SWG Audit Terms of Use."
 mode: "custom"
 ---
 
-<div className="swg-app swg-audit-ui">
+<div className="swg-app swg-audit-ui swg-article-page">
   <div className="swg-nav" role="navigation" aria-label="Primary">
     <a className="swg-brand" href="/">
       <div className="swg-brand-mark" />
@@ -61,16 +61,16 @@ mode: "custom"
         <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling through frontend files</a>
       </div>
       <div className="swg-sb-sep" />
-      <div className="swg-sb-cat is-open">
+      <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/data-theft/">Data Theft</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-data-theft" aria-label="Collapse Data Theft tests" aria-expanded="true">
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-data-theft" aria-label="Expand Data Theft tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
-      <div className="swg-sb-group" id="sbg-data-theft">
+      <div className="swg-sb-group is-collapsed" id="sbg-data-theft">
         <a className="swg-si" href="/data-theft/personal-data-submission-in-normal-file">File submission</a>
         <a className="swg-si" href="/data-theft/file-encoding">File encoding</a>
-        <a className="swg-si is-active" href="/data-theft/file-encrypting" aria-current="page">File encrypting</a>
+        <a className="swg-si" href="/data-theft/file-encrypting">File encrypting</a>
         <a className="swg-si" href="/data-theft/file-chunking">File chunking</a>
         <a className="swg-si" href="/data-theft/dns-tunneling">DNS tunneling</a>
         <a className="swg-si" href="/data-theft/http-path-tunneling">HTTP path tunneling</a>
@@ -89,63 +89,39 @@ mode: "custom"
       <a className="swg-sb-link" href="/about">About us</a>
       <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
-    <div className="swg-main swg-main-col" role="main">
-      <div className="swg-content">
-        <div className="swg-bc" role="navigation" aria-label="Breadcrumb">
-          <a className="swg-bc-home" href="/">Home</a>
-          <span className="swg-bc-sep">/</span>
-          <a className="swg-bc-category" href="/data-theft/">Data Theft</a>
-          <span className="swg-bc-sep">/</span>
-          <span className="swg-bc-cur swg-bc-current">File encrypting</span>
-        </div>
-        <h1>File encrypting</h1>
-        <div className="swg-divider" />
-        <div className="swg-info">
-          <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encrypting a file before upload hides its content from inspection entirely, since only someone with the key can read it. Attackers use this to move data past scanners that rely on reading file contents.</p>
-          </section>
-          <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a file and an encryption method, then submit. The file is encrypted in the browser with AES-GCM and sent along with the metadata needed to decrypt it on the server.</p>
-          </section>
-        </div>
-        <div className="swg-run">
-          <div className="swg-run-label">Try it yourself</div>
-          <div className="swg-run-body">
-            <div className="swg-run-controls">
-<form className="swg-form" data-data-theft-encryption-form>
-          <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
-          <div className="swg-pick" data-pick="file-encrypting">
-            <button className="swg-chip is-active" type="button" data-chip data-mode="aes-gcm">AES-GCM</button>
-            <button className="swg-chip" type="button" data-chip data-mode="aes-gcm-password">AES-GCM with password</button>
-          </div>
-          <p className="swg-run-hint">Password: 123456. Reconstructed files are deleted from the server after 10 minutes.</p>
-              <div className="swg-pf">
-                <div className="swg-pf-card swg-pf-pass">
-                  <span className="swg-pf-glyph">&#10003;</span>
-                  <div>
-                    <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The upload is blocked, or the server can't decrypt and reconstruct the file.</p>
-                  </div>
-                </div>
-                <div className="swg-pf-card swg-pf-fail">
-                  <span className="swg-pf-glyph">&#10007;</span>
-                  <div>
-                    <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The server successfully decrypts and reconstructs the original file.</p>
-                  </div>
-                </div>
-              </div>
-<div className="swg-dl-row"><button className="swg-dl" type="submit">Submit</button></div>
-<div className="swg-output" data-test-output hidden />
-        </form>
-              <div className="swg-dl-row"><button className="swg-dl swg-dl-alt" type="button" data-open-server-file hidden>Open reconstructed file</button></div>
-            </div>
-            <div className="swg-console" data-test-console></div>
-          </div>
-        </div>
-        <script src="/swg.js" defer></script>
+    <div className="swg-main swg-article-body" role="main">
+      <div className="swg-article swg-container">
+        <h1 className="swg-article-title">Terms of Use</h1>
+        <p><strong>Effective Date:</strong> July 8, 2025</p>
+        <p>Welcome to SWG Audit. By accessing or using our website and services (the "Service"), you agree to be bound by these Terms of Use. Please read them carefully.</p>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By using the Service, you agree to comply with and be legally bound by these Terms. If you do not agree to these Terms, please do not use the Service.</p>
+        <h2>2. Use of the Service</h2>
+        <ul>
+          <li>You may use the Service only for lawful purposes and in accordance with these Terms.</li>
+          <li>You agree not to misuse the Service or interfere with its normal operation.</li>
+          <li>You are responsible for maintaining the confidentiality of any account credentials and for all activities that occur under your account.</li>
+        </ul>
+        <h2>3. Intellectual Property</h2>
+        <p>All content, trademarks, and data on this site, including but not limited to software, databases, text, graphics, icons, and hyperlinks are the property of SWG Audit or its licensors and are protected by applicable intellectual property laws.</p>
+        <h2>4. User Content</h2>
+        <ul>
+          <li>You retain ownership of any content you submit, upload, or display on the Service.</li>
+          <li>By submitting content, you grant SWG Audit a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content as necessary to operate the Service.</li>
+          <li>You are responsible for ensuring that your content does not violate any laws or infringe the rights of others.</li>
+        </ul>
+        <h2>5. Disclaimers</h2>
+        <p>The Service is provided on an "as is" and "as available" basis. SWG Audit makes no warranties, express or implied, regarding the Service, including but not limited to its accuracy, reliability, or availability.</p>
+        <h2>6. Limitation of Liability</h2>
+        <p>To the fullest extent permitted by law, SWG Audit shall not be liable for any damages arising out of or in connection with your use of the Service.</p>
+        <h2>7. Changes to Terms</h2>
+        <p>We may update these Terms of Use from time to time. Changes will be posted on this page with an updated effective date. Your continued use of the Service after changes are posted constitutes your acceptance of the new Terms.</p>
+        <h2>8. Governing Law</h2>
+        <p>These Terms are governed by and construed in accordance with the laws of the jurisdiction in which SWG Audit operates, without regard to its conflict of law principles.</p>
+        <h2>9. Contact Us</h2>
+        <p>If you have any questions about these Terms of Use, please contact us at: Master+contact@swgaudit.com</p>
+        <hr />
+        <p>© 2025 SWG Audit Contributors. All rights reserved.</p>
       </div>
       <div className="swg-foot">
         All tests are non-malicious and safe for production environments. No real threats are delivered. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.

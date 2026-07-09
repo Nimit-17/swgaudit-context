@@ -24,6 +24,7 @@
       "index",
       "getting-started",
       "about",
+      "contribute",
       "phishing",
       "phishing/url-manipulation",
       "phishing/site-stored-as-mhtml-or-raw-html",
@@ -53,7 +54,9 @@
       "data-theft/dns-tunneling",
       "data-theft/http-path-tunneling",
       "cyberslacking",
-      "cyberslacking/video-content-category-simulation"
+      "cyberslacking/video-content-category-simulation",
+      "terms",
+      "privacy"
     ]
   }
 }

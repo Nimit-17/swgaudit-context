@@ -385,15 +385,23 @@ const nav = {
   Cyberslacking: "/cyberslacking/",
 };
 
+function footerHtml() {
+  return `      <div className="swg-foot">
+        All tests are non-malicious and safe for production environments. No real threats are delivered. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+      </div>`;
+}
+
 function navHtml(active) {
   const aboutActive = active === "about" ? " is-active" : "";
+  const contributeActive = active === "contribute" ? " is-active" : "";
   return `<div className="swg-nav" role="navigation" aria-label="Primary">
     <a className="swg-brand" href="/">
       <div className="swg-brand-mark" />
       SWG Audit
     </a>
     <div className="swg-nav-actions">
-      <a className="swg-nl swg-about-link${aboutActive}" href="/about">About</a>
+      <a className="swg-nl swg-about-link${aboutActive}" href="/about">About us</a>
+      <a className="swg-nl swg-contribute-link${contributeActive}" href="/contribute">Contribute</a>
       <a className="swg-gh" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">
         <img src="/images/github-mark.svg" alt="" />
         <span className="swg-sr-only">GitHub</span>
@@ -404,7 +412,12 @@ function navHtml(active) {
 
 function sidebarHtml(currentSlug) {
   const groups = ["Phishing", "Malware", "Data Theft", "Cyberslacking"];
+  const gsActive = currentSlug === "getting-started" ? " is-active" : "";
+  const aboutActive = currentSlug === "about" ? " is-active" : "";
+  const contributeActive = currentSlug === "contribute" ? " is-active" : "";
   return `<div className="swg-sb" role="complementary" aria-label="Tests">
+      <a className="swg-sb-link${gsActive}" href="/getting-started">Getting started</a>
+      <div className="swg-sb-sep" />
       ${groups.map((group, index) => {
         const id = `sbg-${group.toLowerCase().replace(/\s+/g, "-")}`;
         const items = pages.filter((p) => p.category === group);
@@ -420,6 +433,9 @@ function sidebarHtml(currentSlug) {
         ${items.map((p) => `<a className="swg-si${p.slug === currentSlug ? " is-active" : ""}" href="/${p.slug}"${p.slug === currentSlug ? ' aria-current="page"' : ""}>${p.title}</a>`).join("\n        ")}
       </div>`;
       }).join("\n      ")}
+      <div className="swg-sb-sep" />
+      <a className="swg-sb-link${aboutActive}" href="/about">About us</a>
+      <a className="swg-sb-link${contributeActive}" href="/contribute">Contribute</a>
     </div>`;
 }
 
@@ -555,7 +571,7 @@ mode: "custom"
   ${navHtml(p.category)}
   <div className="swg-shell">
     ${sidebarHtml(p.slug)}
-    <div className="swg-main" role="main">
+    <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
         ${breadcrumbHtml(p)}
         <h1>${titleHtml(p)}</h1>
@@ -573,6 +589,7 @@ mode: "custom"
 ${runAreaHtml(p, p.run, extra)}
         <script src="/swg.js" defer></script>
       </div>
+${footerHtml()}
     </div>
   </div>
 </div>
@@ -611,7 +628,7 @@ mode: "custom"
   ${navHtml("")}
   <div className="swg-shell">
     ${sidebarHtml(slug)}
-    <div className="swg-main" role="main">
+    <div className="swg-main swg-main-col" role="main">
       <div className="swg-content swg-category-content">
         <div className="swg-bc" role="navigation" aria-label="Breadcrumb">
           <a className="swg-bc-home" href="/">Home</a>
@@ -625,6 +642,7 @@ mode: "custom"
           <p>${copy[1]}</p>
         </div>
       </div>
+${footerHtml()}
     </div>
   </div>
 </div>
@@ -641,7 +659,7 @@ mode: "custom"
 <div className="swg-app swg-audit-ui swg-about-page">
   ${navHtml("about")}
   <div className="swg-shell">
-    ${sidebarHtml("")}
+    ${sidebarHtml("about")}
     <div className="swg-main swg-about-body" role="main">
       <div className="swg-about-main">
         <div className="swg-container swg-about-wrap">
@@ -680,9 +698,7 @@ mode: "custom"
           </div>
         </div>
       </div>
-      <div className="swg-foot">
-        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
-      </div>
+${footerHtml()}
     </div>
   </div>
 </div>
@@ -699,7 +715,7 @@ mode: "custom"
 <div className="swg-app swg-audit-ui swg-getstarted-page">
   ${navHtml("")}
   <div className="swg-shell">
-    ${sidebarHtml("")}
+    ${sidebarHtml("getting-started")}
     <div className="swg-main swg-gs-body" role="main">
       <div className="swg-gs-wrap swg-container">
         <div className="swg-gs-eyebrow">SWG Audit</div>
@@ -707,21 +723,145 @@ mode: "custom"
         <div className="swg-gs-copy">
           <p>SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
         </div>
-        <div className="swg-cta-row swg-gs-cta">
-          <a className="swg-cta" href="/phishing/">
-            <span className="swg-cta-glow" aria-hidden="true" />
-            <span className="swg-cta-text">Browse the tests</span>
-            <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
-          </a>
-        </div>
       </div>
-      <div className="swg-foot">
-        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
-      </div>
+${footerHtml()}
     </div>
   </div>
 </div>
 `;
+}
+
+function articlePageHtml(title, description, activeNav, bodyHtml) {
+  return `---
+title: "${title}"
+description: "${description}"
+mode: "custom"
+---
+
+<div className="swg-app swg-audit-ui swg-article-page">
+  ${navHtml(activeNav)}
+  <div className="swg-shell">
+    ${sidebarHtml(activeNav)}
+    <div className="swg-main swg-article-body" role="main">
+      <div className="swg-article swg-container">
+        <h1 className="swg-article-title">${title}</h1>
+${bodyHtml}
+      </div>
+${footerHtml()}
+    </div>
+  </div>
+</div>
+`;
+}
+
+function contributeHtml() {
+  const body = `        <p>Thank you for considering contributing to SWG Audit! We welcome contributions from the community to help improve this project. Please take a moment to review this document to make the contribution process easy and effective for everyone involved.</p>
+        <h2>How Can You Contribute?</h2>
+        <h3>Reporting Issues</h3>
+        <p>If you encounter any bugs, issues, or have suggestions for improvements, please open an issue in the repository. Provide as much detail as possible, including steps to reproduce the issue and any relevant screenshots or logs.</p>
+        <h3>Submitting Code Changes</h3>
+        <ol>
+          <li><strong>Fork the Repository</strong>: Create a personal fork of the repository on GitHub.</li>
+          <li><strong>Create a Branch</strong>: Create a new branch for your changes. Use a descriptive name, such as <code>fix-bug-123</code> or <code>add-new-feature</code>.</li>
+          <li><strong>Make Changes</strong>: Implement your changes in the appropriate files. Ensure your code follows the project's coding standards.</li>
+          <li><strong>Test Your Changes</strong>: Verify that your changes work as expected and do not break existing functionality.</li>
+          <li><strong>Submit a Pull Request</strong>: Push your changes to your fork and submit a pull request to the main repository. Provide a clear and concise description of your changes.</li>
+        </ol>
+        <h3>Writing Documentation</h3>
+        <p>If you notice missing or outdated documentation, feel free to update it. This includes updating <code>README.md</code> files, adding comments to code, or creating new documentation files.</p>
+        <h3>Suggesting Features</h3>
+        <p>If you have an idea for a new feature, open an issue to discuss it with the maintainers. Provide as much detail as possible about the feature and its potential benefits.</p>
+        <h2>Code of Conduct</h2>
+        <p>Please adhere to our <a href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">Code of Conduct</a> to ensure a welcoming and inclusive environment for everyone.</p>
+        <h2>Getting Help</h2>
+        <p>If you have any questions or need assistance, feel free to reach out by opening an issue or contacting the maintainers directly.</p>
+        <p>We appreciate your contributions and look forward to working together to improve SWG Audit!</p>`;
+  return articlePageHtml("Contributing to SWG Audit", "How to contribute to SWG Audit.", "contribute", body);
+}
+
+function termsHtml() {
+  const body = `        <p><strong>Effective Date:</strong> July 8, 2025</p>
+        <p>Welcome to SWG Audit. By accessing or using our website and services (the "Service"), you agree to be bound by these Terms of Use. Please read them carefully.</p>
+        <h2>1. Acceptance of Terms</h2>
+        <p>By using the Service, you agree to comply with and be legally bound by these Terms. If you do not agree to these Terms, please do not use the Service.</p>
+        <h2>2. Use of the Service</h2>
+        <ul>
+          <li>You may use the Service only for lawful purposes and in accordance with these Terms.</li>
+          <li>You agree not to misuse the Service or interfere with its normal operation.</li>
+          <li>You are responsible for maintaining the confidentiality of any account credentials and for all activities that occur under your account.</li>
+        </ul>
+        <h2>3. Intellectual Property</h2>
+        <p>All content, trademarks, and data on this site, including but not limited to software, databases, text, graphics, icons, and hyperlinks are the property of SWG Audit or its licensors and are protected by applicable intellectual property laws.</p>
+        <h2>4. User Content</h2>
+        <ul>
+          <li>You retain ownership of any content you submit, upload, or display on the Service.</li>
+          <li>By submitting content, you grant SWG Audit a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content as necessary to operate the Service.</li>
+          <li>You are responsible for ensuring that your content does not violate any laws or infringe the rights of others.</li>
+        </ul>
+        <h2>5. Disclaimers</h2>
+        <p>The Service is provided on an "as is" and "as available" basis. SWG Audit makes no warranties, express or implied, regarding the Service, including but not limited to its accuracy, reliability, or availability.</p>
+        <h2>6. Limitation of Liability</h2>
+        <p>To the fullest extent permitted by law, SWG Audit shall not be liable for any damages arising out of or in connection with your use of the Service.</p>
+        <h2>7. Changes to Terms</h2>
+        <p>We may update these Terms of Use from time to time. Changes will be posted on this page with an updated effective date. Your continued use of the Service after changes are posted constitutes your acceptance of the new Terms.</p>
+        <h2>8. Governing Law</h2>
+        <p>These Terms are governed by and construed in accordance with the laws of the jurisdiction in which SWG Audit operates, without regard to its conflict of law principles.</p>
+        <h2>9. Contact Us</h2>
+        <p>If you have any questions about these Terms of Use, please contact us at: Master+contact@swgaudit.com</p>
+        <hr />
+        <p>© 2025 SWG Audit Contributors. All rights reserved.</p>`;
+  return articlePageHtml("Terms of Use", "SWG Audit Terms of Use.", "terms", body);
+}
+
+function privacyHtml() {
+  const body = `        <p><strong>Effective Date:</strong> July 8, 2025</p>
+        <p>SWG Audit ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services (the "Service").</p>
+        <h2>1. Information We Collect</h2>
+        <h3>a. Information You Provide</h3>
+        <ul>
+          <li><strong>Contact Information:</strong> When you contact us or submit forms, we may collect your name, email address, and any other information you provide.</li>
+          <li><strong>Uploaded Files:</strong> If you use our data exfiltration simulation or upload files, we process and temporarily store those files for the purpose of the simulation.</li>
+        </ul>
+        <h3>b. Automatically Collected Information</h3>
+        <ul>
+          <li><strong>Usage Data:</strong> We may collect information about your device, browser, IP address, and usage patterns through cookies, server logs, and analytics tools.</li>
+          <li><strong>Cookies:</strong> We use cookies and similar technologies to enhance your experience and analyze usage. You can control cookies through your browser settings.</li>
+        </ul>
+        <h2>2. How We Use Your Information</h2>
+        <ul>
+          <li>To provide, operate, and maintain the Service.</li>
+          <li>To improve, personalize, and expand our Service.</li>
+          <li>To communicate with you, including responding to your inquiries.</li>
+          <li>To monitor and analyze usage and trends to improve user experience.</li>
+          <li>To ensure the security and integrity of our Service.</li>
+        </ul>
+        <h2>3. How We Share Your Information</h2>
+        <p>We do <strong>not</strong> sell or rent your personal information. We may share information:</p>
+        <ul>
+          <li>With service providers who assist us in operating the Service (subject to confidentiality agreements).</li>
+          <li>If required by law, regulation, or legal process.</li>
+          <li>To protect the rights, property, or safety of SWG Audit, our users, or others.</li>
+        </ul>
+        <h2>4. Data Retention</h2>
+        <ul>
+          <li>Uploaded files and simulation data are stored only as long as necessary for the simulation and are deleted automatically after a short period (e.g., 10 minutes).</li>
+          <li>Other information is retained only as long as necessary for the purposes described in this policy.</li>
+        </ul>
+        <h2>5. Security</h2>
+        <p>We implement reasonable technical and organizational measures to protect your information. However, no method of transmission or storage is 100% secure.</p>
+        <h2>6. Your Rights</h2>
+        <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal information. To exercise these rights, please contact us at [your contact email].</p>
+        <h2>7. Third-Party Links</h2>
+        <p>Our Service may contain links to third-party websites. We are not responsible for the privacy practices or content of those sites.</p>
+        <h2>8. Children's Privacy</h2>
+        <p>Our Service is not intended for children under 16. We do not knowingly collect personal information from children under 16.</p>
+        <h2>9. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated effective date.</p>
+        <h2>10. Contact Us</h2>
+        <p>If you have any questions about this Privacy Policy, please contact us at: Master+contact@swgaudit.com</p>
+        <hr />
+        <p>© 2025 SWG Audit Contributors. All rights reserved.</p>`;
+  return articlePageHtml("Privacy Policy", "SWG Audit Privacy Policy.", "privacy", body);
 }
 
 function indexHtml() {
@@ -785,6 +925,9 @@ mode: "custom"
 fs.writeFileSync(path.join(root, "index.mdx"), indexHtml());
 fs.writeFileSync(path.join(root, "about.mdx"), aboutHtml());
 fs.writeFileSync(path.join(root, "getting-started.mdx"), gettingStartedHtml());
+fs.writeFileSync(path.join(root, "contribute.mdx"), contributeHtml());
+fs.writeFileSync(path.join(root, "terms.mdx"), termsHtml());
+fs.writeFileSync(path.join(root, "privacy.mdx"), privacyHtml());
 for (const category of Object.keys(nav)) {
   fs.writeFileSync(path.join(root, `${nav[category].replace(/^\/|\/$/g, "")}.mdx`), categoryPageHtml(category));
 }
@@ -807,10 +950,13 @@ fs.writeFileSync(path.join(root, "docs.json"), JSON.stringify({
       "index",
       "getting-started",
       "about",
+      "contribute",
       ...Object.keys(nav).flatMap((category) => [
         nav[category].replace(/^\/|\/$/g, ""),
         ...pages.filter((p) => p.category === category).map((p) => p.slug),
       ]),
+      "terms",
+      "privacy",
     ],
   },
 }, null, 2));
