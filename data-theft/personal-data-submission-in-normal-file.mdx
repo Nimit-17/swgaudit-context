@@ -1,6 +1,6 @@
 ---
-title: "Personal-data submission in normal file"
-description: "Sensitive file upload detection"
+title: "File submission"
+description: "Outbound file upload detection"
 mode: "custom"
 ---
 
@@ -29,10 +29,10 @@ mode: "custom"
       </div>
       <div className="swg-sb-group is-collapsed" id="sbg-phishing">
         <a className="swg-si" href="/phishing/url-manipulation">URL manipulation</a>
-        <a className="swg-si" href="/phishing/site-stored-as-mhtml-or-raw-html">Site stored as MHTML or raw HTML</a>
-        <a className="swg-si" href="/phishing/canvas-engine">Canvas engine</a>
-        <a className="swg-si" href="/phishing/cached-content-mutation">Same URL content change</a>
-        <a className="swg-si" href="/phishing/form-submission-on-random-site">Form submission on random site</a>
+        <a className="swg-si" href="/phishing/site-stored-as-mhtml-or-raw-html">Page assembled on browser</a>
+        <a className="swg-si" href="/phishing/canvas-engine">Canvas page</a>
+        <a className="swg-si" href="/phishing/cached-content-mutation">Content mutation</a>
+        <a className="swg-si" href="/phishing/form-submission-on-random-site">Credential form submission</a>
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
@@ -42,20 +42,20 @@ mode: "custom"
         </button>
       </div>
       <div className="swg-sb-group is-collapsed" id="sbg-malware">
-        <a className="swg-si" href="/malware/ransomware-file">Ransomware file</a>
-        <a className="swg-si" href="/malware/personal-data-file">Personal-data file</a>
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data download</a>
         <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
         <a className="swg-si" href="/malware/executable-files">Executable files</a>
-        <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud delivery</a>
+        <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud downloads</a>
         <a className="swg-si" href="/malware/nested-file-download">Nested file download</a>
         <a className="swg-si" href="/malware/password-protected-file">Password-protected file</a>
         <a className="swg-si" href="/malware/file-spoofing">File spoofing</a>
         <a className="swg-si" href="/malware/encoded-files">Encoded files</a>
         <a className="swg-si" href="/malware/encrypted-files">Encrypted files</a>
-        <a className="swg-si" href="/malware/browser-open-docm">Browser-opened macro document</a>
-        <a className="swg-si" href="/malware/webassembly-eicar">WebAssembly EICAR assembly</a>
-        <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks - different orders</a>
-        <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling - HTML, JS, CSS, or SVG</a>
+        <a className="swg-si" href="/malware/browser-open-docm">Macro document</a>
+        <a className="swg-si" href="/malware/webassembly-eicar">Web Assembly</a>
+        <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks</a>
+        <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling through frontend files</a>
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-open">
@@ -65,7 +65,7 @@ mode: "custom"
         </button>
       </div>
       <div className="swg-sb-group" id="sbg-data-theft">
-        <a className="swg-si is-active" href="/data-theft/personal-data-submission-in-normal-file" aria-current="page">Personal-data submission in normal file</a>
+        <a className="swg-si is-active" href="/data-theft/personal-data-submission-in-normal-file" aria-current="page">File submission</a>
         <a className="swg-si" href="/data-theft/file-encoding">File encoding</a>
         <a className="swg-si" href="/data-theft/file-encrypting">File encrypting</a>
         <a className="swg-si" href="/data-theft/file-chunking">File chunking</a>
@@ -90,18 +90,18 @@ mode: "custom"
           <span className="swg-bc-sep">/</span>
           <a className="swg-bc-category" href="/data-theft/">Data Theft</a>
           <span className="swg-bc-sep">/</span>
-          <span className="swg-bc-cur swg-bc-current">Personal-data submission in normal file</span>
+          <span className="swg-bc-cur swg-bc-current">File submission</span>
         </div>
-        <h1>Personal-data submission in normal file</h1>
+        <h1>File submission</h1>
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Sensitive data doesn't have to look like a spreadsheet full of numbers to be a data-loss risk. It can be pasted into an ordinary-looking document and uploaded without ever tripping a keyword-based filter.</p>
+            <p className="swg-block-text">Files leave the network all the time, and any of them can carry sensitive material out with them — personal data, PII, financial records, or confidential documents. A gateway that doesn't inspect outbound uploads can't tell an ordinary file from one that is quietly leaking data.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose any file and upload it. The form simulates submitting a file that contains personal or business data to an outside destination.</p>
+            <p className="swg-block-text">Choose any file and upload it. This test is designed to check how your SWG treats outbound file uploads in general — whether it inspects, restricts, or freely allows different file types (personal data, PII, and other documents) leaving the network.</p>
           </section>
         </div>
         <div className="swg-run">

@@ -1,10 +1,10 @@
 ---
-title: "Encrypted files"
-description: "Encrypted malware reconstruction detection"
+title: "Getting started"
+description: "How SWG Audit works and where to begin."
 mode: "custom"
 ---
 
-<div className="swg-app swg-audit-ui">
+<div className="swg-app swg-audit-ui swg-getstarted-page">
   <div className="swg-nav" role="navigation" aria-label="Primary">
     <a className="swg-brand" href="/">
       <div className="swg-brand-mark" />
@@ -35,13 +35,13 @@ mode: "custom"
         <a className="swg-si" href="/phishing/form-submission-on-random-site">Credential form submission</a>
       </div>
       <div className="swg-sb-sep" />
-      <div className="swg-sb-cat is-open">
+      <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/malware/">Malware</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-malware" aria-label="Collapse Malware tests" aria-expanded="true">
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-malware" aria-label="Expand Malware tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
-      <div className="swg-sb-group" id="sbg-malware">
+      <div className="swg-sb-group is-collapsed" id="sbg-malware">
         <a className="swg-si" href="/malware/ransomware-file">Ransomware</a>
         <a className="swg-si" href="/malware/personal-data-file">Personal-data download</a>
         <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
@@ -51,7 +51,7 @@ mode: "custom"
         <a className="swg-si" href="/malware/password-protected-file">Password-protected file</a>
         <a className="swg-si" href="/malware/file-spoofing">File spoofing</a>
         <a className="swg-si" href="/malware/encoded-files">Encoded files</a>
-        <a className="swg-si is-active" href="/malware/encrypted-files" aria-current="page">Encrypted files</a>
+        <a className="swg-si" href="/malware/encrypted-files">Encrypted files</a>
         <a className="swg-si" href="/malware/browser-open-docm">Macro document</a>
         <a className="swg-si" href="/malware/webassembly-eicar">Web Assembly</a>
         <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks</a>
@@ -83,59 +83,23 @@ mode: "custom"
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
     </div>
-    <div className="swg-main" role="main">
-      <div className="swg-content">
-        <div className="swg-bc" role="navigation" aria-label="Breadcrumb">
-          <a className="swg-bc-home" href="/">Home</a>
-          <span className="swg-bc-sep">/</span>
-          <a className="swg-bc-category" href="/malware/">Malware</a>
-          <span className="swg-bc-sep">/</span>
-          <span className="swg-bc-cur swg-bc-current">Encrypted files</span>
+    <div className="swg-main swg-gs-body" role="main">
+      <div className="swg-gs-wrap swg-container">
+        <div className="swg-gs-eyebrow">SWG Audit</div>
+        <h1 className="swg-gs-title">Getting started</h1>
+        <div className="swg-gs-copy">
+          <p>SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
         </div>
-        <h1>Encrypted files</h1>
-        <div className="swg-divider" />
-        <div className="swg-info">
-          <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encrypting a payload before transfer hides its contents from anything that inspects traffic in transit. Since the data only becomes readable after decryption, gateways that only scan network traffic can miss it entirely.</p>
-          </section>
-          <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a payload or archive. Some options decrypt AES-GCM ciphertext directly in the browser before download, others download an archive that's already encrypted.</p>
-          </section>
+        <div className="swg-cta-row swg-gs-cta">
+          <a className="swg-cta" href="/phishing/">
+            <span className="swg-cta-glow" aria-hidden="true" />
+            <span className="swg-cta-text">Browse the tests</span>
+            <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
+          </a>
         </div>
-        <div className="swg-run">
-          <div className="swg-run-label">Try it yourself</div>
-          <div className="swg-run-body">
-            <div className="swg-run-controls">
-<div className="swg-pick" data-pick="encrypted-files">
-          <button className="swg-chip is-active" type="button" data-chip data-kind="assemble" data-url="/test-files/malware/payloads/decrypt-eicar-txt.json">AES-GCM TXT payload</button>
-          <button className="swg-chip" type="button" data-chip data-kind="assemble" data-url="/test-files/malware/payloads/decrypt-eicar-docm.json">AES-GCM DOCM payload</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/encrypted-files/eicar-docm-aes256.zip" data-name="eicar-docm-aes256.zip">AES ZIP</button>
-          <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/encrypted-files/eicar-docm-encrypted.7z" data-name="eicar-docm-encrypted.7z">Encrypted 7Z</button>
-        </div>
-              <div className="swg-pf">
-                <div className="swg-pf-card swg-pf-pass">
-                  <span className="swg-pf-glyph">&#10003;</span>
-                  <div>
-                    <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The transfer or the resulting file is blocked despite the encryption.</p>
-                  </div>
-                </div>
-                <div className="swg-pf-card swg-pf-fail">
-                  <span className="swg-pf-glyph">&#10007;</span>
-                  <div>
-                    <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The encrypted or decrypted file downloads with no warning.</p>
-                  </div>
-                </div>
-              </div>
-<div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="encrypted-files">Run encrypted-file test</button></div>
-            </div>
-            <div className="swg-console" data-test-console></div>
-          </div>
-        </div>
-        <script src="/swg.js" defer></script>
+      </div>
+      <div className="swg-foot">
+        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
       </div>
     </div>
   </div>

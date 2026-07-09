@@ -541,6 +541,107 @@ div[class*="max-w-8xl"] {
   line-height: 1.45;
 }
 
+/* =========================================================================
+   CTA BUTTON (home "Get started" + getting-started page)
+   ========================================================================= */
+.swg-cta-row {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(22px, 3vw, 36px);
+}
+.swg-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1.9rem;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 1.06rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #241708;
+  background: linear-gradient(135deg, #f4bd6b 0%, #e79a54 48%, #d97a52 100%);
+  box-shadow: 0 14px 34px -12px rgba(230, 163, 74, 0.6),
+              inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.swg-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 46px -12px rgba(230, 163, 74, 0.72),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.swg-cta:active { transform: translateY(0); }
+.swg-cta-text { position: relative; z-index: 2; }
+.swg-cta-arrow {
+  position: relative;
+  z-index: 2;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+.swg-cta:hover .swg-cta-arrow { transform: translateX(5px); }
+/* sweeping sheen on hover */
+.swg-cta-glow {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: -60%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.55s ease;
+}
+.swg-cta:hover .swg-cta-glow { left: 130%; }
+
+/* =========================================================================
+   GETTING STARTED PAGE
+   ========================================================================= */
+.swg-getstarted-page { min-height: 100vh; }
+.swg-gs-wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+  padding: clamp(44px, 7vw, 96px) clamp(1.6rem, 4vw, 3.25rem) clamp(40px, 6vw, 80px);
+  text-align: center;
+}
+.swg-audit-ui .swg-gs-eyebrow {
+  margin-bottom: 14px;
+  color: var(--sm-amber);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.swg-audit-ui .swg-gs-title {
+  margin: 0 0 22px;
+  color: var(--sm-amber);
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+.swg-gs-copy {
+  max-width: 680px;
+  margin-inline: auto;
+  display: grid;
+  gap: 18px;
+}
+.swg-gs-copy p {
+  margin: 0;
+  color: var(--sm-paper-soft);
+  font-size: clamp(16px, 1.5vw, 19px);
+  font-weight: 450;
+  line-height: 1.6;
+}
+.swg-gs-cta { margin-top: clamp(28px, 4vw, 44px); }
+
 /* ---- Footer ------------------------------------------------------------ */
 .swg-foot {
   margin-top: auto;
@@ -1257,7 +1358,8 @@ a.swg-brand { cursor: pointer; }
    NOTE: swg-audit-ui and swg-app--home/swg-about-page live on the SAME node,
    so these must be written as the page class alone (no descendant combinator). */
 .swg-main.swg-home-body,
-.swg-main.swg-about-body {
+.swg-main.swg-about-body,
+.swg-main.swg-gs-body {
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -1410,6 +1512,29 @@ a.swg-brand { cursor: pointer; }
 }
 .swg-audit-ui .swg-run--no-terminal {
   max-width: 980px;
+}
+/* Credential form: compact login-style box with a normal-width submit. */
+.swg-audit-ui .swg-run--form {
+  max-width: 480px;
+}
+.swg-audit-ui .swg-run--form .swg-form {
+  max-width: 100%;
+  gap: 1rem;
+}
+.swg-audit-ui .swg-run--form .swg-field input {
+  min-height: 42px;
+}
+.swg-audit-ui .swg-run--form .swg-dl {
+  width: auto;
+  align-self: flex-start;
+  padding-inline: 1.9rem;
+}
+/* Cyberslacking: smaller media box. */
+.swg-audit-ui .swg-run--media {
+  max-width: 560px;
+}
+.swg-audit-ui .swg-run--media .swg-video {
+  max-width: 100%;
 }
 .swg-audit-ui .swg-run-controls {
   display: flex;

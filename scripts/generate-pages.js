@@ -30,7 +30,7 @@ const pages = [
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-open="url-manipulation">Open selected URL</button>
         </div>`, "Attackers rarely link to a domain that obviously looks fake. They rely on typo squatting, lookalike characters, redirects, and shortened links to get past a quick glance and past simple blocklists.", "Pick one of the sample links below. Each one opens in a new tab and points to a page built to imitate a real login page using a different disguise technique.", "The gateway blocks the link, shows a warning page, or stops the page from loading.", "The lookalike login page opens normally in the new tab."),
-  page("phishing/site-stored-as-mhtml-or-raw-html", "Site stored as MHTML or raw HTML", "Phishing", "Evasion Detection", "Locally stored phishing page detection", `
+  page("phishing/site-stored-as-mhtml-or-raw-html", "Page assembled on browser", "Phishing", "Evasion Detection", "Locally stored phishing page detection", `
         <div className="swg-run-pick">Choose a stored page format:</div>
         <div className="swg-pick" data-pick="stored-site">
           <button className="swg-chip is-active" type="button" data-chip data-format="raw-html">Raw HTML</button>
@@ -39,15 +39,15 @@ const pages = [
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-stored-launch="stored-site">Open stored page</button>
         </div>`, "Instead of hosting a phishing page on a live server, an attacker can hand someone a local HTML or MHTML file. Tools that only inspect network traffic can miss content that never crosses the wire as a normal request.", "Choose a format, then open it. The browser builds a fake login page locally in that format and opens it in a new tab, the same way an opened phishing file would behave.", "The gateway or browser flags, blocks, or warns before the local page is shown.", "The fake login page opens and renders normally."),
-  page("phishing/canvas-engine", "Canvas engine", "Phishing", "Evasion Detection", "Canvas-rendered page detection", `
+  page("phishing/canvas-engine", "Canvas page", "Phishing", "Evasion Detection", "Canvas-rendered page detection", `
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-canvas-launch>Open canvas-rendered page</button>
         </div>`, "Some phishing kits draw their fake login form onto an HTML canvas instead of using real text and input fields. With no readable HTML text on the page, scanners that look for words like 'password' or 'sign in' can be fooled.", "Click the button to open the v2 GitHub-style canvas-rendered login page in a new tab. It is drawn onto canvas instead of normal DOM text and inputs.", "The gateway blocks the page despite the lack of readable text.", "The canvas-drawn login page opens and displays normally."),
-  page("phishing/cached-content-mutation", "Same URL content change", "Phishing", "Advanced Threat Simulation", "Same URL content change detection", `
+  page("phishing/cached-content-mutation", "Content mutation", "Phishing", "Advanced Threat Simulation", "Same URL content change detection", `
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-cache-launch>Open content-change test</button>
         </div>`, "A gateway might scan a page once, mark it safe, and then trust that verdict even after the content changes. Attackers exploit this by serving something harmless first and swapping in a phishing page later.", "Open the harmless page in a new tab, then refresh that tab once. The same URL changes to the dummy Microsoft-style login page without relying on cached content.", "The gateway blocks the changed login page when the same URL is refreshed.", "The changed login page loads normally with no warning."),
-  page("phishing/form-submission-on-random-site", "Form submission on random site", "Phishing", "Advanced Threat Simulation", "Credential submission detection", `
+  page("phishing/form-submission-on-random-site", "Credential form submission", "Phishing", "Advanced Threat Simulation", "Credential submission detection", `
         <form className="swg-form" method="post" action="/phishing/credential-submit.php" autoComplete="off" data-credential-form>
           <label className="swg-field">Username <input name="swg_audit_username" defaultValue="user@example.com" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
           <label className="swg-field">Password <input name="swg_audit_password" type="password" defaultValue="password" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
@@ -58,9 +58,9 @@ const pages = [
           <div className="swg-output" data-test-output hidden />
         </form>`, "Phishing pages exist to collect real credentials. If outbound form submissions aren't inspected, a username and password can leave the network even after landing on a suspicious page.", "Submit the prefilled test credentials. The endpoint only reports whether the submission reached the server and discards the values immediately.", "The submission is blocked, disrupted, stripped, or cannot complete through the protected path.", "The submitted data reaches the server-side simulation endpoint successfully."),
 
-  page("malware/ransomware-file", "Ransomware file", "Malware", "Bare Minimum", "Ransomware-style file detection", `
+  page("malware/ransomware-file", "Ransomware", "Malware", "Bare Minimum", "Ransomware-style file detection", `
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-single-download data-url="/test-files/malware/bare-minimum/ransomware-note-simulation.txt" data-name="ransomware-note-simulation.txt">Download ransomware sample</button></div>`, "Ransomware incidents often leave behind instructions or warning files that are not executable but still indicate a serious compromise.", "Download the harmless ransomware-note simulation and check whether perimeter controls stop recognisable ransomware-style content.", "The download is blocked before it reaches your device.", "The ransomware-style file downloads normally with no warning."),
-  page("malware/personal-data-file", "Personal-data file", "Malware", "Bare Minimum", "Sensitive-data file detection", `
+  page("malware/personal-data-file", "Personal-data download", "Malware", "Bare Minimum", "Sensitive-data file detection", `
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-single-download data-url="/test-files/malware/bare-minimum/pii-file.xlsx" data-name="pii-file.xlsx">Download personal-data sample</button></div>`, "Files containing personal information can be risky even when they contain no executable code or known malware signature.", "Download the harmless spreadsheet shaped like personal data and check whether policy controls recognise and stop the sensitive file.", "The download is blocked before it reaches your device.", "The personal-data file downloads normally with no warning."),
   page("malware/different-file-formats", "Different file formats", "Malware", "Bare Minimum", "Malware file-type detection", `
         <div className="swg-run-pick">Choose a file format:</div>
@@ -79,7 +79,7 @@ const pages = [
           ${["exe","scr","bat","cmd","ps1","js","vbs","hta","iso"].map((ext, i) => `<button className="swg-chip${i === 0 ? " is-active" : ""}" type="button" data-chip data-kind="direct" data-url="/test-files/malware/executable-files/test.${ext}" data-name="test.${ext}">${ext.toUpperCase()}</button>`).join("\n          ")}
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="executable-files">Download executable</button></div>`, "Executables and scripts are the most direct way to run code on a device. If a gateway lets any of these formats download unchecked, ransomware and other malware have a straightforward way in.", "Choose a format and download it. Each file is a harmless stand-in, but every extension listed has been used to deliver real malware.", "The download is blocked before it reaches your device.", "The executable or script downloads with no warning."),
-  page("malware/http-https-and-cloud-delivery", "HTTP, HTTPS, and cloud delivery", "Malware", "Bare Minimum", "Multi-channel malware delivery detection", `
+  page("malware/http-https-and-cloud-delivery", "HTTP, HTTPS, and cloud downloads", "Malware", "Bare Minimum", "Multi-channel malware delivery detection", `
         <div className="swg-run-pick">Choose a delivery channel:</div>
         <div className="swg-pick" data-pick="http-https-and-cloud-delivery">
           <button className="swg-chip is-active" type="button" data-chip data-kind="link" data-url="http://images.swgaudit.com/random-image.png" data-name="random-image.png">HTTP delivery</button>
@@ -126,14 +126,14 @@ const pages = [
           <button className="swg-chip" type="button" data-chip data-kind="direct" data-url="/test-files/malware/encrypted-files/eicar-docm-encrypted.7z" data-name="eicar-docm-encrypted.7z">Encrypted 7Z</button>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="encrypted-files">Run encrypted-file test</button></div>`, "Encrypting a payload before transfer hides its contents from anything that inspects traffic in transit. Since the data only becomes readable after decryption, gateways that only scan network traffic can miss it entirely.", "Choose a payload or archive. Some options decrypt AES-GCM ciphertext directly in the browser before download, others download an archive that's already encrypted.", "The transfer or the resulting file is blocked despite the encryption.", "The encrypted or decrypted file downloads with no warning."),
-  page("malware/browser-open-docm", "Browser-opened macro document", "Malware", "Advanced Threat Simulation", "Direct DOCM delivery detection", `
+  page("malware/browser-open-docm", "Macro document", "Malware", "Advanced Threat Simulation", "Direct DOCM delivery detection", `
         <div className="swg-dl-row"><a className="swg-dl" href="/test-files/malware/file-formats/eicar.docm" target="_blank" rel="noreferrer" data-reveal>Open EICAR DOCM</a></div>`, "A macro-enabled Office document can reach an endpoint through an ordinary browser navigation. Even though the browser cannot display the file, it can hand it off as a download, creating a path for document-borne malware.", "Click the button to fetch eicar.docm from this server and ask the browser to open it in a new tab. The browser cannot render DOCM content, so an allowed response should trigger a download instead.", "The gateway or browser security control blocks the request, displays a warning, or prevents the DOCM from downloading.", "The DOCM request succeeds and the browser downloads the file without a security warning."),
-  page("malware/webassembly-eicar", "WebAssembly EICAR assembly", "Malware", "Advanced Threat Simulation", "WebAssembly malware reconstruction detection", `
+  page("malware/webassembly-eicar", "Web Assembly", "Malware", "Advanced Threat Simulation", "WebAssembly malware reconstruction detection", `
         <div className="swg-pick" data-pick="webassembly-eicar">
           <button className="swg-chip is-active" type="button" data-chip data-kind="wasm" data-url="/test-files/malware/wasm/eicar.wasm" data-name="eicar.txt" data-mime="text/plain">WebAssembly module</button>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="webassembly-eicar">Assemble and download EICAR</button></div>`, "A web page can fetch code that looks harmless in transit and use WebAssembly to construct a known malicious payload entirely inside the browser. A gateway that only scans complete downloadable files may never see the final content.", "Run the test to fetch and instantiate the WebAssembly module from the original SWG Audit test. The module writes the standard harmless EICAR test string into browser memory; JavaScript reads that memory and creates eicar.txt locally.", "The WebAssembly module, browser-side reconstruction, or resulting EICAR download is blocked or warned on.", "The browser executes the module, assembles eicar.txt locally, and downloads it without a security warning."),
-  page("malware/chunk-attacks-different-orders", "Chunk attacks - different orders", "Malware", "Advanced Threat Simulation", "Chunk reconstruction detection", `
+  page("malware/chunk-attacks-different-orders", "Chunk attacks", "Malware", "Advanced Threat Simulation", "Chunk reconstruction detection", `
         <div className="swg-run-pick">Choose a chunking pattern:</div>
         <div className="swg-dd" data-dd data-dd-dl="chunk-attacks-different-orders">
           <button className="swg-dd-btn" type="button" data-dd-toggle><span data-dd-label>Straight split</span><span className="swg-caret" /></button>
@@ -142,7 +142,7 @@ const pages = [
           </div>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="chunk-attacks-different-orders">Reassemble chunks</button></div>`, "Splitting a file into small pieces and fetching them separately can keep size- or signature-based scanners from ever seeing the complete payload in one request.", "Choose a chunking pattern. The browser fetches every chunk for that pattern, in order, reversed, resized, mixed with decoy data, or fetched in parallel, then reassembles the original file.", "The gateway spots the reconstruction pattern and blocks the reassembled file.", "All chunks are fetched and reassembled into a working file with no interruption."),
-  page("malware/smuggling-html-js-css-or-svg", "Smuggling - HTML, JS, CSS, or SVG", "Malware", "Advanced Threat Simulation", "HTML/JS/CSS/SVG smuggling detection", `
+  page("malware/smuggling-html-js-css-or-svg", "Smuggling through frontend files", "Malware", "Advanced Threat Simulation", "HTML/JS/CSS/SVG smuggling detection", `
         <div className="swg-run-pick">Choose a smuggling carrier:</div>
         <div className="swg-pick" data-pick="smuggling-html-js-css-or-svg">
           <button className="swg-chip is-active" type="button" data-chip data-kind="smuggle" data-carrier="html" data-name="html-smuggled-eicar.docm">HTML</button>
@@ -152,13 +152,13 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="smuggling-html-js-css-or-svg">Extract smuggled file</button></div>`, "HTML smuggling hides a file's data inside a web page, script, stylesheet, or image metadata, then rebuilds it entirely inside the browser. Because the file never crosses the network as a normal download, many gateways never see it.", "Choose a carrier format. The payload is already embedded in the page using that method. Clicking the button extracts and reassembles it into a downloadable file, entirely in your browser.", "The reconstruction is detected and blocked before the file is produced.", "The file is rebuilt and downloaded with no interruption."),
 
-  page("data-theft/personal-data-submission-in-normal-file", "Personal-data submission in normal file", "Data Theft", "Bare Minimum", "Sensitive file upload detection", `
+  page("data-theft/personal-data-submission-in-normal-file", "File submission", "Data Theft", "Bare Minimum", "Outbound file upload detection", `
         <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>
           <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="personal_data_file" /></label>
           <p className="swg-run-hint">Submitted files are deleted from the server after 10 minutes.</p>
           <div className="swg-dl-row"><button className="swg-dl" type="submit">Upload file</button></div>
           <div className="swg-output" data-test-output hidden />
-        </form>`, "Sensitive data doesn't have to look like a spreadsheet full of numbers to be a data-loss risk. It can be pasted into an ordinary-looking document and uploaded without ever tripping a keyword-based filter.", "Choose any file and upload it. The form simulates submitting a file that contains personal or business data to an outside destination.", "The upload is blocked or intercepted before it leaves the browser.", "The file uploads successfully with no interruption."),
+        </form>`, "Files leave the network all the time, and any of them can carry sensitive material out with them — personal data, PII, financial records, or confidential documents. A gateway that doesn't inspect outbound uploads can't tell an ordinary file from one that is quietly leaking data.", "Choose any file and upload it. This test is designed to check how your SWG treats outbound file uploads in general — whether it inspects, restricts, or freely allows different file types (personal data, PII, and other documents) leaving the network.", "The upload is blocked or intercepted before it leaves the browser.", "The file uploads successfully with no interruption."),
   page("data-theft/file-encoding", "File encoding", "Data Theft", "Evasion Detection", "Encoded exfiltration detection", `
         <form className="swg-form" data-data-theft-encoding-form>
           <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="source_file" /></label>
@@ -350,6 +350,11 @@ const noTerminalSlugs = new Set([
   "phishing/form-submission-on-random-site",
 ]);
 
+const runModifierClasses = {
+  "phishing/form-submission-on-random-site": " swg-run--form",
+  "cyberslacking/video-content-category-simulation": " swg-run--media",
+};
+
 function escapeAttr(value) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 }
@@ -420,7 +425,7 @@ function sidebarHtml(currentSlug) {
 
 function titleHtml(p) {
   if (p.slug.endsWith("smuggling-html-js-css-or-svg")) {
-    return "Smuggling - <em>HTML, JS, CSS, or SVG</em>";
+    return "Smuggling through <em>frontend files</em>";
   }
   return p.title;
 }
@@ -515,8 +520,9 @@ function runAreaHtml(p, run, extra) {
   const blocks = [lead, passFailHtml(p), action, tail, serverBtn, banner()].filter(Boolean);
   const compactClass = compactRunSlugs.has(p.slug) ? " swg-run--compact" : "";
   const noTerminal = noTerminalSlugs.has(p.slug);
+  const modifierClass = runModifierClasses[p.slug] || "";
 
-  return `        <div className="swg-run${compactClass}${noTerminal ? " swg-run--no-terminal" : ""}">
+  return `        <div className="swg-run${compactClass}${noTerminal ? " swg-run--no-terminal" : ""}${modifierClass}">
           <div className="swg-run-label">Try it yourself</div>
           <div className="swg-run-body${noTerminal ? " swg-run-body--solo" : ""}">
             <div className="swg-run-controls">
@@ -683,6 +689,41 @@ mode: "custom"
 `;
 }
 
+function gettingStartedHtml() {
+  return `---
+title: "Getting started"
+description: "How SWG Audit works and where to begin."
+mode: "custom"
+---
+
+<div className="swg-app swg-audit-ui swg-getstarted-page">
+  ${navHtml("")}
+  <div className="swg-shell">
+    ${sidebarHtml("")}
+    <div className="swg-main swg-gs-body" role="main">
+      <div className="swg-gs-wrap swg-container">
+        <div className="swg-gs-eyebrow">SWG Audit</div>
+        <h1 className="swg-gs-title">Getting started</h1>
+        <div className="swg-gs-copy">
+          <p>SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+        </div>
+        <div className="swg-cta-row swg-gs-cta">
+          <a className="swg-cta" href="/phishing/">
+            <span className="swg-cta-glow" aria-hidden="true" />
+            <span className="swg-cta-text">Browse the tests</span>
+            <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
+          </a>
+        </div>
+      </div>
+      <div className="swg-foot">
+        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+}
+
 function indexHtml() {
   const counts = {
     Phishing: pages.filter((p) => p.category === "Phishing").length,
@@ -718,13 +759,17 @@ mode: "custom"
         <div className="swg-hero">
           <div className="swg-container swg-hero-copy">
             <h1>Validate the real-world effectiveness of your perimeter security</h1>
-            <h2 className="swg-home-subhead">Getting started</h2>
-            <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+            <div className="swg-cta-row">
+              <a className="swg-cta" href="/getting-started">
+                <span className="swg-cta-glow" aria-hidden="true" />
+                <span className="swg-cta-text">Get started</span>
+                <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
+              </a>
+            </div>
           </div>
         </div>
         <section className="swg-section">
           <div className="swg-container">
-            <div className="swg-section-head">Choose a category</div>
             <div className="swg-card-grid">
               ${cards}
             </div>
@@ -742,6 +787,7 @@ mode: "custom"
 
 fs.writeFileSync(path.join(root, "index.mdx"), indexHtml());
 fs.writeFileSync(path.join(root, "about.mdx"), aboutHtml());
+fs.writeFileSync(path.join(root, "getting-started.mdx"), gettingStartedHtml());
 for (const category of Object.keys(nav)) {
   fs.writeFileSync(path.join(root, `${nav[category].replace(/^\/|\/$/g, "")}.mdx`), categoryPageHtml(category));
 }
@@ -762,6 +808,7 @@ fs.writeFileSync(path.join(root, "docs.json"), JSON.stringify({
   navigation: {
     pages: [
       "index",
+      "getting-started",
       "about",
       ...Object.keys(nav).flatMap((category) => [
         nav[category].replace(/^\/|\/$/g, ""),

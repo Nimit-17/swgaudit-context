@@ -159,20 +159,18 @@
       terminalLine(revealFrom, "requesting external file: " + url);
     }
     // These channels are cross-origin (cleartext HTTP host or cloud storage), so
-    // the browser's same-origin policy blocks a fetch() and we cannot read the
-    // response. Navigate a real anchor instead so the request still traverses the
-    // gateway exactly as a normal delivery would.
-    var a = document.createElement("a");
-    a.href = url;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    if (name) a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    terminalLine(revealFrom, "delivery requested in a new tab.");
-    terminalLine(revealFrom, "cross-origin delivery cannot be auto-verified: if the file downloads or opens, the gateway allowed it; if nothing arrives, it was blocked.");
-    hideBanner(revealFrom);
+    // the same-origin policy blocks a fetch() and we cannot read the response.
+    // Open the delivery URL in a new tab instead: if the gateway lets the tab
+    // open, the delivery went through and the test FAILS; if the browser/gateway
+    // blocks the tab, it PASSES.
+    var opened = openNewTab(url);
+    if (opened) {
+      terminalFail(revealFrom, "external delivery opened in a new tab.");
+      revealBanner(revealFrom);
+    } else {
+      terminalPass(revealFrom, "external delivery was blocked before it could open.");
+      hideBanner(revealFrom);
+    }
   }
 
   function openProtectedUrl(url, revealFrom, failText, passText) {
