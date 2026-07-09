@@ -18,19 +18,85 @@ mode: "custom"
       </a>
     </div>
   </div>
-  <div className="swg-home-main">
-  <div className="swg-hero">
-    <div className="swg-container swg-hero-copy">
-      <h1>Validate the real-world effectiveness of your perimeter security</h1>
-      <h2 className="swg-home-subhead">Getting started</h2>
-      <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+  <div className="swg-shell">
+    <div className="swg-sb" role="complementary" aria-label="Tests">
+      
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-phishing" aria-label="Expand Phishing tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-phishing">
+        <a className="swg-si" href="/phishing/url-manipulation">URL manipulation</a>
+        <a className="swg-si" href="/phishing/site-stored-as-mhtml-or-raw-html">Site stored as MHTML or raw HTML</a>
+        <a className="swg-si" href="/phishing/canvas-engine">Canvas engine</a>
+        <a className="swg-si" href="/phishing/cached-content-mutation">Same URL content change</a>
+        <a className="swg-si" href="/phishing/form-submission-on-random-site">Form submission on random site</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/malware/">Malware</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-malware" aria-label="Expand Malware tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-malware">
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware file</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data file</a>
+        <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
+        <a className="swg-si" href="/malware/executable-files">Executable files</a>
+        <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud delivery</a>
+        <a className="swg-si" href="/malware/nested-file-download">Nested file download</a>
+        <a className="swg-si" href="/malware/password-protected-file">Password-protected file</a>
+        <a className="swg-si" href="/malware/file-spoofing">File spoofing</a>
+        <a className="swg-si" href="/malware/encoded-files">Encoded files</a>
+        <a className="swg-si" href="/malware/encrypted-files">Encrypted files</a>
+        <a className="swg-si" href="/malware/browser-open-docm">Browser-opened macro document</a>
+        <a className="swg-si" href="/malware/webassembly-eicar">WebAssembly EICAR assembly</a>
+        <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks - different orders</a>
+        <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling - HTML, JS, CSS, or SVG</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/data-theft/">Data Theft</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-data-theft" aria-label="Expand Data Theft tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-data-theft">
+        <a className="swg-si" href="/data-theft/personal-data-submission-in-normal-file">Personal-data submission in normal file</a>
+        <a className="swg-si" href="/data-theft/file-encoding">File encoding</a>
+        <a className="swg-si" href="/data-theft/file-encrypting">File encrypting</a>
+        <a className="swg-si" href="/data-theft/file-chunking">File chunking</a>
+        <a className="swg-si" href="/data-theft/dns-tunneling">DNS tunneling</a>
+        <a className="swg-si" href="/data-theft/http-path-tunneling">HTTP path tunneling</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
+        <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
+      </div>
     </div>
-  </div>
-  <section className="swg-section">
-    <div className="swg-container">
-      <div className="swg-section-head">Choose a category</div>
-      <div className="swg-card-grid">
-        <a className="swg-card is-link" href="/phishing/">
+    <div className="swg-main swg-home-body" role="main">
+      <div className="swg-home-main">
+        <div className="swg-hero">
+          <div className="swg-container swg-hero-copy">
+            <h1>Validate the real-world effectiveness of your perimeter security</h1>
+            <h2 className="swg-home-subhead">Getting started</h2>
+            <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+          </div>
+        </div>
+        <section className="swg-section">
+          <div className="swg-container">
+            <div className="swg-section-head">Choose a category</div>
+            <div className="swg-card-grid">
+              <a className="swg-card is-link" href="/phishing/">
           <img className="swg-card-img" src="/images/phishing-icon.png" alt="" />
           <div className="swg-card-body">
             <h3>Phishing</h3>
@@ -62,11 +128,13 @@ mode: "custom"
           </div>
           <div className="swg-card-arr">&rarr;</div>
         </a>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div className="swg-foot">
+        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
       </div>
     </div>
-  </section>
-  </div>
-  <div className="swg-foot">
-    All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
   </div>
 </div>

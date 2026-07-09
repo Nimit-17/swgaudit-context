@@ -1044,27 +1044,27 @@ a.swg-brand { cursor: pointer; }
 }
 .swg-audit-ui .swg-nav {
   z-index: 20;
-  height: 55px;
-  min-height: 55px;
+  height: 62px;
+  min-height: 62px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 0.75rem;
-  padding: 0.45rem clamp(1.25rem, 2.75vw, 2.4rem);
+  padding: 0.5rem clamp(1.35rem, 2.75vw, 2.6rem);
   background: rgba(20, 23, 28, 0.72);
   border-bottom: 1px solid var(--sm-line);
 }
 .swg-audit-ui .swg-brand {
-  gap: 0.7rem;
-  font-size: 1.25rem;
+  gap: 0.72rem;
+  font-size: 1.34rem;
   font-weight: 400;
   letter-spacing: 0;
   color: var(--sm-paper);
 }
 .swg-audit-ui .swg-brand-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
+  width: 31px;
+  height: 31px;
+  border-radius: 8px;
   background: linear-gradient(150deg, #f0b25e, #d97a52);
   box-shadow: 0 0 0 1px rgba(240, 178, 94, 0.35), 0 6px 22px -8px rgba(230, 163, 74, 0.55);
 }
@@ -1086,9 +1086,9 @@ a.swg-brand { cursor: pointer; }
   margin-left: auto;
 }
 .swg-audit-ui .swg-nl {
-  padding: 0.4rem 0.75rem;
+  padding: 0.42rem 0.8rem;
   border-radius: 6px;
-  font-size: 1.02rem;
+  font-size: 1.08rem;
   font-weight: 400;
   color: var(--sm-paper-soft);
   letter-spacing: 0;
@@ -1107,8 +1107,8 @@ a.swg-brand { cursor: pointer; }
 }
 .swg-audit-ui .swg-gh:hover { color: var(--sm-paper); }
 .swg-audit-ui .swg-gh img {
-  width: 21px;
-  height: 21px;
+  width: 23px;
+  height: 23px;
   filter: brightness(0) invert(1);
 }
 .swg-audit-ui .swg-shell {
@@ -1119,9 +1119,9 @@ a.swg-brand { cursor: pointer; }
 }
 .swg-audit-ui .swg-sb {
   width: auto;
-  height: calc(100vh - 55px);
+  height: calc(100vh - 62px);
   position: sticky;
-  top: 55px;
+  top: 62px;
   align-self: start;
   overflow-y: auto;
   border-right: 1px solid var(--sm-line);
@@ -1249,6 +1249,35 @@ a.swg-brand { cursor: pointer; }
 .swg-audit-ui .swg-content {
   max-width: 1280px;
   margin-inline: 0;
+}
+
+/* Home & About now sit inside the sidebar shell. Drop the test-page main
+   padding, let the body be a flex column (footer pinned to the bottom), and
+   keep the content width relative to the main column instead of the viewport. */
+.swg-audit-ui .swg-main.swg-home-body,
+.swg-audit-ui .swg-main.swg-about-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.swg-audit-ui .swg-app--home .swg-container {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: clamp(1.4rem, 4vw, 3rem);
+}
+.swg-audit-ui .swg-app--home .swg-hero-copy {
+  width: 100%;
+  max-width: 1160px;
+}
+.swg-audit-ui .swg-about-page .swg-about-main {
+  padding-inline: 0;
+}
+.swg-audit-ui .swg-about-page .swg-container.swg-about-wrap {
+  width: 100%;
+  max-width: 980px;
+  margin-inline: auto;
+  padding-inline: clamp(1.4rem, 4vw, 3rem);
 }
 .swg-audit-ui .swg-bc {
   gap: 0;
@@ -1403,7 +1432,7 @@ a.swg-brand { cursor: pointer; }
   border-radius: 8px;
   background: rgba(236, 231, 221, 0.04);
   color: var(--sm-paper-soft);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.86rem;
   font-weight: 400;
   letter-spacing: 0;

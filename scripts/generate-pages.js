@@ -383,13 +383,14 @@ const nav = {
 };
 
 function navHtml(active) {
+  const aboutActive = active === "about" ? " is-active" : "";
   return `<div className="swg-nav" role="navigation" aria-label="Primary">
     <a className="swg-brand" href="/">
       <div className="swg-brand-mark" />
       SWG Audit
     </a>
     <div className="swg-nav-actions">
-      <a className="swg-nl swg-about-link" href="/about">About</a>
+      <a className="swg-nl swg-about-link${aboutActive}" href="/about">About</a>
       <a className="swg-gh" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">
         <img src="/images/github-mark.svg" alt="" />
         <span className="swg-sr-only">GitHub</span>
@@ -621,6 +622,64 @@ mode: "custom"
 `;
 }
 
+function aboutHtml() {
+  return `---
+title: "About"
+description: "Why SWG Audit exists."
+mode: "custom"
+---
+
+<div className="swg-app swg-audit-ui swg-about-page">
+  ${navHtml("about")}
+  <div className="swg-shell">
+    ${sidebarHtml("")}
+    <div className="swg-main swg-about-body" role="main">
+      <div className="swg-about-main">
+        <div className="swg-container swg-about-wrap">
+          <div className="swg-about-intro-section">
+            <div className="swg-about-text">In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools.</div>
+          </div>
+
+          <div className="swg-about-warning-section">
+            <div className="swg-about-warning-item">
+              <div className="swg-about-warning-icon" aria-hidden="true">!</div>
+              <div className="swg-about-text">Many vendors continue to promote outdated solutions with bold marketing claims, offering little transparency or proof of actual protection.</div>
+            </div>
+            <div className="swg-about-warning-item">
+              <div className="swg-about-warning-icon" aria-hidden="true">!</div>
+              <div className="swg-about-text">Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</div>
+            </div>
+          </div>
+
+          <div className="swg-about-hero">
+            <h1>SWG Audit was created to change that.</h1>
+            <div className="swg-about-text">We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.</div>
+          </div>
+
+          <div className="swg-about-feature-section">
+            <div className="swg-about-feature-card">
+              <div className="swg-about-lock" aria-hidden="true">
+                <div className="swg-about-lock-shackle"></div>
+                <div className="swg-about-lock-body"></div>
+              </div>
+              <div className="swg-about-text">Empower cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats before investing in it.</div>
+            </div>
+          </div>
+
+          <div className="swg-about-cta">
+            <div className="swg-about-text">Join the community. Test honestly. Buy confidently.</div>
+          </div>
+        </div>
+      </div>
+      <div className="swg-foot">
+        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+}
+
 function indexHtml() {
   const counts = {
     Phishing: pages.filter((p) => p.category === "Phishing").length,
@@ -649,31 +708,37 @@ mode: "custom"
 
 <div className="swg-app swg-audit-ui swg-app--home">
   ${navHtml("")}
-  <div className="swg-home-main">
-  <div className="swg-hero">
-    <div className="swg-container swg-hero-copy">
-      <h1>Validate the real-world effectiveness of your perimeter security</h1>
-      <h2 className="swg-home-subhead">Getting started</h2>
-      <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
-    </div>
-  </div>
-  <section className="swg-section">
-    <div className="swg-container">
-      <div className="swg-section-head">Choose a category</div>
-      <div className="swg-card-grid">
-        ${cards}
+  <div className="swg-shell">
+    ${sidebarHtml("")}
+    <div className="swg-main swg-home-body" role="main">
+      <div className="swg-home-main">
+        <div className="swg-hero">
+          <div className="swg-container swg-hero-copy">
+            <h1>Validate the real-world effectiveness of your perimeter security</h1>
+            <h2 className="swg-home-subhead">Getting started</h2>
+            <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+          </div>
+        </div>
+        <section className="swg-section">
+          <div className="swg-container">
+            <div className="swg-section-head">Choose a category</div>
+            <div className="swg-card-grid">
+              ${cards}
+            </div>
+          </div>
+        </section>
+      </div>
+      <div className="swg-foot">
+        All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
       </div>
     </div>
-  </section>
-  </div>
-  <div className="swg-foot">
-    All tests are intended to be non-malicious and safe for production environments. No real threats are delivered.
   </div>
 </div>
 `;
 }
 
 fs.writeFileSync(path.join(root, "index.mdx"), indexHtml());
+fs.writeFileSync(path.join(root, "about.mdx"), aboutHtml());
 for (const category of Object.keys(nav)) {
   fs.writeFileSync(path.join(root, `${nav[category].replace(/^\/|\/$/g, "")}.mdx`), categoryPageHtml(category));
 }
