@@ -19,7 +19,7 @@
   "styling": {
     "eyebrows": "section"
   },
-  "favicon": "/images/favicon.png",
+  "favicon": "/favicon.png",
   "logo": {
     "light": "/images/logo.png",
     "dark": "/images/logo.png"

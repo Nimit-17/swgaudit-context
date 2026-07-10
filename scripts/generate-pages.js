@@ -407,7 +407,8 @@ function navHtml(active) {
         <span className="swg-sr-only">GitHub</span>
       </a>
     </div>
-  </div>`;
+  </div>
+  <script src="/favicon.js" defer></script>`;
 }
 
 function sidebarHtml(currentSlug) {
@@ -945,7 +946,7 @@ fs.writeFileSync(path.join(root, "docs.json"), JSON.stringify({
   appearance: { default: "dark", strict: true },
   background: { color: { dark: "#040406" } },
   styling: { eyebrows: "section" },
-  favicon: "/images/favicon.png",
+  favicon: "/favicon.png",
   logo: { light: "/images/logo.png", dark: "/images/logo.png" },
   navigation: {
     pages: [

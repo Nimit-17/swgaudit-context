@@ -9,6 +9,24 @@
   if (window.__swgInit) return;
   window.__swgInit = true;
 
+  /* Mintlify sometimes omits <link rel="icon"> in custom-mode pages.
+     Ensure the tab icon is set from the site favicon assets. */
+  (function ensureFavicon() {
+    if (document.querySelector('link[rel="icon"], link[rel="shortcut icon"]')) return;
+    var icons = [
+      { rel: "icon", type: "image/png", href: "/favicon.png", sizes: "48x48" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+    ];
+    var head = document.head || document.getElementsByTagName("head")[0];
+    if (!head) return;
+    icons.forEach(function (spec) {
+      var link = document.createElement("link");
+      Object.keys(spec).forEach(function (k) { link.setAttribute(k, spec[k]); });
+      head.appendChild(link);
+    });
+  })();
+
   /* ---- helpers --------------------------------------------------------- */
   function base64ToBytes(value) {
     var binary = window.atob(value.replace(/\s+/g, ""));
