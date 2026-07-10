@@ -387,7 +387,7 @@ const nav = {
 
 function footerHtml() {
   return `      <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. No real threats are delivered. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>`;
 }
 
