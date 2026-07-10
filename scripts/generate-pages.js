@@ -396,7 +396,7 @@ function navHtml(active) {
   const contributeActive = active === "contribute" ? " is-active" : "";
   return `<div className="swg-nav" role="navigation" aria-label="Primary">
     <a className="swg-brand" href="/">
-      <div className="swg-brand-mark" />
+      <img className="swg-brand-mark" src="/images/logo.png" alt="" width="31" height="31" />
       SWG Audit
     </a>
     <div className="swg-nav-actions">
@@ -945,6 +945,8 @@ fs.writeFileSync(path.join(root, "docs.json"), JSON.stringify({
   appearance: { default: "dark", strict: true },
   background: { color: { dark: "#040406" } },
   styling: { eyebrows: "section" },
+  favicon: "/images/favicon.png",
+  logo: { light: "/images/logo.png", dark: "/images/logo.png" },
   navigation: {
     pages: [
       "index",

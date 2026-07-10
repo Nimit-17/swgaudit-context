@@ -144,19 +144,8 @@ div[class*="max-w-8xl"] {
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  background: var(--red);
-  position: relative;
-  box-shadow: 0 0 18px rgba(255, 37, 56, 0.45);
+  object-fit: cover;
   flex-shrink: 0;
-}
-.swg-brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border: 1.5px solid #fff;
-  border-radius: 50%;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
 }
 
 .swg-nav-links {
@@ -259,10 +248,11 @@ div[class*="max-w-8xl"] {
   min-height: 100vh;
 }
 .swg-app--home .swg-home-main {
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: clamp(8px, 1.5vh, 20px);
 }
 .swg-app--home .swg-hero {
-  padding-block: clamp(28px, 5vh, 56px) clamp(14px, 2vh, 28px);
+  padding-block: clamp(10px, 1.8vh, 22px) clamp(6px, 1vh, 14px);
 }
 .swg-app--home .swg-hero h1 {
   margin-bottom: 16px;
@@ -289,7 +279,7 @@ div[class*="max-w-8xl"] {
   letter-spacing: 0;
 }
 .swg-app--home .swg-section {
-  padding-bottom: clamp(16px, 2.5vh, 28px);
+  padding-bottom: clamp(12px, 2vh, 24px);
 }
 .swg-app--home .swg-section-head {
   margin-bottom: 18px;
@@ -432,7 +422,7 @@ div[class*="max-w-8xl"] {
    ABOUT PAGE
    ========================================================================= */
 .swg-about-page {
-  min-height: 100vh;
+  min-height: 0;
 }
 .swg-about-main {
   flex: 1;
@@ -551,6 +541,7 @@ div[class*="max-w-8xl"] {
 }
 .swg-app--home .swg-cta-row {
   margin-top: clamp(10px, 1.4vw, 18px);
+  margin-bottom: clamp(32px, 5vh, 56px);
 }
 .swg-cta {
   position: relative;
@@ -603,7 +594,7 @@ div[class*="max-w-8xl"] {
 /* =========================================================================
    GETTING STARTED PAGE
    ========================================================================= */
-.swg-getstarted-page { min-height: 100vh; }
+.swg-getstarted-page { min-height: 0; }
 .swg-gs-wrap {
   flex: 1;
   width: 100%;
@@ -689,11 +680,12 @@ div[class*="max-w-8xl"] {
 /* =========================================================================
    ARTICLE PAGES (Contribute, Terms of Use, Privacy Policy)
    ========================================================================= */
-.swg-article-page { min-height: 100vh; }
+.swg-article-page { min-height: 0; }
 .swg-audit-ui .swg-article-body {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 62px);
+  min-height: 0;
+  flex: 1;
   padding: 0;
 }
 .swg-article {
@@ -761,14 +753,18 @@ div[class*="max-w-8xl"] {
   border-top: 1px solid var(--sm-line);
 }
 
-/* Test/category pages: let the footer sit at the bottom of the column. */
+/* Test/category pages: footer pinned to bottom of the viewport column. */
 .swg-audit-ui .swg-main-col {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 62px);
+  min-height: 0;
+  flex: 1;
   padding-bottom: 0;
 }
-.swg-audit-ui .swg-main-col .swg-content { flex: 1; padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.swg-audit-ui .swg-main-col .swg-content {
+  flex: 1 0 auto;
+  padding-bottom: clamp(1rem, 2vw, 1.75rem);
+}
 
 /* =========================================================================
    TEST PAGE
@@ -1284,14 +1280,8 @@ a.swg-brand { cursor: pointer; }
   width: 31px;
   height: 31px;
   border-radius: 8px;
-  background: linear-gradient(150deg, #f0b25e, #d97a52);
+  object-fit: cover;
   box-shadow: 0 0 0 1px rgba(240, 178, 94, 0.35), 0 6px 22px -8px rgba(230, 163, 74, 0.55);
-}
-.swg-audit-ui .swg-brand-mark::after {
-  inset: 6px;
-  border-color: #2a1c10;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
 }
 .swg-audit-ui .swg-nav-links {
   justify-self: center;
@@ -1331,14 +1321,17 @@ a.swg-brand { cursor: pointer; }
   filter: brightness(0) invert(1);
 }
 .swg-audit-ui .swg-shell {
+  flex: 1 1 auto;
   display: grid;
   grid-template-columns: 264px 1fr;
+  align-items: stretch;
   position: relative;
   z-index: 1;
+  min-height: 0;
 }
 .swg-audit-ui .swg-sb {
   width: auto;
-  height: calc(100vh - 62px);
+  max-height: calc(100vh - 62px);
   position: sticky;
   top: 62px;
   align-self: start;
@@ -1458,7 +1451,7 @@ a.swg-brand { cursor: pointer; }
   margin: 0.95rem 0.35rem;
 }
 .swg-audit-ui .swg-main {
-  padding: clamp(0.8rem, 1.5vw, 1.15rem) clamp(1.4rem, 5vw, 4rem) 6rem;
+  padding: clamp(0.8rem, 1.5vw, 1.15rem) clamp(1.4rem, 5vw, 4rem) 0;
   min-width: 0;
 }
 .swg-audit-ui .swg-content {
@@ -1477,6 +1470,8 @@ a.swg-brand { cursor: pointer; }
   padding: 0;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 .swg-app--home .swg-main .swg-container {
   width: 100%;

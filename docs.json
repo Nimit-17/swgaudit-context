@@ -19,6 +19,11 @@
   "styling": {
     "eyebrows": "section"
   },
+  "favicon": "/images/favicon.png",
+  "logo": {
+    "light": "/images/logo.png",
+    "dark": "/images/logo.png"
+  },
   "navigation": {
     "pages": [
       "index",
