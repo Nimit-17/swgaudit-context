@@ -15,6 +15,7 @@ The goal of SWG Audit is to provide safe, non-malicious tests that help a user c
   - `cyberslacking/`
 - `style.css` contains the custom SWG Audit UI. The site intentionally does not rely on the default Mintlify docs layout for the actual test pages.
 - `swg.js` contains the shared client-side behavior for test controls, downloads, dropdowns, chip selection, payload reconstruction, and form/test submission flows.
+- `test-access.php` provides the v3 reCAPTCHA gate. It stores each verified work email, IP address, IP-derived location, and unique completed test pages in one visitor record at `/var/lib/swgaudit-v3/visitor-submissions.csv`, and sends the same fields to the configured Google Sheets webhook when available.
 - `test-files/` contains static test assets used by the pages.
 - `scripts/generate-pages.js` is the page generator. If many pages need structural changes, update this generator and regenerate the MDX pages instead of hand-editing every page.
 
@@ -53,6 +54,8 @@ Preserve the v2 test mechanisms where they were intentional. For example:
 - Cyberslacking uses a dropdown of video categories and should update both the embedded video and its description when a category is selected.
 
 The data-theft tests depend on the old SWG Audit backend/PHP endpoints. They can be represented in the Mintlify UI, but the full end-to-end behavior only works when the v3 UI is served with access to the SWG Audit backend/proxy routes.
+
+The Apache vhost excludes `/test-access.php` from the Mintlify proxy so Apache/PHP serves the v3 verification endpoint directly. The reCAPTCHA secret remains in `/etc/swgaudit-v2/recaptcha.php`; do not commit it into this repository.
 
 ## UI Expectations
 

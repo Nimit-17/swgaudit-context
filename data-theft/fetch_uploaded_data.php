@@ -23,16 +23,26 @@ try {
     }
 
     $chunks = extract_dns_chunks($recentLog, $id);
+
     if (!isset($chunks[0])) {
         throw new Exception("Invalid or missing metadata in chunks");
     }
 
     $metadata = json_decode(base32_decode_dns($chunks[0]), true);
-    if (!is_array($metadata) || empty($metadata["name"])) {
+    if (!is_array($metadata)) {
         throw new Exception("Invalid or missing metadata in chunks");
     }
 
-    $totalDataChunks = (int)($metadata["totalDataChunks"] ?? 0);
+    $filenameFromMetadata = $metadata["name"] ?? $metadata["n"] ?? "";
+    $typeFromMetadata = $metadata["type"] ?? $metadata["t"] ?? "";
+    $sizeFromMetadata = $metadata["size"] ?? $metadata["s"] ?? null;
+    $totalDataChunks = (int)($metadata["totalDataChunks"] ?? $metadata["c"] ?? 0);
+    $encodedLength = $metadata["encodedLength"] ?? $metadata["l"] ?? null;
+
+    if ($filenameFromMetadata === "") {
+        throw new Exception("Invalid or missing metadata in chunks");
+    }
+
     if ($totalDataChunks < 1) {
         throw new Exception("Invalid metadata chunk count");
     }
@@ -63,7 +73,7 @@ try {
         exit;
     }
 
-    if (isset($metadata["encodedLength"]) && strlen($encodedData) !== (int)$metadata["encodedLength"]) {
+    if ($encodedLength !== null && strlen($encodedData) !== (int)$encodedLength) {
         echo json_encode([
             "success" => false,
             "partial" => strlen($encodedData) > 0,
@@ -76,7 +86,7 @@ try {
     }
 
     $fileData = base32_decode_dns($encodedData);
-    if (isset($metadata["size"]) && strlen($fileData) !== (int)$metadata["size"]) {
+    if ($sizeFromMetadata !== null && strlen($fileData) !== (int)$sizeFromMetadata) {
         echo json_encode([
             "success" => false,
             "partial" => strlen($encodedData) > 0,
@@ -93,7 +103,7 @@ try {
         throw new Exception("Failed to create upload directory");
     }
 
-    $filename = preg_replace("/[^a-zA-Z0-9_.-]/", "_", basename($metadata["name"]));
+    $filename = preg_replace("/[^a-zA-Z0-9_.-]/", "_", basename($filenameFromMetadata));
     $filepath = $uploadsDir . "/" . uniqid("", true) . "_" . $filename;
 
     if (file_put_contents($filepath, $fileData) === false) {
@@ -104,8 +114,8 @@ try {
         "success" => true,
         "message" => "File reconstructed successfully",
         "fileUrl" => "/data-theft/uploads/" . basename($filepath),
-        "filename" => $metadata["name"],
-        "type" => $metadata["type"] ?? "",
+        "filename" => $filenameFromMetadata,
+        "type" => $typeFromMetadata,
         "delete_after_minutes" => 10,
     ]);
 } catch (Exception $exception) {
@@ -137,7 +147,8 @@ function read_recent_dns_log($path, $lookbackSeconds) {
 function extract_dns_chunks($log, $id) {
     $escapedId = preg_quote($id, "/");
     $escapedSuffix = preg_quote(DNS_SUFFIX, "/");
-    $pattern = "/queries: info: client @\\S+ [^#]+#\\d+ \\(" . $escapedId . "\\.(\\d+)\\.([A-Z2-7.]+)\\." . $escapedSuffix . "\\): query: " . $escapedId . "\\.\\1\\.\\2\\." . $escapedSuffix . " IN A/i";
+    $recordTypes = "(?:A|AAAA|HTTPS|SVCB)";
+    $pattern = "/queries: info: client @\\S+ [^#]+#\\d+ \\(" . $escapedId . "\\.(\\d+)\\.([A-Z2-7.]+)\\." . $escapedSuffix . "\\): query: " . $escapedId . "\\.\\1\\.\\2\\." . $escapedSuffix . " IN " . $recordTypes . "\\b/i";
     preg_match_all($pattern, $log, $matches, PREG_SET_ORDER);
 
     $chunks = [];

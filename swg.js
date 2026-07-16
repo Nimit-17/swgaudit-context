@@ -27,6 +27,188 @@
     });
   })();
 
+  /* The v2 access flow is intentionally enabled for v3.  A verified session
+     identifies the visitor for test-result tracking without exposing its token
+     to the DOM or to individual simulation endpoints. */
+  // Set to true to restore the v3 work-email + reCAPTCHA access gate.
+  var TEST_ACCESS_GATE_ENABLED = false;
+  var testAccessGate = (function () {
+    if (!TEST_ACCESS_GATE_ENABLED) return { hasAccess: function () { return true; } };
+    var sessionKey = "swgaudit-v3-test-session";
+    var accessGranted = false;
+    var rememberedToken = "";
+    var dialog, form, status, emailInput, recaptchaContainer, submitButton;
+    var widgetId = null;
+    var recaptchaPromise = null;
+
+    try { rememberedToken = window.sessionStorage.getItem(sessionKey) || ""; } catch (error) {}
+
+    function injectStyles() {
+      if (document.getElementById("swg-test-access-styles")) return;
+      var style = document.createElement("style");
+      style.id = "swg-test-access-styles";
+      style.textContent = ".test-access-overlay{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:20px;background:rgba(3,7,18,.88);backdrop-filter:blur(7px)}.test-access-dialog{width:min(100%,480px);padding:30px;border:1px solid #314363;border-radius:16px;background:#0d1627;color:#edf4ff;box-shadow:0 24px 80px rgba(0,0,0,.55)}.test-access-dialog h2{margin:6px 0 10px;font-size:26px}.test-access-eyebrow{margin:0;color:#80aaff;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:12px}.test-access-safety-note{margin:0 0 22px;color:#bac8dc}.test-access-dialog label{display:block;margin-bottom:7px;font-weight:600}.test-access-dialog input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #4b6084;border-radius:8px;background:#101c31;color:#fff}.test-access-recaptcha{margin:20px 0}.test-access-status{min-height:22px;margin:10px 0;color:#ffb4b4}.test-access-submit{width:100%;padding:12px;border:0;border-radius:8px;background:#5b8cff;color:#061124;font-weight:800;cursor:pointer}.test-access-submit:disabled{opacity:.6;cursor:wait}.test-access-honeypot{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}";
+      document.head.appendChild(style);
+    }
+
+    function setStatus(message) { status.textContent = message || ""; }
+    function loadRecaptcha() {
+      if (window.grecaptcha && window.grecaptcha.render) return Promise.resolve();
+      if (recaptchaPromise) return recaptchaPromise;
+      recaptchaPromise = new Promise(function (resolve, reject) {
+        window.swgAuditRecaptchaReady = resolve;
+        var script = document.createElement("script");
+        script.src = "https://www.google.com/recaptcha/api.js?onload=swgAuditRecaptchaReady&render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.onerror = function () { reject(new Error("reCAPTCHA could not be loaded.")); };
+        document.head.appendChild(script);
+      });
+      return recaptchaPromise;
+    }
+
+    function close() {
+      accessGranted = true;
+      window.__swgAccessToken = rememberedToken;
+      if (dialog) dialog.remove();
+      document.body.classList.remove("has-test-access-gate");
+    }
+
+    function buildDialog() {
+      injectStyles();
+      dialog = document.createElement("div");
+      dialog.className = "test-access-overlay";
+      dialog.setAttribute("role", "dialog");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("aria-labelledby", "test-access-title");
+      dialog.innerHTML = '<div class="test-access-dialog"><p class="test-access-eyebrow">Security verification</p><h2 id="test-access-title">Verify to enter SWG Audit</h2><p class="test-access-safety-note">All tests are safe and no real threats are delivered. Your email, IP-derived location, and test activity are recorded for the SWG Audit dashboard.</p><form data-test-access-form><div data-test-access-email-row><label for="test-access-email">Work email</label><input id="test-access-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@company.com" required></div><div class="test-access-recaptcha" data-test-access-recaptcha aria-label="reCAPTCHA verification"></div><div class="test-access-honeypot" aria-hidden="true"><label for="test-access-company">Company website</label><input id="test-access-company" name="company" type="text" tabindex="-1" autocomplete="off"></div><p class="test-access-status" data-test-access-status aria-live="polite"></p><button class="test-access-submit" type="submit" data-test-access-submit>Verify and enter site</button></form></div>';
+      document.body.appendChild(dialog);
+      document.body.classList.add("has-test-access-gate");
+      form = dialog.querySelector("[data-test-access-form]");
+      status = dialog.querySelector("[data-test-access-status]");
+      emailInput = dialog.querySelector("#test-access-email");
+      recaptchaContainer = dialog.querySelector("[data-test-access-recaptcha]");
+      submitButton = dialog.querySelector("[data-test-access-submit]");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        var recaptchaResponse = widgetId === null ? "" : window.grecaptcha.getResponse(widgetId);
+        if (!recaptchaResponse) { setStatus("Complete the reCAPTCHA challenge."); return; }
+        submitButton.disabled = true;
+        var payload = Object.fromEntries(new FormData(form).entries());
+        payload.page = window.location.pathname;
+        payload.recaptcha_response = recaptchaResponse;
+        fetch("/test-access.php", { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+          .then(function (response) { return response.json().then(function (result) { if (!response.ok) throw new Error(result.error || "Verification failed."); return result; }); })
+          .then(function (result) {
+            rememberedToken = result.token || "";
+            try { window.sessionStorage.setItem(sessionKey, rememberedToken); } catch (error) {}
+            close();
+          })
+          .catch(function (error) { setStatus(error.message || "Verification failed. Please try again."); if (widgetId !== null) window.grecaptcha.reset(widgetId); })
+          .finally(function () { submitButton.disabled = false; });
+      });
+    }
+
+    function open() {
+      buildDialog();
+      submitButton.disabled = true;
+      fetch("/test-access.php", { headers: { Accept: "application/json" }, cache: "no-store" })
+        .then(function (response) { return response.json().then(function (result) { if (!response.ok) throw new Error(result.error || "Verification is unavailable."); return result; }); })
+        .then(function (result) {
+          return loadRecaptcha().then(function () {
+            widgetId = window.grecaptcha.render(recaptchaContainer, { sitekey: result.site_key, theme: "dark", callback: function () { form.requestSubmit(); } });
+            emailInput.focus();
+          });
+        })
+        .catch(function (error) { setStatus(error.message || "Verification is unavailable."); })
+        .finally(function () { submitButton.disabled = false; });
+    }
+
+    open();
+    return { hasAccess: function () { return accessGranted; } };
+  })();
+
+  function trackTestResult(outcome) {
+    var token = window.__swgAccessToken;
+    if (!token) return;
+    fetch("/test-access.php", {
+      method: "POST",
+      keepalive: true,
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "activity", token: token, test: window.location.pathname, outcome: outcome })
+    }).catch(function () {});
+  }
+
+  function closeMobileSidebar() {
+    document.documentElement.classList.remove("swg-mobile-sb-open");
+    document.querySelectorAll("[data-mobile-sb-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  var lastMobileSidebarTouch = 0;
+
+  function toggleMobileSidebarFrom(control) {
+    var willOpen = !document.documentElement.classList.contains("swg-mobile-sb-open");
+    document.documentElement.classList.toggle("swg-mobile-sb-open", willOpen);
+    if (control) control.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  }
+
+  function handleMobileSidebarActivation(event) {
+    var mobileToggle = event.target.closest && event.target.closest("[data-mobile-sb-toggle]");
+    var isMobileSidebarControl = mobileToggle || (event.target.hasAttribute && event.target.hasAttribute("data-mobile-sb-close"));
+    if (isMobileSidebarControl && Date.now() - lastMobileSidebarTouch < 250) {
+      event.preventDefault();
+      event.stopPropagation();
+      return true;
+    }
+
+    if (mobileToggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      lastMobileSidebarTouch = Date.now();
+      toggleMobileSidebarFrom(mobileToggle);
+      return true;
+    }
+
+    if (event.target.hasAttribute && event.target.hasAttribute("data-mobile-sb-close")) {
+      event.preventDefault();
+      event.stopPropagation();
+      lastMobileSidebarTouch = Date.now();
+      closeMobileSidebar();
+      return true;
+    }
+
+    return false;
+  }
+
+  function initMobileSidebar() {
+    document.querySelectorAll(".swg-audit-ui").forEach(function (app) {
+      var nav = app.querySelector(".swg-nav");
+      var sidebar = app.querySelector(".swg-sb");
+      if (!nav || !sidebar || nav.querySelector("[data-mobile-sb-toggle]")) return;
+
+      var button = document.createElement("button");
+      button.className = "swg-mobile-menu";
+      button.type = "button";
+      button.setAttribute("data-mobile-sb-toggle", "");
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-controls", "swg-mobile-tests");
+      button.setAttribute("aria-label", "Open tests menu");
+      button.innerHTML = '<span class="swg-mobile-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="swg-mobile-menu-text">Tests</span>';
+      nav.insertBefore(button, nav.firstChild);
+
+      if (!sidebar.id) sidebar.id = "swg-mobile-tests";
+      var overlay = document.createElement("div");
+      overlay.className = "swg-mobile-sb-backdrop";
+      overlay.setAttribute("data-mobile-sb-close", "");
+      overlay.setAttribute("role", "presentation");
+      overlay.setAttribute("aria-label", "Close tests menu");
+      app.appendChild(overlay);
+    });
+  }
+
   /* ---- helpers --------------------------------------------------------- */
   function base64ToBytes(value) {
     var binary = window.atob(value.replace(/\s+/g, ""));
@@ -99,10 +281,12 @@
 
   function terminalPass(el, text) {
     terminalLine(el, "Your perimeter security has passed. " + sentenceCase(text), "pass");
+    trackTestResult("passed");
   }
 
   function terminalFail(el, text) {
     terminalLine(el, "Your perimeter security has failed. " + sentenceCase(text), "fail");
+    trackTestResult("failed");
   }
 
   function sentenceCase(text) {
@@ -450,6 +634,92 @@
     return opened;
   }
 
+  function isNewTabActivation(event) {
+    return event && (event.button === 1 || event.ctrlKey || event.metaKey);
+  }
+
+  function downloadTarget(control) {
+    if (!control) return null;
+    var reveal = control.closest("[data-reveal]");
+    if (reveal) {
+      return { url: reveal.getAttribute("href"), name: (reveal.getAttribute("href") || "").split("/").pop(), kind: "direct" };
+    }
+
+    var single = control.closest("[data-single-download]");
+    if (single) {
+      return { url: single.getAttribute("data-url"), name: single.getAttribute("data-name"), kind: "direct" };
+    }
+
+    var dl = control.closest("[data-dl]");
+    if (!dl) return null;
+    var sel = activePick(dl.getAttribute("data-dl"));
+    if (!sel) return null;
+    var kind = sel.getAttribute("data-kind") || "direct";
+    return {
+      url: sel.getAttribute("data-url"),
+      name: sel.getAttribute("data-name"),
+      mime: sel.getAttribute("data-mime"),
+      carrier: sel.getAttribute("data-carrier"),
+      kind: kind,
+    };
+  }
+
+  function handleDownloadNewTabActivation(event) {
+    if (!isNewTabActivation(event)) return false;
+    var control = event.target.closest("[data-reveal], [data-single-download], [data-dl]");
+    var target = downloadTarget(control);
+    if (!target || (!target.url && target.kind !== "smuggle")) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    startConsole(control, "swg-audit fetch --new-tab" + (target.name ? " --file=" + target.name : ""));
+    terminalLine(control, "opening delivery URL in a new tab ...");
+    var opened = openNewTab("about:blank");
+    if (!opened) {
+      terminalPass(control, "download delivery was blocked before it could open.");
+      hideBanner(control);
+      return true;
+    }
+
+    if (target.kind === "direct" || target.kind === "link") {
+      opened.location.href = target.url;
+      terminalFail(control, "download delivery opened in a new tab.");
+      revealBanner(control);
+      return true;
+    }
+
+    control.setAttribute("aria-busy", "true");
+    terminalLine(control, "assembling file for the new tab ...");
+    var work;
+    if (target.kind === "assemble") work = buildAssembled(target.url);
+    else if (target.kind === "wasm") work = buildWasm(target.url, target.name, target.mime);
+    else if (target.kind === "chunk") work = buildChunk(target.url);
+    else if (target.kind === "smuggle") work = buildSmuggled(target.carrier || "html", target.name);
+    else work = buildDirect(target.url, target.name, target.mime);
+
+    work
+      .then(function (out) {
+        var blobUrl = URL.createObjectURL(new Blob([out.bytes], { type: target.mime || out.mime || "application/octet-stream" }));
+        opened.location.href = blobUrl;
+        setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 15000);
+        terminalFail(control, "file was assembled and opened in a new tab.");
+        revealBanner(control);
+      })
+      .catch(function (err) {
+        try { opened.close(); } catch (error) {}
+        if (isBlockedFetchError(err)) {
+          terminalPass(control, "the download was blocked or could not complete.");
+          hideBanner(control);
+          return;
+        }
+        terminalLine(control, "download result could not be verified automatically.");
+        hideBanner(control);
+      })
+      .finally(function () {
+        control.removeAttribute("aria-busy");
+      });
+    return true;
+  }
+
   function testId() {
     if (crypto.randomUUID) return crypto.randomUUID().replaceAll("-", "");
     var bytes = crypto.getRandomValues(new Uint8Array(16));
@@ -499,13 +769,13 @@
   }
 
   function buildCanvasHtml() {
-    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SWG Audit Test - Dummy GitHub Canvas Login</title><style>html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0d1117}canvas{width:100vw;height:100vh;display:block;outline:none}</style></head><body><canvas id="login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered entirely on canvas"></canvas><script>' +
-      'const canvas=document.getElementById("login-canvas"),ctx=canvas.getContext("2d"),state={active:"username",username:"",password:"",submitted:false,boxes:{},scale:1};' +
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SWG Audit Test - Dummy GitHub Canvas Login</title><style>html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0d1117}canvas{width:100vw;height:100vh;display:block;outline:none}.kbd{position:fixed;left:50%;top:72%;width:1px;height:1px;padding:0;border:0;opacity:.01;background:transparent;color:transparent;font-size:16px;caret-color:transparent;pointer-events:none}</style></head><body><canvas id="login-canvas" tabindex="0" aria-label="SWG Audit dummy GitHub-style login rendered entirely on canvas"></canvas><input id="canvas-keyboard" class="kbd" autocomplete="off" autocapitalize="none" spellcheck="false" aria-hidden="true"><script>' +
+      'const canvas=document.getElementById("login-canvas"),keyboard=document.getElementById("canvas-keyboard"),ctx=canvas.getContext("2d"),state={active:"username",username:"",password:"",submitted:false,boxes:{},scale:1};' +
       'const rr=(x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r)};' +
       'const write=(v,x,y,s,c,w,a)=>{ctx.fillStyle=c;ctx.font=(w||"400")+" "+s+"px -apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif";ctx.textAlign=a||"left";ctx.textBaseline="middle";ctx.fillText(v,x,y)};' +
       'const input=(n,l,v,x,y,w)=>{write(l,x,y,15,"#f0f6fc","600");const b={x:x,y:y+18,width:w,height:44};state.boxes[n]=b;rr(b.x,b.y,b.width,b.height,6);ctx.fillStyle="#0d1117";ctx.fill();ctx.strokeStyle=state.active===n?"#2f81f7":"#3d444d";ctx.lineWidth=state.active===n?2:1;ctx.stroke();write(v,b.x+12,b.y+b.height/2,16,"#f0f6fc")};' +
       'const draw=()=>{const vw=innerWidth,vh=innerHeight;state.scale=Math.min(1.14,vw/390,vh/650);const w=vw/state.scale,h=vh/state.scale,pw=Math.min(420,w-36),x=(w-pw)/2;let y=Math.max(44,(h-650)/2);state.boxes={};ctx.clearRect(0,0,vw,vh);ctx.save();ctx.scale(state.scale,state.scale);ctx.fillStyle="#0d1117";ctx.fillRect(0,0,w,h);ctx.fillStyle="#f0f6fc";ctx.beginPath();ctx.arc(w/2,y+30,28,0,Math.PI*2);ctx.fill();write("GH",w/2,y+31,16,"#0d1117","800","center");write("Sign in to GitHub",w/2,y+94,26,"#f0f6fc","600","center");y+=138;if(state.submitted){rr(x,y,pw,92,6);ctx.fillStyle="#2d1519";ctx.fill();ctx.strokeStyle="#f85149";ctx.stroke();write("Test Failed: submission was supposed to be blocked.",x+14,y+22,13,"#ffb4b4","700");write("Username: "+state.username,x+14,y+49,13,"#f0f6fc");write("Password: "+state.password,x+14,y+72,13,"#f0f6fc");y+=116}input("username","Username or email address",state.username,x,y,pw);y+=88;write("Forgot password?",x+pw,y,14,"#2f81f7","400","right");input("password","Password","*".repeat(state.password.length),x,y,pw);y+=86;const sub={x:x,y:y,width:pw,height:46};state.boxes.submit=sub;rr(sub.x,sub.y,sub.width,sub.height,6);ctx.fillStyle="#238636";ctx.fill();write("Sign in",w/2,sub.y+sub.height/2,16,"#fff","700","center");y+=82;ctx.strokeStyle="#3d444d";ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+pw*.44,y);ctx.moveTo(x+pw*.56,y);ctx.lineTo(x+pw,y);ctx.stroke();write("or",w/2,y,15,"#8b949e","400","center");write("Continue with Google",w/2,y+55,15,"#f0f6fc","600","center");write("Continue with Apple",w/2,y+102,15,"#f0f6fc","600","center");write("New to GitHub?  Create an account",w/2,y+162,15,"#2f81f7","400","center");ctx.restore()};' +
-      'const resize=()=>{const r=devicePixelRatio||1;canvas.width=Math.floor(innerWidth*r);canvas.height=Math.floor(innerHeight*r);ctx.setTransform(r,0,0,r,0,0);draw()};const contains=(p,b)=>b&&p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;canvas.addEventListener("mousedown",e=>{const p={x:e.clientX/state.scale,y:e.clientY/state.scale};canvas.focus();if(contains(p,state.boxes.username))state.active="username";if(contains(p,state.boxes.password))state.active="password";if(contains(p,state.boxes.submit))state.submitted=true;draw()});canvas.addEventListener("keydown",e=>{if(e.key==="Tab"){e.preventDefault();state.active=state.active==="username"?"password":"username"}else if(e.key==="Enter"){e.preventDefault();state.submitted=true}else if(e.key==="Backspace"){e.preventDefault();state[state.active]=state[state.active].slice(0,-1)}else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();state[state.active]+=e.key}draw()});addEventListener("resize",resize);resize();canvas.focus();' +
+      'const resize=()=>{const r=devicePixelRatio||1;canvas.width=Math.floor(innerWidth*r);canvas.height=Math.floor(innerHeight*r);ctx.setTransform(r,0,0,r,0,0);draw()};const contains=(p,b)=>b&&p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;const syncKeyboard=()=>{keyboard.type=state.active==="password"?"password":"text";keyboard.value=state[state.active];keyboard.setSelectionRange(keyboard.value.length,keyboard.value.length)};const focusField=()=>{syncKeyboard();keyboard.focus({preventScroll:true})};const press=e=>{const p={x:e.clientX/state.scale,y:e.clientY/state.scale};if(contains(p,state.boxes.username)){state.active="username";focusField()}else if(contains(p,state.boxes.password)){state.active="password";focusField()}else if(contains(p,state.boxes.submit)){state.submitted=true;keyboard.blur()}draw()};canvas.addEventListener("pointerdown",e=>{e.preventDefault();press(e)});canvas.addEventListener("touchstart",e=>{if(e.touches&&e.touches[0]){e.preventDefault();press(e.touches[0])}},{passive:false});canvas.addEventListener("mousedown",e=>{press(e)});keyboard.addEventListener("input",()=>{state[state.active]=keyboard.value;draw()});keyboard.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();state.submitted=true;keyboard.blur();draw()}else if(e.key==="Tab"){e.preventDefault();state.active=state.active==="username"?"password":"username";focusField();draw()}});canvas.addEventListener("keydown",e=>{if(e.key==="Tab"){e.preventDefault();state.active=state.active==="username"?"password":"username";syncKeyboard()}else if(e.key==="Enter"){e.preventDefault();state.submitted=true}else if(e.key==="Backspace"){e.preventDefault();state[state.active]=state[state.active].slice(0,-1);syncKeyboard()}else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();state[state.active]+=e.key;syncKeyboard()}draw()});addEventListener("resize",resize);resize();syncKeyboard();canvas.focus();' +
       '</script></body></html>';
   }
 
@@ -556,17 +826,7 @@
 
   function setPersistentOutput(out, text, state, pagePath) {
     var key = (pagePath || pagePathFor(out)) + "::" + outputMarker(out);
-    if (state === "is-pass" || state === "is-fail") {
-      if (key) delete outputState[key];
-      if (out) {
-        out.hidden = true;
-        out.setAttribute("hidden", "");
-        out.style.display = "";
-        out.textContent = "";
-        out.classList.remove("is-pass", "is-fail");
-      }
-      return;
-    }
+    if (key) outputState[key] = { text: text, state: state };
     setOutput(out, text, state);
   }
 
@@ -606,6 +866,16 @@
     button.style.display = "";
     button.hidden = true;
     button.setAttribute("hidden", "");
+  }
+
+  function serverFileButtonFor(el) {
+    var run = el && el.closest && el.closest(".swg-run");
+    return run && run.querySelector("[data-open-server-file]");
+  }
+
+  function clearRunResult(form, out) {
+    clearPersistentOutput(out);
+    clearServerFileButton(serverFileButtonFor(form));
   }
 
   function fileInputKey(input) {
@@ -725,6 +995,7 @@
       setOutput(out, "Choose a file before running the test.");
       return;
     }
+    clearRunResult(form, out);
     startConsole(form, "swg-audit data-theft submit --file=" + file.name);
     terminalLine(form, preparingText);
     setOutput(out, preparingText);
@@ -873,6 +1144,27 @@
     return new Promise(function (resolve) { window.setTimeout(resolve, ms); });
   }
 
+  function runLimited(items, limit, worker) {
+    var index = 0;
+    var active = 0;
+    return new Promise(function (resolve) {
+      function next() {
+        if (index >= items.length && active === 0) return resolve();
+        while (active < limit && index < items.length) {
+          var item = items[index++];
+          active += 1;
+          Promise.resolve(worker(item))
+            .catch(function () {})
+            .finally(function () {
+              active -= 1;
+              next();
+            });
+        }
+      }
+      next();
+    });
+  }
+
   function safeUploadUrl(url) {
     return typeof url === "string" && /^\/data-theft\/uploads\/[^/?#]+$/.test(url);
   }
@@ -905,14 +1197,31 @@
       }
       chunks.push({ number: chunkNumber, labels: labels });
     }
+    var safeName = (file.name || "dns-tunnel-file").replace(/[^\w.-]+/g, "_");
+    if (safeName.length > 48) {
+      var dot = safeName.lastIndexOf(".");
+      var ext = dot > 0 && safeName.length - dot <= 12 ? safeName.slice(dot) : "";
+      safeName = safeName.slice(0, 48 - ext.length) + ext;
+    }
     var meta = new TextEncoder().encode(JSON.stringify({
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      totalDataChunks: chunks.length,
-      encodedLength: encodedData.length,
+      n: safeName,
+      t: (file.type || "").slice(0, 48),
+      s: file.size,
+      c: chunks.length,
+      l: encodedData.length,
     }));
-    return [{ number: 0, labels: (base32(meta).match(/.{1,60}/g) || []) }].concat(chunks);
+    var metaPayload = base32(meta);
+    if (metaPayload.length > maxDataLength) {
+      meta = new TextEncoder().encode(JSON.stringify({
+        n: "dns-tunnel-file",
+        t: "",
+        s: file.size,
+        c: chunks.length,
+        l: encodedData.length,
+      }));
+      metaPayload = base32(meta);
+    }
+    return [{ number: 0, labels: (metaPayload.match(/.{1,60}/g) || []) }].concat(chunks);
   }
 
   function checkDnsResult(id, form, attempts, pagePath) {
@@ -962,6 +1271,7 @@
     }
     submit.disabled = true;
     if (reset) reset.hidden = true;
+    clearRunResult(form, out);
     startConsole(form, "swg-audit dns-tunnel --file=" + file.name);
     terminalLine(form, "encoding file into DNS labels ...");
     setOutput(out, "Preparing DNS tunnelling test...");
@@ -970,7 +1280,7 @@
       .then(function (bytes) {
         var chunks = buildDnsChunks(id, file, base32(bytes));
         var attempted = 0;
-        return Promise.all(chunks.map(function (chunk) {
+        return runLimited(chunks, 8, function (chunk) {
           var url = "https://" + id + "." + chunk.number + "." + chunk.labels.join(".") + ".swgaudit.com";
           return fetch(url, { mode: "no-cors" }).catch(function () {}).finally(function () {
             attempted += 1;
@@ -979,9 +1289,9 @@
               terminalLine(form, "attempted " + attempted + "/" + chunks.length + " DNS requests ...");
             }
           });
-        }));
+        });
       })
-      .then(function () { return checkDnsResult(id, form, 5, pagePath); })
+      .then(function () { return checkDnsResult(id, form, 8, pagePath); })
       .then(function (result) {
         if (result.success && result.fileUrl) {
           terminalFail(form, "server reconstructed the full file from DNS queries.");
@@ -1048,6 +1358,7 @@
     submit.disabled = true;
     input.disabled = true;
     if (reset) reset.hidden = true;
+    clearRunResult(form, out);
     startConsole(form, "swg-audit path-tunnel --file=" + file.name);
     terminalLine(form, "encoding file into URL path chunks ...");
     setOutput(out, "Preparing HTTP path tunneling test...");
@@ -1127,7 +1438,40 @@
   }
 
   /* ---- delegated click handler ---------------------------------------- */
+  document.addEventListener("auxclick", function (event) {
+    handleDownloadNewTabActivation(event);
+  }, true);
+
   document.addEventListener("click", function (event) {
+    handleDownloadNewTabActivation(event);
+  }, true);
+
+  document.addEventListener("pointerup", function (event) {
+    handleMobileSidebarActivation(event);
+  }, true);
+
+  document.addEventListener("touchend", function (event) {
+    handleMobileSidebarActivation(event);
+  }, true);
+
+  document.addEventListener("click", function (event) {
+    if (Date.now() - lastMobileSidebarTouch < 700) return;
+
+    var mobileToggle = event.target.closest("[data-mobile-sb-toggle]");
+    if (mobileToggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleMobileSidebarFrom(mobileToggle);
+      return;
+    }
+
+    if (event.target.hasAttribute("data-mobile-sb-close")) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeMobileSidebar();
+      return;
+    }
+
     // 0a) collapsible sidebar category; the adjacent category name remains a link.
     var sbToggle = event.target.closest("[data-sb-toggle]");
     if (sbToggle) {
@@ -1462,6 +1806,7 @@
         setOutput(fileOut, "Choose a file before running the test.");
         return;
       }
+      clearRunResult(normalFile, fileOut);
       startConsole(normalFile, "swg-audit file-upload --file=" + normalSelectedFile.name);
       terminalLine(normalFile, "uploading selected file to server ...");
       setOutput(fileOut, "Uploading selected file...");
@@ -1533,6 +1878,10 @@
     }
   }, true);
 
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeMobileSidebar();
+  });
+
   document.addEventListener("click", function (event) {
     var dnsReset = event.target.closest("[data-dns-tunnel-reset]");
     if (dnsReset) {
@@ -1546,7 +1895,7 @@
         dnsOut.textContent = "";
         dnsOut.classList.remove("is-pass", "is-fail");
       }
-      clearServerFileButton(dnsForm && dnsForm.querySelector("[data-open-server-file]"));
+      clearServerFileButton(serverFileButtonFor(dnsForm));
       dnsReset.hidden = true;
       return;
     }
@@ -1563,12 +1912,13 @@
         pathOut.textContent = "";
         pathOut.classList.remove("is-pass", "is-fail");
       }
-      clearServerFileButton(pathForm && pathForm.querySelector("[data-open-server-file]"));
+      clearServerFileButton(serverFileButtonFor(pathForm));
       pathReset.hidden = true;
     }
   });
 
   function initConsoles() {
+    initMobileSidebar();
     initSmugglingConsoles();
     initTestConsoles();
     initFileControls();
