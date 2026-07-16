@@ -33,6 +33,7 @@ jobs:
     name: Deploy to production server
     runs-on: ubuntu-latest
     needs: verify
+    environment: production
     timeout-minutes: 8
 
     steps:
