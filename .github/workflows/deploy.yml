@@ -11,6 +11,7 @@ jobs:
   verify:
     name: Verify main before deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository
@@ -32,15 +33,25 @@ jobs:
     name: Deploy to production server
     runs-on: ubuntu-latest
     needs: verify
+    timeout-minutes: 8
 
     steps:
+      - name: Validate deploy secret
+        run: |
+          if [ -z "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" ]; then
+            echo "Missing GitHub Actions secret: SWGAUDIT_DEPLOY_KEY"
+            exit 1
+          fi
+
       - name: Add SSH key
         run: |
+          set -euo pipefail
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" > ~/.ssh/swgaudit_deploy_key
           chmod 600 ~/.ssh/swgaudit_deploy_key
-          ssh-keyscan -p 7575 167.71.228.73 >> ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/swgaudit_deploy_key >/dev/null
+          ssh-keyscan -T 10 -p 7575 167.71.228.73 >> ~/.ssh/known_hosts
 
       - name: Run server deploy script
         run: |
-          ssh -i ~/.ssh/swgaudit_deploy_key -p 7575 root@167.71.228.73 deploy-swgaudit-main
+          ssh -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/swgaudit_deploy_key -p 7575 root@167.71.228.73 deploy-swgaudit-main
