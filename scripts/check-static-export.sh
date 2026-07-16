@@ -37,7 +37,7 @@ if find . -type f -name '*.mdx' -not -path './.git/*' | grep -q .; then
 fi
 
 [ ! -f docs.json ] || fail "docs.json belongs on the Mintlify backup branch, not static main"
-[ ! -f package-lock.json ] || fail "package-lock.json is not needed for the static export"
+[ -f package-lock.json ] || fail "package-lock.json is required for locked Selenium verification dependencies"
 
 grep -q 'name="generator" content="Mintlify"' index.html || fail "index.html does not look like the Mintlify export"
 grep -q '/_next/static/' index.html || fail "index.html does not reference exported _next assets"
