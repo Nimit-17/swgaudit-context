@@ -5,7 +5,8 @@
   "description": "SWG Audit Mintlify site with homepage, about page, and 23 security test pages",
   "scripts": {
     "dev": "mint dev",
-    "check": "mint broken-links"
+    "check": "mint broken-links",
+    "smoke": "bash scripts/smoke-test.sh"
   },
   "devDependencies": {
     "mint": "4.2.655"

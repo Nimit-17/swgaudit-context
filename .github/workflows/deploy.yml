@@ -29,6 +29,22 @@ jobs:
       - name: Check links
         run: npm run check
 
+      - name: Start local Mintlify server
+        run: |
+          npm run dev -- --port 3333 > /tmp/swgaudit-mint.log 2>&1 &
+          echo $! > /tmp/swgaudit-mint.pid
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:3333/ >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/swgaudit-mint.log
+          exit 1
+
+      - name: Run smoke tests
+        run: npm run smoke
+
   deploy:
     name: Deploy to production server
     runs-on: ubuntu-latest

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BASE_URL="${BASE_URL:-http://127.0.0.1:3333}"
+BASE_URL="${BASE_URL%/}"
+PATHS=(
+  "/"
+  "/malware"
+  "/phishing"
+  "/data-theft"
+  "/cyberslacking"
+)
+
+for path in "${PATHS[@]}"; do
+  url="${BASE_URL}${path}"
+  body="$(mktemp)"
+  code="$(curl -L -sS --max-time 20 -o "$body" -w '%{http_code}' "$url")"
+  if [[ ! "$code" =~ ^(2|3)[0-9][0-9]$ ]]; then
+    echo "Smoke test failed: $url returned HTTP $code"
+    sed -n '1,40p' "$body" || true
+    rm -f "$body"
+    exit 1
+  fi
+  if ! grep -qi 'SWG Audit\|SWGAudit\|Security Web Gateway' "$body"; then
+    echo "Smoke test failed: $url did not look like a SWGAudit page"
+    sed -n '1,40p' "$body" || true
+    rm -f "$body"
+    exit 1
+  fi
+  rm -f "$body"
+  echo "OK $code $path"
+done
