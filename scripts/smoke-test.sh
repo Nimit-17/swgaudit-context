@@ -3,6 +3,15 @@ set -euo pipefail
 
 BASE_URL="${BASE_URL:-http://127.0.0.1:3333}"
 BASE_URL="${BASE_URL%/}"
+
+curl_args=(-L -sS --max-time 20)
+if [ -n "${SMOKE_RESOLVE:-}" ]; then
+  curl_args+=(--resolve "$SMOKE_RESOLVE")
+fi
+if [ "${SMOKE_INSECURE:-0}" = "1" ]; then
+  curl_args+=(-k)
+fi
+
 PATHS=(
   "/"
   "/malware"
@@ -14,7 +23,7 @@ PATHS=(
 for path in "${PATHS[@]}"; do
   url="${BASE_URL}${path}"
   body="$(mktemp)"
-  code="$(curl -L -sS --max-time 20 -o "$body" -w '%{http_code}' "$url")"
+  code="$(curl "${curl_args[@]}" -o "$body" -w '%{http_code}' "$url")"
   if [[ ! "$code" =~ ^(2|3)[0-9][0-9]$ ]]; then
     echo "Smoke test failed: $url returned HTTP $code"
     sed -n '1,40p' "$body" || true
