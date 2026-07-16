@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -38,18 +38,26 @@ jobs:
     steps:
       - name: Validate deploy secret
         run: |
-          if [ -z "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" ]; then
+          if [ -z "\{{ secrets.SWGAUDIT_DEPLOY_KEY }}" ]; then
             echo "Missing GitHub Actions secret: SWGAUDIT_DEPLOY_KEY"
             exit 1
           fi
 
-      - name: Add SSH key
+      - name: Prepare SSH key
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" > ~/.ssh/swgaudit_deploy_key
+          printf '%s\n' "\{{ secrets.SWGAUDIT_DEPLOY_KEY }}" > ~/.ssh/swgaudit_deploy_key
           chmod 600 ~/.ssh/swgaudit_deploy_key
-          ssh-keygen -y -f ~/.ssh/swgaudit_deploy_key >/dev/null
+          ssh-keygen -y -f ~/.ssh/swgaudit_deploy_key > ~/.ssh/swgaudit_deploy_key.pub
+          expected_pub='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDCyJMWUviH2QvMOuHL4t5U9Igm7ImmvVPltjH/FdRwD swgaudit-github-actions-deploy'
+          actual_pub="$(cat ~/.ssh/swgaudit_deploy_key.pub)"
+          if [ "$actual_pub" != "$expected_pub" ]; then
+            echo "SWGAUDIT_DEPLOY_KEY is present, but it is not the expected deploy private key."
+            echo "Re-copy the full private key from /root/.ssh/swgaudit_github_actions_deploy."
+            exit 1
+          fi
+          timeout 10 bash -c '</dev/tcp/167.71.228.73/7575'
           ssh-keyscan -T 10 -p 7575 167.71.228.73 >> ~/.ssh/known_hosts
 
       - name: Run server deploy script
