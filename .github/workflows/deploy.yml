@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify main before deploy
+    name: Verify static main before deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -17,33 +17,24 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: npm
+      - name: Validate static export
+        run: bash scripts/check-static-export.sh
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check links
-        run: npm run check
-
-      - name: Start local Mintlify server
+      - name: Start local static server
         run: |
-          npm run dev -- --port 3333 > /tmp/swgaudit-mint.log 2>&1 &
-          echo $! > /tmp/swgaudit-mint.pid
-          for i in {1..60}; do
+          python3 -m http.server 3333 > /tmp/swgaudit-static.log 2>&1 &
+          echo $! > /tmp/swgaudit-static.pid
+          for i in {1..30}; do
             if curl -fsS http://127.0.0.1:3333/ >/dev/null; then
               exit 0
             fi
-            sleep 2
+            sleep 1
           done
-          cat /tmp/swgaudit-mint.log
+          cat /tmp/swgaudit-static.log
           exit 1
 
       - name: Run smoke tests
-        run: npm run smoke
+        run: BASE_URL=http://127.0.0.1:3333 bash scripts/smoke-test.sh
 
   deploy:
     name: Deploy to production server
