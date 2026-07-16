@@ -5,7 +5,11 @@
   "description": "Exported static/PHP SWG Audit site",
   "scripts": {
     "check": "bash scripts/check-static-export.sh",
+    "selenium": "node scripts/selenium-smoke.mjs",
     "smoke": "bash scripts/smoke-test.sh",
     "serve": "node serve.js"
+  },
+  "devDependencies": {
+    "selenium-webdriver": "^4.35.0"
   }
 }
