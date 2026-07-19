@@ -11,7 +11,7 @@ on:
 
 jobs:
   mintlify-check:
-    name: Mintlify source and static export check
+    name: Mintlify broken-link check
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
