@@ -1,0 +1,152 @@
+---
+title: "Page assembled on browser"
+description: "Locally stored phishing page detection"
+mode: "custom"
+---
+
+<div className="swg-app swg-audit-ui">
+  <div className="swg-nav" role="navigation" aria-label="Primary">
+    <a className="swg-brand" href="/">
+      <img className="swg-brand-mark" src="/images/logo.png" alt="" width="31" height="31" />
+      SWG Audit
+    </a>
+    <div className="swg-nav-actions">
+      <a className="swg-nl swg-about-link" href="/about">About us</a>
+      <a className="swg-nl swg-contribute-link" href="/contribute">Contribute</a>
+      <a className="swg-gh" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">
+        <img src="/images/github-mark.svg" alt="" />
+        <span className="swg-sr-only">GitHub</span>
+      </a>
+    </div>
+  </div>
+  <script src="/favicon.js" defer></script>
+  <div className="swg-shell">
+    <div className="swg-sb" role="complementary" aria-label="Tests">
+      <a className="swg-sb-link" href="/getting-started">Getting started</a>
+      <div className="swg-sb-sep" />
+      
+      <div className="swg-sb-cat is-open">
+        <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-phishing" aria-label="Collapse Phishing tests" aria-expanded="true">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group" id="sbg-phishing">
+        <a className="swg-si" href="/phishing/url-manipulation">URL manipulation</a>
+        <a className="swg-si is-active" href="/phishing/site-stored-as-mhtml-or-raw-html" aria-current="page">Page assembled on browser</a>
+        <a className="swg-si" href="/phishing/canvas-engine">Canvas page</a>
+        <a className="swg-si" href="/phishing/cached-content-mutation">Content mutation</a>
+        <a className="swg-si" href="/phishing/form-submission-on-random-site">Credential form submission</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/malware/">Malware</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-malware" aria-label="Expand Malware tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-malware">
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data download</a>
+        <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
+        <a className="swg-si" href="/malware/executable-files">Executable files</a>
+        <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud downloads</a>
+        <a className="swg-si" href="/malware/nested-file-download">Nested file download</a>
+        <a className="swg-si" href="/malware/password-protected-file">Password-protected file</a>
+        <a className="swg-si" href="/malware/file-spoofing">File spoofing</a>
+        <a className="swg-si" href="/malware/encoded-files">Encoded files</a>
+        <a className="swg-si" href="/malware/encrypted-files">Encrypted files</a>
+        <a className="swg-si" href="/malware/browser-open-docm">Macro document</a>
+        <a className="swg-si" href="/malware/webassembly-eicar">Web Assembly</a>
+        <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks</a>
+        <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling through frontend files</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/data-theft/">Data Theft</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-data-theft" aria-label="Expand Data Theft tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-data-theft">
+        <a className="swg-si" href="/data-theft/personal-data-submission-in-normal-file">File submission</a>
+        <a className="swg-si" href="/data-theft/file-encoding">File encoding</a>
+        <a className="swg-si" href="/data-theft/file-encrypting">File encrypting</a>
+        <a className="swg-si" href="/data-theft/file-chunking">File chunking</a>
+        <a className="swg-si" href="/data-theft/dns-tunneling">DNS tunneling</a>
+        <a className="swg-si" href="/data-theft/http-path-tunneling">HTTP path tunneling</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
+        <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <a className="swg-sb-link" href="/about">About us</a>
+      <a className="swg-sb-link" href="/contribute">Contribute</a>
+    </div>
+    <div className="swg-main swg-main-col" role="main">
+      <div className="swg-content">
+        <div className="swg-bc" role="navigation" aria-label="Breadcrumb">
+          <a className="swg-bc-home" href="/">Home</a>
+          <span className="swg-bc-sep">/</span>
+          <a className="swg-bc-category" href="/phishing/">Phishing</a>
+          <span className="swg-bc-sep">/</span>
+          <span className="swg-bc-cur swg-bc-current">Page assembled on browser</span>
+        </div>
+        <h1>Page assembled on browser</h1>
+        <div className="swg-divider" />
+        <div className="swg-info">
+          <section className="swg-block">
+            <div className="swg-block-label">The threat</div>
+            <p className="swg-block-text">Instead of hosting a phishing page on a live server, an attacker can hand someone a local HTML or MHTML file. Tools that only inspect network traffic can miss content that never crosses the wire as a normal request.</p>
+          </section>
+          <section className="swg-block">
+            <div className="swg-block-label">How the test works</div>
+            <p className="swg-block-text">Choose a format, then open it. The browser builds a fake login page locally in that format and opens it in a new tab, the same way an opened phishing file would behave.</p>
+          </section>
+        </div>
+        <div className="swg-run">
+          <div className="swg-run-label">Try it yourself</div>
+          <div className="swg-run-body">
+            <div className="swg-run-controls">
+<div className="swg-pick" data-pick="stored-site">
+          <button className="swg-chip is-active" type="button" data-chip data-format="raw-html">Raw HTML</button>
+          <button className="swg-chip" type="button" data-chip data-format="mhtml">MHTML</button>
+        </div>
+              <div className="swg-pf">
+                <div className="swg-pf-card swg-pf-pass">
+                  <span className="swg-pf-glyph">&#10003;</span>
+                  <div>
+                    <div className="swg-pf-label">Test pass condition</div>
+                    <p className="swg-pf-text">The gateway or browser flags, blocks, or warns before the local page is shown.</p>
+                  </div>
+                </div>
+                <div className="swg-pf-card swg-pf-fail">
+                  <span className="swg-pf-glyph">&#10007;</span>
+                  <div>
+                    <div className="swg-pf-label">Test fail condition</div>
+                    <p className="swg-pf-text">The fake login page opens and renders normally.</p>
+                  </div>
+                </div>
+              </div>
+<div className="swg-dl-row">
+          <button className="swg-dl" type="button" data-stored-launch="stored-site">Open stored page</button>
+        </div>
+            </div>
+            <div className="swg-console" data-test-console></div>
+          </div>
+        </div>
+        <script src="/swg.js" defer></script>
+      </div>
+      <div className="swg-foot">
+        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+</div>

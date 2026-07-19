@@ -1,0 +1,148 @@
+---
+title: "SWG Audit"
+description: "Validate the real-world effectiveness of your perimeter security."
+mode: "custom"
+---
+
+<div className="swg-app swg-audit-ui swg-app--home">
+  <div className="swg-nav" role="navigation" aria-label="Primary">
+    <a className="swg-brand" href="/">
+      <img className="swg-brand-mark" src="/images/logo.png" alt="" width="31" height="31" />
+      SWG Audit
+    </a>
+    <div className="swg-nav-actions">
+      <a className="swg-nl swg-about-link" href="/about">About us</a>
+      <a className="swg-nl swg-contribute-link" href="/contribute">Contribute</a>
+      <a className="swg-gh" href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">
+        <img src="/images/github-mark.svg" alt="" />
+        <span className="swg-sr-only">GitHub</span>
+      </a>
+    </div>
+  </div>
+  <script src="/favicon.js" defer></script>
+  <div className="swg-shell">
+    <div className="swg-sb" role="complementary" aria-label="Tests">
+      <a className="swg-sb-link" href="/getting-started">Getting started</a>
+      <div className="swg-sb-sep" />
+      
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-phishing" aria-label="Expand Phishing tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-phishing">
+        <a className="swg-si" href="/phishing/url-manipulation">URL manipulation</a>
+        <a className="swg-si" href="/phishing/site-stored-as-mhtml-or-raw-html">Page assembled on browser</a>
+        <a className="swg-si" href="/phishing/canvas-engine">Canvas page</a>
+        <a className="swg-si" href="/phishing/cached-content-mutation">Content mutation</a>
+        <a className="swg-si" href="/phishing/form-submission-on-random-site">Credential form submission</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/malware/">Malware</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-malware" aria-label="Expand Malware tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-malware">
+        <a className="swg-si" href="/malware/ransomware-file">Ransomware</a>
+        <a className="swg-si" href="/malware/personal-data-file">Personal-data download</a>
+        <a className="swg-si" href="/malware/different-file-formats">Different file formats</a>
+        <a className="swg-si" href="/malware/executable-files">Executable files</a>
+        <a className="swg-si" href="/malware/http-https-and-cloud-delivery">HTTP, HTTPS, and cloud downloads</a>
+        <a className="swg-si" href="/malware/nested-file-download">Nested file download</a>
+        <a className="swg-si" href="/malware/password-protected-file">Password-protected file</a>
+        <a className="swg-si" href="/malware/file-spoofing">File spoofing</a>
+        <a className="swg-si" href="/malware/encoded-files">Encoded files</a>
+        <a className="swg-si" href="/malware/encrypted-files">Encrypted files</a>
+        <a className="swg-si" href="/malware/browser-open-docm">Macro document</a>
+        <a className="swg-si" href="/malware/webassembly-eicar">Web Assembly</a>
+        <a className="swg-si" href="/malware/chunk-attacks-different-orders">Chunk attacks</a>
+        <a className="swg-si" href="/malware/smuggling-html-js-css-or-svg">Smuggling through frontend files</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/data-theft/">Data Theft</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-data-theft" aria-label="Expand Data Theft tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-data-theft">
+        <a className="swg-si" href="/data-theft/personal-data-submission-in-normal-file">File submission</a>
+        <a className="swg-si" href="/data-theft/file-encoding">File encoding</a>
+        <a className="swg-si" href="/data-theft/file-encrypting">File encrypting</a>
+        <a className="swg-si" href="/data-theft/file-chunking">File chunking</a>
+        <a className="swg-si" href="/data-theft/dns-tunneling">DNS tunneling</a>
+        <a className="swg-si" href="/data-theft/http-path-tunneling">HTTP path tunneling</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <div className="swg-sb-cat is-collapsed">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+          <span className="swg-caret" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
+        <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
+      </div>
+      <div className="swg-sb-sep" />
+      <a className="swg-sb-link" href="/about">About us</a>
+      <a className="swg-sb-link" href="/contribute">Contribute</a>
+    </div>
+    <div className="swg-main swg-home-body" role="main">
+      <div className="swg-home-main">
+        <div className="swg-hero">
+          <div className="swg-container swg-hero-copy">
+            <h1>Validate the real-world effectiveness of your perimeter security</h1>
+            <div className="swg-cta-row">
+              <a className="swg-cta" href="/getting-started">
+                <span className="swg-cta-glow" aria-hidden="true" />
+                <span className="swg-cta-text">Get started</span>
+                <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <section className="swg-section">
+          <div className="swg-container">
+            <div className="swg-card-grid">
+              <a className="swg-card is-link" href="/phishing/">
+          <img className="swg-card-img" src="/images/phishing-icon.png" alt="" />
+          <div className="swg-card-body">
+            <h3>Phishing</h3>
+            <div className="swg-card-count">5 tests</div>
+          </div>
+          <div className="swg-card-arr">&rarr;</div>
+        </a>
+        <a className="swg-card is-link" href="/malware/">
+          <img className="swg-card-img" src="/images/malware-icon.png" alt="" />
+          <div className="swg-card-body">
+            <h3>Malware</h3>
+            <div className="swg-card-count">14 tests</div>
+          </div>
+          <div className="swg-card-arr">&rarr;</div>
+        </a>
+        <a className="swg-card is-link" href="/data-theft/">
+          <img className="swg-card-img" src="/images/data-theft-icon.png" alt="" />
+          <div className="swg-card-body">
+            <h3>Data Theft</h3>
+            <div className="swg-card-count">6 tests</div>
+          </div>
+          <div className="swg-card-arr">&rarr;</div>
+        </a>
+        <a className="swg-card is-link" href="/cyberslacking/">
+          <img className="swg-card-img" src="/images/cyberslacking-icon.png" alt="" />
+          <div className="swg-card-body">
+            <h3>Cyberslacking</h3>
+            <div className="swg-card-count">1 test</div>
+          </div>
+          <div className="swg-card-arr">&rarr;</div>
+        </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
