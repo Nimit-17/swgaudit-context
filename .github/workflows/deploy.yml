@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify main before deploy
+    name: Verify Mintlify source and static export
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -45,6 +45,29 @@ jobs:
       - name: Run smoke tests
         run: npm run smoke
 
+      - name: Export static v4 artifact
+        run: npm run export:static
+
+      - name: Start local static server
+        working-directory: dist-static
+        run: |
+          python3 -m http.server 3334 > /tmp/swgaudit-static.log 2>&1 &
+          echo $! > /tmp/swgaudit-static.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3334/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/swgaudit-static.log
+          exit 1
+
+      - name: Run static smoke tests
+        run: BASE_URL=http://127.0.0.1:3334 npm run smoke
+
+      - name: Run Selenium browser smoke tests
+        run: BASE_URL=http://127.0.0.1:3334 npm run selenium
+
   deploy:
     name: Deploy to production server
     runs-on: ubuntu-latest
@@ -74,9 +97,9 @@ jobs:
             echo "Re-copy the full private key from /root/.ssh/swgaudit_github_actions_deploy."
             exit 1
           fi
-          timeout 10 bash -c '</dev/tcp/167.71.228.73/7575'
-          ssh-keyscan -T 10 -p 7575 167.71.228.73 >> ~/.ssh/known_hosts
+          timeout 10 bash -c '</dev/tcp/64.227.129.152/22'
+          ssh-keyscan -T 10 -p 22 64.227.129.152 >> ~/.ssh/known_hosts
 
       - name: Run server deploy script
         run: |
-          ssh -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/swgaudit_deploy_key -p 7575 root@167.71.228.73 deploy-swgaudit-main
+          ssh -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/swgaudit_deploy_key -p 22 root@64.227.129.152 deploy-swgaudit-main

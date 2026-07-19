@@ -5,10 +5,14 @@
   "description": "SWG Audit Mintlify site with homepage, about page, and 23 security test pages",
   "scripts": {
     "dev": "mint dev",
+    "export:static": "bash scripts/export-static.sh",
+    "check:static": "bash scripts/check-static-export.sh dist-static",
+    "selenium": "node scripts/selenium-smoke.mjs",
     "check": "mint broken-links",
     "smoke": "bash scripts/smoke-test.sh"
   },
   "devDependencies": {
-    "mint": "4.2.655"
+    "mint": "4.2.655",
+    "selenium-webdriver": "^4.35.0"
   }
 }
