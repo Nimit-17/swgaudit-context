@@ -1,0 +1,46 @@
+name: Deploy SWGAudit Staging
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: swgaudit-staging-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy latest main to old server
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 8
+
+    steps:
+      - name: Validate deploy secret
+        run: |
+          if [ -z "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" ]; then
+            echo "Missing GitHub Actions secret: SWGAUDIT_DEPLOY_KEY"
+            exit 1
+          fi
+
+      - name: Prepare SSH key
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SWGAUDIT_DEPLOY_KEY }}" > ~/.ssh/swgaudit_deploy_key
+          chmod 600 ~/.ssh/swgaudit_deploy_key
+          ssh-keygen -y -f ~/.ssh/swgaudit_deploy_key > ~/.ssh/swgaudit_deploy_key.pub
+          expected_pub='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDCyJMWUviH2QvMOuHL4t5U9Igm7ImmvVPltjH/FdRwD swgaudit-github-actions-deploy'
+          actual_pub="$(cat ~/.ssh/swgaudit_deploy_key.pub)"
+          if [ "$actual_pub" != "$expected_pub" ]; then
+            echo "SWGAUDIT_DEPLOY_KEY is present, but it is not the expected deploy private key."
+            exit 1
+          fi
+          timeout 10 bash -c '</dev/tcp/167.71.228.73/7575'
+          ssh-keyscan -T 10 -p 7575 167.71.228.73 >> ~/.ssh/known_hosts
+
+      - name: Run server deploy script
+        run: |
+          ssh -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/swgaudit_deploy_key -p 7575 root@167.71.228.73 deploy-swgaudit-main

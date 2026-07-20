@@ -3,7 +3,6 @@ set -euo pipefail
 
 BASE_URL="${BASE_URL:-http://127.0.0.1:3333}"
 BASE_URL="${BASE_URL%/}"
-
 curl_args=(-L -sS --max-time 20)
 if [ -n "${SMOKE_RESOLVE:-}" ]; then
   curl_args+=(--resolve "$SMOKE_RESOLVE")

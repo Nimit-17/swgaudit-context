@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="${1:-.}"
+ROOT="${1:-dist-static}"
 cd "$ROOT"
 
 fail() {
@@ -33,11 +33,10 @@ route_count="$(find . -type f -name index.html -not -path './.git/*' | wc -l | t
 
 if find . -type f -name '*.mdx' -not -path './.git/*' | grep -q .; then
   find . -type f -name '*.mdx' -not -path './.git/*' >&2
-  fail "main should contain the exported static site, not Mintlify .mdx source"
+  fail "static export should not contain Mintlify .mdx source"
 fi
 
-[ ! -f docs.json ] || fail "docs.json belongs on the Mintlify backup branch, not static main"
-[ -f package-lock.json ] || fail "package-lock.json is required for locked Selenium verification dependencies"
+[ ! -f docs.json ] || fail "docs.json belongs in Mintlify source, not the static export"
 
 grep -q 'name="generator" content="Mintlify"' index.html || fail "index.html does not look like the Mintlify export"
 grep -q '/_next/static/' index.html || fail "index.html does not reference exported _next assets"

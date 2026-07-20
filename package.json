@@ -1,15 +1,18 @@
 {
-  "name": "swgaudit-static-v4",
+  "name": "swgaudit-mintlify-v3",
   "version": "0.1.0",
   "private": true,
-  "description": "Exported static/PHP SWG Audit site",
+  "description": "SWG Audit Mintlify site with homepage, about page, and 23 security test pages",
   "scripts": {
-    "check": "bash scripts/check-static-export.sh",
+    "dev": "mint dev",
+    "export:static": "bash scripts/export-static.sh",
+    "check:static": "bash scripts/check-static-export.sh dist-static",
     "selenium": "node scripts/selenium-smoke.mjs",
-    "smoke": "bash scripts/smoke-test.sh",
-    "serve": "node serve.js"
+    "check": "mint broken-links",
+    "smoke": "bash scripts/smoke-test.sh"
   },
   "devDependencies": {
+    "mint": "4.2.655",
     "selenium-webdriver": "^4.35.0"
   }
 }
