@@ -15,6 +15,7 @@ required_paths=(
   "style.css"
   "swg.js"
   "images/logo.png"
+  "test-files/malware/payloads/decode-eicar-docm.json"
   "data-theft/index.html"
   "data-theft/dns-tunneling/index.html"
   "data-theft/path-tunnel.php"

@@ -10,7 +10,9 @@
     "selenium": "node scripts/selenium-smoke.mjs",
     "check": "mint broken-links",
     "smoke": "bash scripts/smoke-test.sh",
-    "mechanics:phishing": "node scripts/phishing-mechanics.mjs"
+    "mechanics:phishing": "node scripts/phishing-mechanics.mjs",
+    "mechanics:malware": "node scripts/malware-mechanics.mjs",
+    "mechanics:data-theft": "node scripts/data-theft-mechanics.mjs"
   },
   "devDependencies": {
     "mint": "4.2.655",

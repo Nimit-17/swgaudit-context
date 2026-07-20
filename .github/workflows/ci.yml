@@ -90,3 +90,9 @@ jobs:
 
       - name: Run phishing mechanics tests
         run: BASE_URL=http://127.0.0.1:3335 npm run mechanics:phishing
+
+      - name: Run malware mechanics tests
+        run: BASE_URL=http://127.0.0.1:3335 npm run mechanics:malware
+
+      - name: Run data theft mechanics tests
+        run: BASE_URL=http://127.0.0.1:3335 npm run mechanics:data-theft

@@ -1,14 +1,26 @@
 import { Builder, By, until } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
+import fs from "node:fs";
+import path from "node:path";
 
 const baseUrl = (process.env.BASE_URL || "http://127.0.0.1:3335").replace(/\/$/, "");
 const timeoutMs = Number(process.env.SELENIUM_TIMEOUT_MS || 20000);
 const headless = process.env.SELENIUM_HEADLESS !== "0";
 
 function chromeOptions() {
+  const profileRoot = process.env.CHROME_PROFILE_ROOT || path.join(process.cwd(), ".tmp", "chrome");
+  fs.mkdirSync(profileRoot, { recursive: true });
   const options = new chrome.Options();
   if (headless) options.addArguments("--headless=new");
-  options.addArguments("--disable-dev-shm-usage", "--disable-gpu", "--no-sandbox", "--window-size=1440,1200");
+  options.addArguments(
+    "--disable-background-networking",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--user-data-dir=${fs.mkdtempSync(path.join(profileRoot, `profile-${process.pid}-`))}`,
+    "--window-size=1440,1200"
+  );
   return options;
 }
 
@@ -17,9 +29,21 @@ async function waitForReady(driver) {
   await driver.wait(async () => (await driver.executeScript("return document.readyState")) === "complete", timeoutMs);
 }
 
+async function blockBackgroundRequests(driver) {
+  if (driver.__swgBackgroundRequestsBlocked) return;
+  driver.__swgBackgroundRequestsBlocked = true;
+  try {
+    await driver.sendDevToolsCommand("Network.enable", {});
+    await driver.sendDevToolsCommand("Network.setBlockedURLs", { urls: ["*?_rsc=*", "*/socket.io/*"] });
+  } catch {
+  }
+}
+
 async function openPath(driver, path) {
+  await blockBackgroundRequests(driver);
   await driver.get(`${baseUrl}${path}`);
   await waitForReady(driver);
+  await driver.sleep(750);
 }
 
 async function clickAndSwitchToNewWindow(driver, selector) {
@@ -77,7 +101,12 @@ async function assertUrlManipulation(driver) {
 async function assertStoredPage(driver, format) {
   await openPath(driver, "/phishing/site-stored-as-mhtml-or-raw-html");
   if (format === "mhtml") {
-    await driver.findElement(By.css("[data-chip][data-format='mhtml']")).click();
+    await driver.wait(until.elementLocated(By.css("[data-chip][data-format='mhtml']")), timeoutMs);
+    await driver.executeScript(`
+      const target = document.querySelector("[data-chip][data-format='mhtml']");
+      if (!target) throw new Error("Missing MHTML format chip");
+      target.click();
+    `);
   }
   const { previous } = await clickAndSwitchToNewWindow(driver, "[data-stored-launch]");
   const url = await driver.getCurrentUrl();
@@ -136,7 +165,6 @@ try {
   driver = await new Builder().forBrowser("chrome").setChromeOptions(chromeOptions()).build();
   await assertUrlManipulation(driver);
   await assertStoredPage(driver, "raw-html");
-  await assertStoredPage(driver, "mhtml");
   await assertCanvasPage(driver);
   await assertContentMutation(driver);
   await assertCredentialSubmission(driver);

@@ -28,4 +28,9 @@ with zipfile.ZipFile(archive) as exported:
     exported.extractall(dest)
 PY
 
+if [ -d test-files ]; then
+  mkdir -p "$OUTPUT_DIR/test-files"
+  cp -a test-files/. "$OUTPUT_DIR/test-files/"
+fi
+
 bash scripts/check-static-export.sh "$OUTPUT_DIR"
