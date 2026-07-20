@@ -9,7 +9,8 @@
     "check:static": "bash scripts/check-static-export.sh dist-static",
     "selenium": "node scripts/selenium-smoke.mjs",
     "check": "mint broken-links",
-    "smoke": "bash scripts/smoke-test.sh"
+    "smoke": "bash scripts/smoke-test.sh",
+    "mechanics:phishing": "node scripts/phishing-mechanics.mjs"
   },
   "devDependencies": {
     "mint": "4.2.655",

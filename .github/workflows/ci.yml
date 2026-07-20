@@ -69,3 +69,24 @@ jobs:
 
       - name: Run Selenium browser smoke tests
         run: BASE_URL=http://127.0.0.1:3334 npm run selenium
+
+      - name: Start local PHP mechanics server
+        working-directory: dist-static
+        run: |
+          if ! command -v php >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y php-cli
+          fi
+          php -S 127.0.0.1:3335 > /tmp/swgaudit-php.log 2>&1 &
+          echo $! > /tmp/swgaudit-php.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3335/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/swgaudit-php.log
+          exit 1
+
+      - name: Run phishing mechanics tests
+        run: BASE_URL=http://127.0.0.1:3335 npm run mechanics:phishing
