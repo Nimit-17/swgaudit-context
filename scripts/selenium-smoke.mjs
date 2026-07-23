@@ -6,11 +6,11 @@ const headless = process.env.SELENIUM_HEADLESS !== "0";
 const timeoutMs = Number(process.env.SELENIUM_TIMEOUT_MS || 20000);
 
 const paths = [
-  { path: "/", text: /SWG Audit|SWGAudit|Security Web Gateway/i },
+  { path: "/", text: /Get started|Phishing|Facility Abuse/i },
   { path: "/malware", text: /Malware/i },
   { path: "/phishing", text: /Phishing/i },
   { path: "/data-theft", text: /Data Theft|Data Exfiltration/i },
-  { path: "/cyberslacking", text: /Cyberslacking|Productivity/i },
+  { path: "/cyberslacking", text: /Facility Abuse|Productivity/i },
 ];
 
 const allowedConsoleNoise = [
@@ -49,7 +49,7 @@ async function assertRenderedPage(driver, path, expectedText) {
 
   const bodyText = await driver.findElement(By.css("body")).getText();
   if (!expectedText.test(bodyText)) {
-    throw new Error(`${path} did not render expected SWGAudit content`);
+    throw new Error(`${path} did not render expected SWGAudit content. Visible text: ${bodyText.slice(0, 300)}`);
   }
 
   const brokenImages = await driver.executeScript(`
