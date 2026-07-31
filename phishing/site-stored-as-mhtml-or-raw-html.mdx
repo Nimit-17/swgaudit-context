@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">A phishing page can arrive as a local HTML or MHTML file, so the page is assembled by the browser instead of fetched as a normal website.</p>
+            <p className="swg-block-text">A phishing page does not always need to be hosted on a suspicious website. It can arrive as an HTML or MHTML file and render locally when the user opens it.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a format and open the generated file. The browser renders a fake login page locally.</p>
+            <p className="swg-block-text">The test builds a dummy login page as a local browser document. Because the final page is assembled on the endpoint, controls that only inspect normal web requests may have little to classify.</p>
           </section>
         </div>
         <div className="swg-run">

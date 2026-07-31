@@ -252,158 +252,158 @@ const pages = [
 
 const testCopy = {
   "phishing/url-manipulation": {
-    threat: "Attackers hide destinations behind lookalike text, redirects, and short links. If filtering stops at simple URL reputation, the final page may still load.",
-    how: "Open a safe lookalike login page using a typo path, homograph character, redirect, or short URL. No real login is used.",
+    threat: "Attackers rarely send victims to a plain, obviously fake address. They use typo paths, lookalike characters, redirects, and short links to make a dangerous destination look familiar.",
+    how: "Each option resolves to the same safe dummy login page through a different URL disguise. The test checks whether your controls evaluate the real destination and redirect path, not only the visible link text or first hostname.",
     pass: "The gateway blocks the link, warns the user, or prevents the page from loading.",
     fail: "The lookalike login page opens normally.",
   },
   "phishing/site-stored-as-mhtml-or-raw-html": {
-    threat: "A phishing page can arrive as a local HTML or MHTML file, so the page is assembled by the browser instead of fetched as a normal website.",
-    how: "Choose a format and open the generated file. The browser renders a fake login page locally.",
+    threat: "A phishing page does not always need to be hosted on a suspicious website. It can arrive as an HTML or MHTML file and render locally when the user opens it.",
+    how: "The test builds a dummy login page as a local browser document. Because the final page is assembled on the endpoint, controls that only inspect normal web requests may have little to classify.",
     pass: "The gateway or browser blocks or warns before the local page is shown.",
     fail: "The fake login page renders normally.",
   },
   "phishing/canvas-engine": {
-    threat: "Some kits draw the page on canvas so scanners cannot read normal HTML labels such as password or sign in.",
-    how: "Open a safe canvas-rendered login page. The visible form is drawn rather than built from ordinary text fields.",
+    threat: "Canvas is a browser drawing surface, similar to a blank sheet that JavaScript can paint on. A phishing kit can paint a fake login screen as pixels instead of using readable HTML text, labels, and input fields.",
+    how: "The test opens a GitHub-style dummy login page rendered entirely on canvas. 'Drawn' means the browser paints the words, boxes, and button onto the canvas image; scanners looking at the page structure do not see normal form fields or text such as 'password'.",
     pass: "The gateway blocks or warns on the canvas-rendered page.",
     fail: "The canvas-rendered login page opens normally.",
   },
   "phishing/cached-content-mutation": {
-    threat: "A page can look harmless during the first scan and change after trust is established.",
-    how: "Open the harmless page, then refresh the same URL. It changes into a dummy login page.",
+    threat: "Attackers can serve harmless content first, wait for inspection to mark the URL as safe, and then change what the same URL returns. A control that remembers only the first verdict can miss the later phishing page.",
+    how: "The launch button creates a unique test token and opens one URL with that token. On the first request, the server stores the token and returns a harmless page; on the next request with the same token, it returns the dummy login page from the same URL.",
     pass: "The changed page is blocked or warned on after refresh.",
     fail: "The changed login page loads normally.",
   },
   "phishing/form-submission-on-random-site": {
-    threat: "Phishing succeeds when a form submission leaves the browser. The page design matters less than whether credentials can be sent out.",
-    how: "Submit only the prefilled dummy credentials. The endpoint reports whether the form reached the server and does not need real data.",
-    pass: "The submission is blocked, stripped, interrupted, or cannot complete.",
-    fail: "The dummy credential submission reaches the simulation endpoint.",
+    threat: "The landing page is only half of a phishing attack. The real damage happens when a credential form can deliver a username and password to the attacker-controlled server.",
+    how: "The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server; merely attempting to leave the browser is not counted as success.",
+    pass: "The submission is blocked, stripped, interrupted, or cannot complete through the protected path.",
+    fail: "The dummy credential payload reaches the simulation endpoint.",
   },
   "malware/ransomware-file": {
-    threat: "Ransomware campaigns often include warning or instruction files that are easy for people to recognize but still useful to attackers.",
-    how: "Download a harmless ransom-note text sample and see whether content policy stops it.",
+    threat: "Ransomware activity can include non-executable warning notes and instructions, not only encrypted files or malware binaries. Those artefacts can still be a useful early signal.",
+    how: "The test serves a harmless text file shaped like a ransomware note. It checks whether policy reacts to recognizable ransomware-style content before it reaches the browser.",
     pass: "The download is blocked before it reaches the device.",
     fail: "The ransomware-style note downloads normally.",
   },
   "malware/personal-data-file": {
-    threat: "Sensitive data can move inside ordinary business files with no executable code.",
-    how: "Download a harmless spreadsheet shaped like personal data and check whether DLP policy reacts.",
+    threat: "Risky files are not always malicious programs. A spreadsheet containing personal data can create exposure even when it has no executable code.",
+    how: "The test downloads a harmless spreadsheet that looks like personal-data content. It checks whether file and DLP controls recognize the data pattern, not a malware signature.",
     pass: "The download is blocked or warned on.",
     fail: "The personal-data sample downloads normally.",
   },
   "malware/different-file-formats": {
-    threat: "The same payload can be wrapped in documents, spreadsheets, PDFs, or archives. Extension-only controls miss that.",
-    how: "Choose a format. Each file contains the same harmless EICAR test string in a different wrapper.",
+    threat: "Attackers wrap payloads in many file types because inspection depth often varies by format. A rule that works for a text file may fail inside a document, spreadsheet, PDF, or archive.",
+    how: "Every option carries the same harmless EICAR test string in a different wrapper. Any difference in outcome shows how that specific file format is being inspected.",
     pass: "The selected format is blocked or warned on.",
     fail: "The selected file downloads normally.",
   },
   "malware/executable-files": {
-    threat: "Executables and scripts are direct code-delivery paths. Attackers rotate extensions when one format is blocked.",
-    how: "Choose an executable or script extension and download a harmless stand-in file.",
+    threat: "Executables and scripts are direct code-delivery paths. Attackers rotate between file extensions when one format is blocked or when users are trained to distrust only one type.",
+    how: "The test serves harmless stand-in files across common executable and script extensions. It checks whether policy is consistent across the formats attackers commonly abuse.",
     pass: "The selected executable or script is blocked.",
     fail: "The selected executable or script downloads normally.",
   },
   "malware/http-https-and-cloud-delivery": {
-    threat: "Malware can come from HTTP, HTTPS, or major cloud hosts. Domain reputation alone is not enough.",
-    how: "Download the same harmless sample through different delivery channels and compare policy behavior.",
+    threat: "Malware can arrive from cleartext HTTP, normal HTTPS, or trusted cloud hosting. A familiar domain or encrypted connection does not prove that the downloaded object is safe.",
+    how: "The same harmless sample is delivered through different hosting paths. The test checks whether the object is inspected consistently instead of relying only on protocol or domain reputation.",
     pass: "The file is inspected and blocked across delivery channels.",
     fail: "The file downloads from the selected channel.",
   },
   "malware/nested-file-download": {
-    threat: "Attackers bury payloads inside archives, disk images, and Office files so the complete object appears only after unpacking.",
-    how: "Choose a nesting pattern. Each sample hides the same test payload inside multiple container layers.",
+    threat: "Nested archives, disk images, and Office containers can keep the final payload hidden until several layers are unpacked. Shallow inspection may only see the outer container.",
+    how: "Each sample places a harmless test payload behind a different chain of containers. The test checks how far your controls unpack and inspect before allowing the download.",
     pass: "The gateway unpacks the layers and blocks the payload.",
     fail: "The nested file downloads without being flagged.",
   },
   "malware/password-protected-file": {
-    threat: "Password-protected archives hide contents from scanners that cannot open them.",
-    how: "Download a harmless password-protected ZIP. The test password is 123456.",
+    threat: "Password-protected archives are common in attacks because their contents are hidden from scanners that cannot open the archive at inspection time.",
+    how: "The test serves a harmless password-protected ZIP using the displayed test password. It checks whether policy blocks or warns on protected archives when contents cannot be inspected normally.",
     pass: "The protected archive is blocked or warned on.",
     fail: "The protected archive downloads normally.",
   },
   "malware/file-spoofing": {
-    threat: "A misleading filename can make an executable look like a document to a user or weak policy.",
-    how: "Download dummy.pdf.exe. It looks document-like but keeps the executable extension.",
+    threat: "A misleading filename can make a dangerous file look like a document to the user. Weak controls may also rely too heavily on the first extension they see.",
+    how: "The test serves a harmless file named like a PDF but ending as an executable. It checks whether the final extension and file risk are recognized despite the misleading name.",
     pass: "The mismatch is detected and blocked.",
     fail: "The disguised executable downloads normally.",
   },
   "malware/encoded-files": {
-    threat: "Encoding turns a binary payload into text, hiding the final file until the browser decodes it.",
-    how: "Choose Base64 or Base32. The browser decodes the text and rebuilds a harmless DOCM test file locally.",
+    threat: "Encoding can turn a file into text that looks less suspicious in transit. The actual object appears only after the browser decodes it.",
+    how: "The page receives Base64 or Base32 text and decodes it in the browser into a harmless DOCM test file. The test checks both the encoded transfer and the rebuilt file.",
     pass: "The encoded transfer or rebuilt file is blocked.",
     fail: "The browser rebuilds and downloads the file.",
   },
   "malware/encrypted-files": {
-    threat: "Encrypted content is unreadable in transit, so inspection has to reason about the delivery pattern or final file.",
-    how: "Choose an encrypted payload or archive. Some options decrypt in the browser before download.",
+    threat: "Encryption hides file contents from inspection while the payload is moving across the network. Attackers use that gap to delay visibility until the endpoint receives or rebuilds the file.",
+    how: "The test uses harmless encrypted payloads and protected archives. Some options decrypt in the browser before download, which checks whether controls can stop the pattern or final object.",
     pass: "The encrypted transfer, decryption step, or final file is blocked.",
     fail: "The encrypted or rebuilt file downloads normally.",
   },
   "malware/browser-open-docm": {
-    threat: "A macro-enabled document can be delivered through a normal browser request and handed off as a download.",
-    how: "Open a harmless EICAR DOCM from this site and see whether the request is stopped.",
+    threat: "Macro-enabled Office documents are still used for malware delivery because they look like ordinary business files and can be fetched through a normal browser request.",
+    how: "The test serves a harmless DOCM containing the EICAR test string. It checks whether the request or resulting download is stopped before the document reaches the device.",
     pass: "The request is blocked, warned on, or the DOCM cannot download.",
     fail: "The DOCM downloads without a warning.",
   },
   "malware/webassembly-eicar": {
-    threat: "Browser code can assemble a payload locally, after the network only sees a module and small data.",
-    how: "Run a WebAssembly module that writes the harmless EICAR string in browser memory and downloads it as a file.",
+    threat: "Browser code can assemble a file locally after the network transfer has already looked harmless. WebAssembly gives attackers another way to perform that last-mile reconstruction.",
+    how: "A small WebAssembly module writes the harmless EICAR string in browser memory and triggers a file download. The test checks whether the module, reconstruction step, or final file is stopped.",
     pass: "The module, reconstruction, or final download is blocked.",
     fail: "The browser assembles and downloads the EICAR file.",
   },
   "malware/chunk-attacks-different-orders": {
-    threat: "Small chunks can keep a full payload away from scanners until the browser reassembles it.",
-    how: "Choose a chunking pattern. The browser fetches pieces in that pattern and rebuilds the original test file.",
+    threat: "Splitting a payload into small pieces can prevent scanners from seeing the complete object in any single request. The browser can then reassemble the file at the last mile.",
+    how: "The browser fetches harmless payload chunks in different orders and sizes, then reconstructs the original test file locally. The test checks whether transfer fragmentation or reconstruction is detected.",
     pass: "The chunk transfer or browser-side reconstruction is blocked.",
     fail: "All chunks are fetched and rebuilt into a file.",
   },
   "malware/smuggling-html-js-css-or-svg": {
-    threat: "HTML smuggling hides file data inside frontend assets and rebuilds the file at the last mile in the browser.",
-    how: "Choose a carrier. The page extracts embedded test data from HTML, JavaScript, CSS, or SVG and rebuilds a DOCM file locally.",
+    threat: "HTML smuggling hides file data inside web content that can look like a normal page. The payload becomes a file only after frontend code extracts and rebuilds it in the browser.",
+    how: "The page carries harmless test data inside HTML, JavaScript, CSS, or SVG. Browser code extracts that data and reconstructs a DOCM file locally, testing last-mile assembly controls.",
     pass: "The carrier, extraction, or reconstructed file is blocked.",
     fail: "The file is rebuilt and downloaded.",
   },
   "data-theft/personal-data-submission-in-normal-file": {
-    threat: "Sensitive data often leaves as a normal upload, not as malware. If outbound files are not inspected, data can leave quietly.",
-    how: "Upload a dummy or public test file only. The endpoint records whether the upload reached the server.",
+    threat: "Data loss often looks like a normal file upload. If outbound content is not inspected, sensitive information can leave without malware, exploits, or unusual protocols.",
+    how: "The browser submits the selected dummy file as a standard multipart upload. The server reports whether the file reached the controlled endpoint.",
     pass: "The upload is blocked or intercepted before it reaches the server.",
     fail: "The file uploads successfully.",
   },
   "data-theft/file-encoding": {
-    threat: "Encoding hides the original file bytes from simple content matching.",
-    how: "Choose a dummy file and encoding. The browser encodes the file before upload; the server tries to reconstruct it.",
+    threat: "Encoding can hide the original file bytes from simple content matching while still allowing the receiver to rebuild the data.",
+    how: "The browser encodes the selected dummy file before upload, and the server attempts to decode and reconstruct it. The test checks whether controls detect the transformed outbound content.",
     pass: "The upload is blocked, or the original file cannot be reconstructed.",
     fail: "The server reconstructs the original file.",
   },
   "data-theft/file-encrypting": {
-    threat: "Encrypted uploads hide file contents from controls that depend on reading the body.",
-    how: "Choose a dummy file and encryption mode. The browser encrypts it and sends the metadata needed for reconstruction.",
+    threat: "Encryption can turn a readable outbound file into opaque data. Controls that depend on inspecting the raw body may not know what left the network.",
+    how: "The browser encrypts the selected dummy file and sends the metadata required for the controlled server to decrypt it. The test checks whether encrypted exfiltration patterns are stopped.",
     pass: "The upload is blocked, or the file cannot be decrypted and reconstructed.",
     fail: "The server decrypts and reconstructs the original file.",
   },
   "data-theft/file-chunking": {
-    threat: "Splitting a file across requests can bypass controls that inspect only complete uploads.",
-    how: "Choose a dummy file and chunking pattern. The browser uploads pieces and the server tries to reassemble them.",
+    threat: "Splitting a file across many requests can bypass controls that only inspect complete uploads. No single request has to contain the full file.",
+    how: "The browser divides the selected dummy file into chunks and sends a manifest for reconstruction. The server attempts to reassemble the original file from those pieces.",
     pass: "The transfer is blocked, or the complete file cannot be reassembled.",
     fail: "The server reassembles the original file.",
   },
   "data-theft/dns-tunneling": {
-    threat: "DNS is often allowed and lightly inspected. Attackers can encode data into many small DNS lookups.",
-    how: "Choose a small dummy file. The browser encodes it into DNS-style requests and the server attempts reconstruction.",
+    threat: "DNS traffic is often allowed broadly because it is required for normal browsing. Attackers can abuse that trust by encoding data into many small lookup-like requests.",
+    how: "The browser encodes a small dummy file into DNS-style request labels and sends them to a controlled endpoint. The server attempts to reconstruct the file from those labels.",
     pass: "The DNS requests are blocked, or the file cannot be reconstructed.",
     fail: "The file is reconstructed from DNS-style requests.",
   },
   "data-theft/http-path-tunneling": {
-    threat: "Data can be carried in URL paths instead of POST bodies, bypassing controls that focus only on uploads.",
-    how: "Choose a small dummy file. The browser encodes it into URL path chunks and the server attempts reconstruction.",
+    threat: "Data can be carried in URL paths instead of request bodies. Controls focused only on upload forms or POST bodies may miss data hidden in ordinary-looking GET traffic.",
+    how: "The browser encodes a small dummy file into URL path chunks and sends them as requests. The server attempts to reconstruct the file from the path data.",
     pass: "The requests are blocked, or the file cannot be reconstructed.",
     fail: "The file is reconstructed from URL path chunks.",
   },
   "cyberslacking/video-content-category-simulation": {
-    threat: "Acceptable-use policy can fail when streaming content shares domains, embeds, and infrastructure across categories.",
-    how: "Choose a content category. The embedded player loads a representative video so you can see what policy allows.",
+    threat: "Content policy can fail when many categories share the same streaming domain, player, and delivery infrastructure. The hostname alone may not describe the activity being allowed.",
+    how: "The embedded player requests videos from different content categories through the same general platform path. The test checks whether policy follows the requested category and media behavior, not just the host.",
     pass: "The category is blocked, or the video does not play.",
     fail: "The video loads and plays.",
   },
@@ -521,7 +521,6 @@ const compactRunSlugs = new Set([
 
 const noTerminalSlugs = new Set([
   "cyberslacking/video-content-category-simulation",
-  "phishing/form-submission-on-random-site",
 ]);
 
 const runModifierClasses = {
@@ -718,6 +717,9 @@ function runAreaHtml(p, run, extra) {
   if (p.slug.endsWith("smuggling-html-js-css-or-svg")) {
     return smuggleRunArea(p, run, extra);
   }
+  if (p.slug === "phishing/form-submission-on-random-site") {
+    return credentialRunAreaHtml(p, run);
+  }
 
   const preparedRun = stripRunPick(descriptionlessRunSlugs.has(p.slug) ? run : addPickDescriptions(p.slug, run));
   const { lead, action, tail } = splitRunAction(preparedRun);
@@ -746,6 +748,31 @@ function hiddenSmugglingCarriers() {
         <script type="application/json" data-smuggling-carrier="js" data-smuggling-payload="${payload}"></script>
         <style data-smuggling-carrier="css">{':root{--smuggled-payload:"${payload}";}'}</style>
         <svg hidden data-smuggling-carrier="svg"><metadata>${payload}</metadata></svg>`;
+}
+
+function credentialRunAreaHtml(p, run) {
+  return `        <div className="swg-run swg-run--form">
+          <div className="swg-run-label">Try it yourself</div>
+          <div className="swg-run-body">
+            <div className="swg-run-controls">
+${run.trim()}
+${passFailHtml(p)}
+${banner()}
+            </div>
+            <div className="swg-cred-panel" aria-label="Dummy credential payload">
+              <div className="swg-cred-title">Dummy credential payload</div>
+              <div className="swg-cred-row">
+                <span>Username</span>
+                <code>user@example.com</code>
+              </div>
+              <div className="swg-cred-row">
+                <span>Password</span>
+                <code>password</code>
+              </div>
+              <p>The test fails only if this dummy payload reaches the simulation endpoint.</p>
+            </div>
+          </div>
+        </div>`;
 }
 
 function pageHtml(p) {
@@ -806,20 +833,20 @@ const categoryCopy = {
 
 Object.assign(categoryCopy, {
   Phishing: [
-    "Phishing works when a believable page reaches the user and a form submission leaves the browser.",
-    "These tests use safe dummy pages to check URL tricks, local-file pages, canvas rendering, content mutation, and credential submission.",
+    "Phishing is no longer limited to a suspicious email and a bad domain. Modern lures can hide behind lookalike URLs, redirects, local files, browser-rendered interfaces, and pages that change after the first inspection pass.",
+    "These simulations show those patterns without collecting real credentials. They focus on the control behavior that matters: whether the page is allowed to appear, whether evasive rendering is recognized, and whether a dummy credential payload can reach the controlled endpoint.",
   ],
   Malware: [
-    "Malware delivery is no longer just a suspicious EXE download. Payloads arrive through documents, archives, cloud links, encoding, encryption, and browser-side assembly.",
-    "These tests use harmless samples and the EICAR test string to check whether your controls inspect the final object, not just the first URL.",
+    "Malware delivery rarely depends on one obvious executable anymore. Attackers move payloads through documents, archives, trusted cloud links, encrypted containers, encoded text, fragmented transfers, and browser-side assembly.",
+    "These tests use harmless samples and the EICAR test string to check how deeply your controls inspect. The goal is to show whether inspection follows the final object, even when the delivery path is indirect or intentionally inconvenient to scan.",
   ],
   "Data Theft": [
-    "Data can leave through ordinary uploads, transformed content, split requests, DNS-style traffic, or URL paths.",
-    "Use only dummy or public files. These tests show whether outbound data reaches a controlled reconstruction endpoint.",
+    "Data theft often looks like routine web activity: an upload, a transformed file, a sequence of small requests, or traffic hidden in channels that are normally allowed. A perimeter that only looks for malware can miss the moment data leaves.",
+    "Use only dummy or public files in these simulations. Each test sends data to a controlled reconstruction endpoint so you can see whether encoded, encrypted, chunked, DNS-style, or path-based outbound data is stopped before it is recovered.",
   ],
   Cyberslacking: [
-    "Acceptable-use policy often depends on more than a domain name. Streaming platforms mix categories, embeds, and shared infrastructure.",
-    "This test checks whether policy follows the requested content category, not just the host.",
+    "Acceptable-use policy is harder than blocking or allowing one streaming domain. Modern platforms mix categories, embeds, recommendations, and shared infrastructure, so a domain-level decision may not match the actual activity.",
+    "This simulation checks whether policy follows the requested media category instead of only trusting the host. It is useful for validating content controls, bandwidth policy, and category enforcement without making assumptions about any specific workplace rule.",
   ],
 });
 

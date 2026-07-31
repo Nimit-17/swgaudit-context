@@ -1761,9 +1761,7 @@
       bindRunPage(credential);
       var credPagePath = location.pathname;
       var credOut = cardOutput(credential);
-      startConsole(credential, "swg-audit credential-submit");
-      terminalLine(credential, "submitting credentials ...");
-      setOutput(credOut, "Submitting credentials...");
+      setOutput(credOut, "Submitting dummy credential payload...");
       fetch(credential.action || "/phishing/credential-submit.php", {
         method: "post",
         body: new FormData(credential),
@@ -1772,10 +1770,9 @@
         .then(function (response) {
           if (!response.ok) throw new Error("Submission returned HTTP " + response.status);
           return readJson(response);
-      })
+        })
         .then(function (result) {
-          terminalFail(credential, "credentials reached the submission endpoint.");
-          setPersistentOutput(credOut, "Test failed.", "is-fail", credPagePath);
+          setPersistentOutput(credOut, "Test failed: dummy credential payload reached the simulation endpoint.", "is-fail", credPagePath);
         })
         .catch(function (err) {
           if (isBlockedHttpError(err)) {

@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Some kits draw the page on canvas so scanners cannot read normal HTML labels such as password or sign in.</p>
+            <p className="swg-block-text">Canvas is a browser drawing surface, similar to a blank sheet that JavaScript can paint on. A phishing kit can paint a fake login screen as pixels instead of using readable HTML text, labels, and input fields.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Open a safe canvas-rendered login page. The visible form is drawn rather than built from ordinary text fields.</p>
+            <p className="swg-block-text">The test opens a GitHub-style dummy login page rendered entirely on canvas. 'Drawn' means the browser paints the words, boxes, and button onto the canvas image; scanners looking at the page structure do not see normal form fields or text such as 'password'.</p>
           </section>
         </div>
         <div className="swg-run">
