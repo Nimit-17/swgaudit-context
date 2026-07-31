@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Data can be carried in URL paths instead of POST bodies, bypassing controls that focus only on uploads.</p>
+            <p className="swg-block-text">Data can be carried in URL paths instead of request bodies. Controls focused only on upload forms or POST bodies may miss data hidden in ordinary-looking GET traffic.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a small dummy file. The browser encodes it into URL path chunks and the server attempts reconstruction.</p>
+            <p className="swg-block-text">The browser encodes a small dummy file into URL path chunks and sends them as requests. The server attempts to reconstruct the file from the path data.</p>
           </section>
         </div>
         <div className="swg-run">

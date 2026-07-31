@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">DNS is often allowed and lightly inspected. Attackers can encode data into many small DNS lookups.</p>
+            <p className="swg-block-text">DNS traffic is often allowed broadly because it is required for normal browsing. Attackers can abuse that trust by encoding data into many small lookup-like requests.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a small dummy file. The browser encodes it into DNS-style requests and the server attempts reconstruction.</p>
+            <p className="swg-block-text">The browser encodes a small dummy file into DNS-style request labels and sends them to a controlled endpoint. The server attempts to reconstruct the file from those labels.</p>
           </section>
         </div>
         <div className="swg-run">

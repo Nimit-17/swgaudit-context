@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encoding hides the original file bytes from simple content matching.</p>
+            <p className="swg-block-text">Encoding can hide the original file bytes from simple content matching while still allowing the receiver to rebuild the data.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a dummy file and encoding. The browser encodes the file before upload; the server tries to reconstruct it.</p>
+            <p className="swg-block-text">The browser encodes the selected dummy file before upload, and the server attempts to decode and reconstruct it. The test checks whether controls detect the transformed outbound content.</p>
           </section>
         </div>
         <div className="swg-run">

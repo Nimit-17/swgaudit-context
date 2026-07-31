@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">A page can look harmless during the first scan and change after trust is established.</p>
+            <p className="swg-block-text">Attackers can serve harmless content first, wait for inspection to mark the URL as safe, and then change what the same URL returns. A control that remembers only the first verdict can miss the later phishing page.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Open the harmless page, then refresh the same URL. It changes into a dummy login page.</p>
+            <p className="swg-block-text">The launch button creates a unique test token and opens one URL with that token. On the first request, the server stores the token and returns a harmless page; on the next request with the same token, it returns the dummy login page from the same URL.</p>
           </section>
         </div>
         <div className="swg-run swg-run--compact">

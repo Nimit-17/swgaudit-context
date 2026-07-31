@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Splitting a file across requests can bypass controls that inspect only complete uploads.</p>
+            <p className="swg-block-text">Splitting a file across many requests can bypass controls that only inspect complete uploads. No single request has to contain the full file.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a dummy file and chunking pattern. The browser uploads pieces and the server tries to reassemble them.</p>
+            <p className="swg-block-text">The browser divides the selected dummy file into chunks and sends a manifest for reconstruction. The server attempts to reassemble the original file from those pieces.</p>
           </section>
         </div>
         <div className="swg-run">

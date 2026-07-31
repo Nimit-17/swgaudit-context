@@ -1681,9 +1681,9 @@ a.swg-brand { cursor: pointer; }
 .swg-audit-ui .swg-run--no-terminal {
   max-width: 980px;
 }
-/* Credential form: compact login-style box with a normal-width submit. */
+/* Credential form: form controls paired with a dummy payload panel. */
 .swg-audit-ui .swg-run--form {
-  max-width: 480px;
+  max-width: 880px;
 }
 .swg-audit-ui .swg-run--form .swg-form {
   max-width: 100%;
@@ -1696,6 +1696,49 @@ a.swg-brand { cursor: pointer; }
   width: auto;
   align-self: flex-start;
   padding-inline: 1.9rem;
+}
+.swg-audit-ui .swg-run--form .swg-cred-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
+  min-height: 100%;
+  padding: 1.15rem;
+  border: 1px solid var(--sm-line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.swg-audit-ui .swg-cred-title {
+  color: var(--sm-paper);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.swg-audit-ui .swg-cred-row {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(218, 224, 231, 0.14);
+  border-radius: 8px;
+  background: rgba(12, 16, 24, 0.72);
+}
+.swg-audit-ui .swg-cred-row span {
+  color: var(--sm-paper-soft);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.swg-audit-ui .swg-cred-row code {
+  color: var(--sm-paper);
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+.swg-audit-ui .swg-cred-panel p {
+  margin: 0;
+  color: var(--sm-paper-soft);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 /* Cyberslacking: smaller media box. */
 .swg-audit-ui .swg-run--media {
