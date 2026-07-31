@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">A gateway might scan a page once, mark it safe, and then trust that verdict even after the content changes. Attackers exploit this by serving something harmless first and swapping in a phishing page later.</p>
+            <p className="swg-block-text">A page can look harmless during the first scan and change after trust is established.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Open the harmless page in a new tab, then refresh that tab once. The same URL changes to the dummy Microsoft-style login page without relying on cached content.</p>
+            <p className="swg-block-text">Open the harmless page, then refresh the same URL. It changes into a dummy login page.</p>
           </section>
         </div>
         <div className="swg-run swg-run--compact">
@@ -120,14 +120,14 @@ mode: "custom"
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
                     <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The gateway blocks the changed login page when the same URL is refreshed.</p>
+                    <p className="swg-pf-text">The changed page is blocked or warned on after refresh.</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
                     <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The changed login page loads normally with no warning.</p>
+                    <p className="swg-pf-text">The changed login page loads normally.</p>
                   </div>
                 </div>
               </div>
@@ -141,7 +141,7 @@ mode: "custom"
         <script src="/swg.js" defer></script>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>

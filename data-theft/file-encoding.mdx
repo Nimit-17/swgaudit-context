@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encoding a file with Base64 or hex before uploading it can defeat simple content matching, since the sensitive data no longer appears in its original, readable form.</p>
+            <p className="swg-block-text">Encoding hides the original file bytes from simple content matching.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a file and an encoding method, then submit. The file is encoded in the browser and sent to a test endpoint that tries to decode and reconstruct it.</p>
+            <p className="swg-block-text">Choose a dummy file and encoding. The browser encodes the file before upload; the server tries to reconstruct it.</p>
           </section>
         </div>
         <div className="swg-run">
@@ -123,20 +123,20 @@ mode: "custom"
             <button className="swg-chip" type="button" data-chip data-mode="hex">Hex</button>
             <button className="swg-chip" type="button" data-chip data-mode="url">URL encoded</button>
           </div>
-          <p className="swg-run-hint">Reconstructed files are deleted from the server after 10 minutes.</p>
+          <p className="swg-run-hint">Use dummy or public test files only. Reconstructed files are auto-deleted after 10 minutes.</p>
               <div className="swg-pf">
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
                     <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The upload is blocked, or the server can't reconstruct the original file.</p>
+                    <p className="swg-pf-text">The upload is blocked, or the original file cannot be reconstructed.</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
                     <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The server successfully reconstructs the original file from the encoded upload.</p>
+                    <p className="swg-pf-text">The server reconstructs the original file.</p>
                   </div>
                 </div>
               </div>
@@ -151,7 +151,7 @@ mode: "custom"
         <script src="/swg.js" defer></script>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>

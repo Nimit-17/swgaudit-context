@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Instead of hosting a phishing page on a live server, an attacker can hand someone a local HTML or MHTML file. Tools that only inspect network traffic can miss content that never crosses the wire as a normal request.</p>
+            <p className="swg-block-text">A phishing page can arrive as a local HTML or MHTML file, so the page is assembled by the browser instead of fetched as a normal website.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a format, then open it. The browser builds a fake login page locally in that format and opens it in a new tab, the same way an opened phishing file would behave.</p>
+            <p className="swg-block-text">Choose a format and open the generated file. The browser renders a fake login page locally.</p>
           </section>
         </div>
         <div className="swg-run">
@@ -124,14 +124,14 @@ mode: "custom"
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
                     <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The gateway or browser flags, blocks, or warns before the local page is shown.</p>
+                    <p className="swg-pf-text">The gateway or browser blocks or warns before the local page is shown.</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
                     <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The fake login page opens and renders normally.</p>
+                    <p className="swg-pf-text">The fake login page renders normally.</p>
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ mode: "custom"
         <script src="/swg.js" defer></script>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>

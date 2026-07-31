@@ -51,7 +51,7 @@ const pages = [
         <form className="swg-form" method="post" action="/phishing/credential-submit.php" autoComplete="off" data-credential-form>
           <label className="swg-field">Username <input name="swg_audit_username" defaultValue="user@example.com" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
           <label className="swg-field">Password <input name="swg_audit_password" type="password" defaultValue="password" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
-          <p className="swg-run-hint">Submitted credentials are discarded immediately.</p>
+          <p className="swg-run-hint">Use dummy credentials only. Do not submit real usernames or passwords.</p>
           <div className="swg-dl-row">
             <button className="swg-dl" type="submit">Submit credentials</button>
           </div>
@@ -247,8 +247,182 @@ const pages = [
             <button className="swg-dd-opt" type="button" data-dd-opt data-video="https://www.youtube.com/embed/LembwKDo1Dk">Trailers</button>
           </div>
         </div>
-        <div className="swg-video"><iframe id="video-frame" src="https://www.youtube.com/embed/YjlgahImVwI" title="SWG Audit cyberslacking video test" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div>`, "Entertainment and streaming platforms can quietly eat into productivity and bandwidth if category-based content policies aren't actually being enforced.", "Choose a video category from the dropdown. The embedded player loads the same sample video used by the v2 site so you can check what your policy actually allows through.", "The category is blocked, or the video does not play.", "The video loads and plays with no restriction."),
+        <div className="swg-video"><iframe id="video-frame" src="https://www.youtube.com/embed/YjlgahImVwI" title="SWG Audit Facility Abuse video test" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div>`, "Entertainment and streaming platforms can quietly eat into productivity and bandwidth if category-based content policies aren't actually being enforced.", "Choose a video category from the dropdown. The embedded player loads the same sample video used by the v2 site so you can check what your policy actually allows through.", "The category is blocked, or the video does not play.", "The video loads and plays with no restriction."),
 ];
+
+const testCopy = {
+  "phishing/url-manipulation": {
+    threat: "Attackers hide destinations behind lookalike text, redirects, and short links. If filtering stops at simple URL reputation, the final page may still load.",
+    how: "Open a safe lookalike login page using a typo path, homograph character, redirect, or short URL. No real login is used.",
+    pass: "The gateway blocks the link, warns the user, or prevents the page from loading.",
+    fail: "The lookalike login page opens normally.",
+  },
+  "phishing/site-stored-as-mhtml-or-raw-html": {
+    threat: "A phishing page can arrive as a local HTML or MHTML file, so the page is assembled by the browser instead of fetched as a normal website.",
+    how: "Choose a format and open the generated file. The browser renders a fake login page locally.",
+    pass: "The gateway or browser blocks or warns before the local page is shown.",
+    fail: "The fake login page renders normally.",
+  },
+  "phishing/canvas-engine": {
+    threat: "Some kits draw the page on canvas so scanners cannot read normal HTML labels such as password or sign in.",
+    how: "Open a safe canvas-rendered login page. The visible form is drawn rather than built from ordinary text fields.",
+    pass: "The gateway blocks or warns on the canvas-rendered page.",
+    fail: "The canvas-rendered login page opens normally.",
+  },
+  "phishing/cached-content-mutation": {
+    threat: "A page can look harmless during the first scan and change after trust is established.",
+    how: "Open the harmless page, then refresh the same URL. It changes into a dummy login page.",
+    pass: "The changed page is blocked or warned on after refresh.",
+    fail: "The changed login page loads normally.",
+  },
+  "phishing/form-submission-on-random-site": {
+    threat: "Phishing succeeds when a form submission leaves the browser. The page design matters less than whether credentials can be sent out.",
+    how: "Submit only the prefilled dummy credentials. The endpoint reports whether the form reached the server and does not need real data.",
+    pass: "The submission is blocked, stripped, interrupted, or cannot complete.",
+    fail: "The dummy credential submission reaches the simulation endpoint.",
+  },
+  "malware/ransomware-file": {
+    threat: "Ransomware campaigns often include warning or instruction files that are easy for people to recognize but still useful to attackers.",
+    how: "Download a harmless ransom-note text sample and see whether content policy stops it.",
+    pass: "The download is blocked before it reaches the device.",
+    fail: "The ransomware-style note downloads normally.",
+  },
+  "malware/personal-data-file": {
+    threat: "Sensitive data can move inside ordinary business files with no executable code.",
+    how: "Download a harmless spreadsheet shaped like personal data and check whether DLP policy reacts.",
+    pass: "The download is blocked or warned on.",
+    fail: "The personal-data sample downloads normally.",
+  },
+  "malware/different-file-formats": {
+    threat: "The same payload can be wrapped in documents, spreadsheets, PDFs, or archives. Extension-only controls miss that.",
+    how: "Choose a format. Each file contains the same harmless EICAR test string in a different wrapper.",
+    pass: "The selected format is blocked or warned on.",
+    fail: "The selected file downloads normally.",
+  },
+  "malware/executable-files": {
+    threat: "Executables and scripts are direct code-delivery paths. Attackers rotate extensions when one format is blocked.",
+    how: "Choose an executable or script extension and download a harmless stand-in file.",
+    pass: "The selected executable or script is blocked.",
+    fail: "The selected executable or script downloads normally.",
+  },
+  "malware/http-https-and-cloud-delivery": {
+    threat: "Malware can come from HTTP, HTTPS, or major cloud hosts. Domain reputation alone is not enough.",
+    how: "Download the same harmless sample through different delivery channels and compare policy behavior.",
+    pass: "The file is inspected and blocked across delivery channels.",
+    fail: "The file downloads from the selected channel.",
+  },
+  "malware/nested-file-download": {
+    threat: "Attackers bury payloads inside archives, disk images, and Office files so the complete object appears only after unpacking.",
+    how: "Choose a nesting pattern. Each sample hides the same test payload inside multiple container layers.",
+    pass: "The gateway unpacks the layers and blocks the payload.",
+    fail: "The nested file downloads without being flagged.",
+  },
+  "malware/password-protected-file": {
+    threat: "Password-protected archives hide contents from scanners that cannot open them.",
+    how: "Download a harmless password-protected ZIP. The test password is 123456.",
+    pass: "The protected archive is blocked or warned on.",
+    fail: "The protected archive downloads normally.",
+  },
+  "malware/file-spoofing": {
+    threat: "A misleading filename can make an executable look like a document to a user or weak policy.",
+    how: "Download dummy.pdf.exe. It looks document-like but keeps the executable extension.",
+    pass: "The mismatch is detected and blocked.",
+    fail: "The disguised executable downloads normally.",
+  },
+  "malware/encoded-files": {
+    threat: "Encoding turns a binary payload into text, hiding the final file until the browser decodes it.",
+    how: "Choose Base64 or Base32. The browser decodes the text and rebuilds a harmless DOCM test file locally.",
+    pass: "The encoded transfer or rebuilt file is blocked.",
+    fail: "The browser rebuilds and downloads the file.",
+  },
+  "malware/encrypted-files": {
+    threat: "Encrypted content is unreadable in transit, so inspection has to reason about the delivery pattern or final file.",
+    how: "Choose an encrypted payload or archive. Some options decrypt in the browser before download.",
+    pass: "The encrypted transfer, decryption step, or final file is blocked.",
+    fail: "The encrypted or rebuilt file downloads normally.",
+  },
+  "malware/browser-open-docm": {
+    threat: "A macro-enabled document can be delivered through a normal browser request and handed off as a download.",
+    how: "Open a harmless EICAR DOCM from this site and see whether the request is stopped.",
+    pass: "The request is blocked, warned on, or the DOCM cannot download.",
+    fail: "The DOCM downloads without a warning.",
+  },
+  "malware/webassembly-eicar": {
+    threat: "Browser code can assemble a payload locally, after the network only sees a module and small data.",
+    how: "Run a WebAssembly module that writes the harmless EICAR string in browser memory and downloads it as a file.",
+    pass: "The module, reconstruction, or final download is blocked.",
+    fail: "The browser assembles and downloads the EICAR file.",
+  },
+  "malware/chunk-attacks-different-orders": {
+    threat: "Small chunks can keep a full payload away from scanners until the browser reassembles it.",
+    how: "Choose a chunking pattern. The browser fetches pieces in that pattern and rebuilds the original test file.",
+    pass: "The chunk transfer or browser-side reconstruction is blocked.",
+    fail: "All chunks are fetched and rebuilt into a file.",
+  },
+  "malware/smuggling-html-js-css-or-svg": {
+    threat: "HTML smuggling hides file data inside frontend assets and rebuilds the file at the last mile in the browser.",
+    how: "Choose a carrier. The page extracts embedded test data from HTML, JavaScript, CSS, or SVG and rebuilds a DOCM file locally.",
+    pass: "The carrier, extraction, or reconstructed file is blocked.",
+    fail: "The file is rebuilt and downloaded.",
+  },
+  "data-theft/personal-data-submission-in-normal-file": {
+    threat: "Sensitive data often leaves as a normal upload, not as malware. If outbound files are not inspected, data can leave quietly.",
+    how: "Upload a dummy or public test file only. The endpoint records whether the upload reached the server.",
+    pass: "The upload is blocked or intercepted before it reaches the server.",
+    fail: "The file uploads successfully.",
+  },
+  "data-theft/file-encoding": {
+    threat: "Encoding hides the original file bytes from simple content matching.",
+    how: "Choose a dummy file and encoding. The browser encodes the file before upload; the server tries to reconstruct it.",
+    pass: "The upload is blocked, or the original file cannot be reconstructed.",
+    fail: "The server reconstructs the original file.",
+  },
+  "data-theft/file-encrypting": {
+    threat: "Encrypted uploads hide file contents from controls that depend on reading the body.",
+    how: "Choose a dummy file and encryption mode. The browser encrypts it and sends the metadata needed for reconstruction.",
+    pass: "The upload is blocked, or the file cannot be decrypted and reconstructed.",
+    fail: "The server decrypts and reconstructs the original file.",
+  },
+  "data-theft/file-chunking": {
+    threat: "Splitting a file across requests can bypass controls that inspect only complete uploads.",
+    how: "Choose a dummy file and chunking pattern. The browser uploads pieces and the server tries to reassemble them.",
+    pass: "The transfer is blocked, or the complete file cannot be reassembled.",
+    fail: "The server reassembles the original file.",
+  },
+  "data-theft/dns-tunneling": {
+    threat: "DNS is often allowed and lightly inspected. Attackers can encode data into many small DNS lookups.",
+    how: "Choose a small dummy file. The browser encodes it into DNS-style requests and the server attempts reconstruction.",
+    pass: "The DNS requests are blocked, or the file cannot be reconstructed.",
+    fail: "The file is reconstructed from DNS-style requests.",
+  },
+  "data-theft/http-path-tunneling": {
+    threat: "Data can be carried in URL paths instead of POST bodies, bypassing controls that focus only on uploads.",
+    how: "Choose a small dummy file. The browser encodes it into URL path chunks and the server attempts reconstruction.",
+    pass: "The requests are blocked, or the file cannot be reconstructed.",
+    fail: "The file is reconstructed from URL path chunks.",
+  },
+  "cyberslacking/video-content-category-simulation": {
+    threat: "Acceptable-use policy can fail when streaming content shares domains, embeds, and infrastructure across categories.",
+    how: "Choose a content category. The embedded player loads a representative video so you can see what policy allows.",
+    pass: "The category is blocked, or the video does not play.",
+    fail: "The video loads and plays.",
+  },
+};
+
+for (const p of pages) {
+  Object.assign(p, testCopy[p.slug] || {});
+  if (p.category === "Data Theft") {
+    p.run = p.run
+      .replace("Submitted files are deleted from the server after 10 minutes.", "Use dummy or public test files only. Temporary uploads are auto-deleted after 10 minutes.")
+      .replace("Reconstructed files are deleted from the server after 10 minutes.", "Use dummy or public test files only. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Password: 123456. Reconstructed files are deleted from the server after 10 minutes.", "Password: 123456. Use dummy files only. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Use a file under 100 KB. Reconstructed files are deleted from the server after 10 minutes.", "Use a dummy file under 100 KB. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Use a file under 200 KB. Reconstructed files are deleted from the server after 10 minutes.", "Use a dummy file under 200 KB. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Password: 123456. Use dummy or public test files only. Reconstructed files are auto-deleted after 10 minutes.", "Password: 123456. Use dummy files only. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Use a file under 100 KB. Use dummy or public test files only. Reconstructed files are auto-deleted after 10 minutes.", "Use a dummy file under 100 KB. Reconstructed files are auto-deleted after 10 minutes.")
+      .replace("Use a file under 200 KB. Use dummy or public test files only. Reconstructed files are auto-deleted after 10 minutes.", "Use a dummy file under 200 KB. Reconstructed files are auto-deleted after 10 minutes.");
+  }
+}
 
 const pickDescriptions = {
   "phishing/url-manipulation": {
@@ -385,9 +559,23 @@ const nav = {
   Cyberslacking: "/cyberslacking/",
 };
 
+const categoryLabels = {
+  Cyberslacking: "Facility Abuse",
+};
+
+function categoryLabel(category) {
+  return categoryLabels[category] || category;
+}
+
 function footerHtml() {
   return `      <div className="swg-foot">
         All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+      </div>`;
+}
+
+function safetyFooterHtml() {
+  return `      <div className="swg-foot">
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>`;
 }
 
@@ -425,8 +613,8 @@ function sidebarHtml(currentSlug) {
         const isOpen = currentSlug === nav[group].replace(/^\/|\/$/g, "") || items.some((p) => p.slug === currentSlug);
         return `${index ? '<div className="swg-sb-sep" />' : ""}
       <div className="swg-sb-cat${isOpen ? " is-open" : " is-collapsed"}">
-        <a className="swg-sb-cat-link" href="${nav[group]}">${group}</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="${id}" aria-label="${isOpen ? "Collapse" : "Expand"} ${group} tests" aria-expanded="${isOpen ? "true" : "false"}">
+        <a className="swg-sb-cat-link" href="${nav[group]}">${categoryLabel(group)}</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="${id}" aria-label="${isOpen ? "Collapse" : "Expand"} ${categoryLabel(group)} tests" aria-expanded="${isOpen ? "true" : "false"}">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -451,7 +639,7 @@ function breadcrumbHtml(p) {
   return `<div className="swg-bc" role="navigation" aria-label="Breadcrumb">
           <a className="swg-bc-home" href="/">Home</a>
           <span className="swg-bc-sep">/</span>
-          <a className="swg-bc-category" href="${nav[p.category]}">${p.category}</a>
+          <a className="swg-bc-category" href="${nav[p.category]}">${categoryLabel(p.category)}</a>
           <span className="swg-bc-sep">/</span>
           <span className="swg-bc-cur swg-bc-current">${p.title}</span>
         </div>`;
@@ -590,7 +778,7 @@ mode: "custom"
 ${runAreaHtml(p, p.run, extra)}
         <script src="/swg.js" defer></script>
       </div>
-${footerHtml()}
+${safetyFooterHtml()}
     </div>
   </div>
 </div>
@@ -616,12 +804,32 @@ const categoryCopy = {
   ],
 };
 
+Object.assign(categoryCopy, {
+  Phishing: [
+    "Phishing works when a believable page reaches the user and a form submission leaves the browser.",
+    "These tests use safe dummy pages to check URL tricks, local-file pages, canvas rendering, content mutation, and credential submission.",
+  ],
+  Malware: [
+    "Malware delivery is no longer just a suspicious EXE download. Payloads arrive through documents, archives, cloud links, encoding, encryption, and browser-side assembly.",
+    "These tests use harmless samples and the EICAR test string to check whether your controls inspect the final object, not just the first URL.",
+  ],
+  "Data Theft": [
+    "Data can leave through ordinary uploads, transformed content, split requests, DNS-style traffic, or URL paths.",
+    "Use only dummy or public files. These tests show whether outbound data reaches a controlled reconstruction endpoint.",
+  ],
+  Cyberslacking: [
+    "Acceptable-use policy often depends on more than a domain name. Streaming platforms mix categories, embeds, and shared infrastructure.",
+    "This test checks whether policy follows the requested content category, not just the host.",
+  ],
+});
+
 function categoryPageHtml(category) {
   const slug = nav[category].replace(/^\/|\/$/g, "");
+  const label = categoryLabel(category);
   const copy = categoryCopy[category];
   return `---
-title: "${category}"
-description: "${category} security test overview."
+title: "${label}"
+description: "${label} security test overview."
 mode: "custom"
 ---
 
@@ -634,16 +842,16 @@ mode: "custom"
         <div className="swg-bc" role="navigation" aria-label="Breadcrumb">
           <a className="swg-bc-home" href="/">Home</a>
           <span className="swg-bc-sep">/</span>
-          <span className="swg-bc-cur swg-bc-category">${category}</span>
+          <span className="swg-bc-cur swg-bc-category">${label}</span>
         </div>
-        <h1>${category}</h1>
+        <h1>${label}</h1>
         <div className="swg-divider" />
         <div className="swg-category-copy">
           <p>${copy[0]}</p>
           <p>${copy[1]}</p>
         </div>
       </div>
-${footerHtml()}
+${safetyFooterHtml()}
     </div>
   </div>
 </div>
@@ -665,23 +873,23 @@ mode: "custom"
       <div className="swg-about-main">
         <div className="swg-container swg-about-wrap">
           <div className="swg-about-intro-section">
-            <div className="swg-about-text">In today's cybersecurity landscape, attackers have significantly outpaced traditional security tools.</div>
+            <div className="swg-about-text">Security claims are easy to make and hard to verify.</div>
           </div>
 
           <div className="swg-about-warning-section">
             <div className="swg-about-warning-item">
               <div className="swg-about-warning-icon" aria-hidden="true">!</div>
-              <div className="swg-about-text">Many vendors continue to promote outdated solutions with bold marketing claims, offering little transparency or proof of actual protection.</div>
+              <div className="swg-about-text">SWG Audit gives users safe, browser-based simulations they can run through their own perimeter controls.</div>
             </div>
             <div className="swg-about-warning-item">
               <div className="swg-about-warning-icon" aria-hidden="true">!</div>
-              <div className="swg-about-text">Buyers are often left in the dark, relying solely on vendor promises without any means of independent verification.</div>
+              <div className="swg-about-text">The project is open source so the mechanisms are visible: redirects, local rendering, encoding, encryption, chunking, and last-mile reconstruction.</div>
             </div>
           </div>
 
           <div className="swg-about-hero">
-            <h1>SWG Audit was created to change that.</h1>
-            <div className="swg-about-text">We are an open-source initiative to help buyers validate the real-world effectiveness of their perimeter security solutions against web-based threats.</div>
+            <h1>See what actually gets through.</h1>
+            <div className="swg-about-text">The goal is simple: let security buyers and engineers test real control behavior without using real malware, real credentials, or sensitive files.</div>
           </div>
 
           <div className="swg-about-feature-section">
@@ -690,16 +898,16 @@ mode: "custom"
                 <div className="swg-about-lock-shackle"></div>
                 <div className="swg-about-lock-body"></div>
               </div>
-              <div className="swg-about-text">Empower cybersecurity professionals and buyers to independently assess whether a solution can truly defend against modern threats before investing in it.</div>
+              <div className="swg-about-text">Every test is meant to be understandable: what the threat is, how the simulation works, and what pass or fail means.</div>
             </div>
           </div>
 
           <div className="swg-about-cta">
-            <div className="swg-about-text">Join the community. Test honestly. Buy confidently.</div>
+            <div className="swg-about-text">Use dummy data. Run the tests. Trust evidence over jargon.</div>
           </div>
         </div>
       </div>
-${footerHtml()}
+${safetyFooterHtml()}
     </div>
   </div>
 </div>
@@ -722,10 +930,13 @@ mode: "custom"
         <div className="swg-gs-eyebrow">SWG Audit</div>
         <h1 className="swg-gs-title">Getting started</h1>
         <div className="swg-gs-copy">
-          <p>SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats. The Bare Minimum category contains simple tests which every SWG should be able to block. Attackers employ several evasion techniques to bypass the defensive measures set up. To test these out, the next category is Evasion Detection.</p>
+          <p>SWG Audit helps you verify security claims in your own browser. Each test is safe, open source, and built to show a real web attack pattern without using real malware or real credentials.</p>
+          <p>Pick a category, run a test, and watch what your perimeter controls do. A pass means the action was blocked or warned on. A fail means the simulated action reached the browser or server.</p>
+          <p>Use dummy credentials and public or disposable files only. Do not upload confidential, regulated, customer, employee, or production data.</p>
+          <p>One result is not a full security score. It is evidence for a specific technique, useful for POCs, renewals, tuning, and regression checks.</p>
         </div>
       </div>
-${footerHtml()}
+${safetyFooterHtml()}
     </div>
   </div>
 </div>
@@ -748,7 +959,7 @@ mode: "custom"
         <h1 className="swg-article-title">${title}</h1>
 ${bodyHtml}
       </div>
-${footerHtml()}
+${activeNav === "contribute" ? safetyFooterHtml() : footerHtml()}
     </div>
   </div>
 </div>
@@ -756,27 +967,22 @@ ${footerHtml()}
 }
 
 function contributeHtml() {
-  const body = `        <p>Thank you for considering contributing to SWG Audit! We welcome contributions from the community to help improve this project. Please take a moment to review this document to make the contribution process easy and effective for everyone involved.</p>
-        <h2>How Can You Contribute?</h2>
-        <h3>Reporting Issues</h3>
-        <p>If you encounter any bugs, issues, or have suggestions for improvements, please open an issue in the repository. Provide as much detail as possible, including steps to reproduce the issue and any relevant screenshots or logs.</p>
-        <h3>Submitting Code Changes</h3>
+  const body = `        <p>SWG Audit is open source because the tests should be inspectable. If a simulation is unclear, unsafe, inaccurate, or missing an important bypass pattern, contributions are welcome.</p>
+        <h2>How to contribute</h2>
+        <h3>Report an issue</h3>
+        <p>Open an issue with the affected page, expected behavior, actual behavior, browser/SWG context, and screenshots or logs when useful. Do not include secrets or sensitive data.</p>
+        <h3>Submit a change</h3>
         <ol>
-          <li><strong>Fork the Repository</strong>: Create a personal fork of the repository on GitHub.</li>
-          <li><strong>Create a Branch</strong>: Create a new branch for your changes. Use a descriptive name, such as <code>fix-bug-123</code> or <code>add-new-feature</code>.</li>
-          <li><strong>Make Changes</strong>: Implement your changes in the appropriate files. Ensure your code follows the project's coding standards.</li>
-          <li><strong>Test Your Changes</strong>: Verify that your changes work as expected and do not break existing functionality.</li>
-          <li><strong>Submit a Pull Request</strong>: Push your changes to your fork and submit a pull request to the main repository. Provide a clear and concise description of your changes.</li>
+          <li>Fork the repository.</li>
+          <li>Create a focused branch.</li>
+          <li>Keep the simulation safe, transparent, and scoped.</li>
+          <li>Test the affected page or mechanism.</li>
+          <li>Open a pull request with a short explanation.</li>
         </ol>
-        <h3>Writing Documentation</h3>
-        <p>If you notice missing or outdated documentation, feel free to update it. This includes updating <code>README.md</code> files, adding comments to code, or creating new documentation files.</p>
-        <h3>Suggesting Features</h3>
-        <p>If you have an idea for a new feature, open an issue to discuss it with the maintainers. Provide as much detail as possible about the feature and its potential benefits.</p>
-        <h2>Code of Conduct</h2>
-        <p>Please adhere to our <a href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">Code of Conduct</a> to ensure a welcoming and inclusive environment for everyone.</p>
-        <h2>Getting Help</h2>
-        <p>If you have any questions or need assistance, feel free to reach out by opening an issue or contacting the maintainers directly.</p>
-        <p>We appreciate your contributions and look forward to working together to improve SWG Audit!</p>`;
+        <h3>Add or improve a test</h3>
+        <p>Every test should explain the threat, the mechanism, pass criteria, fail criteria, and safe-use limits. Do not add real malware, credential theft, or uncontrolled exfiltration.</p>
+        <h2>Safety standard</h2>
+        <p>Good contributions make attacker techniques understandable without making the site harmful. Prefer dummy data, EICAR, controlled endpoints, and visible source code.</p>`;
   return articlePageHtml("Contributing to SWG Audit", "How to contribute to SWG Audit.", "contribute", body);
 }
 
@@ -880,14 +1086,14 @@ function indexHtml() {
   ].map(([label, icon]) => `<a className="swg-card is-link" href="${nav[label]}">
           <img className="swg-card-img" src="/images/${icon}" alt="" />
           <div className="swg-card-body">
-            <h3>${label}</h3>
+            <h3>${categoryLabel(label)}</h3>
             <div className="swg-card-count">${counts[label]} test${counts[label] === 1 ? "" : "s"}</div>
           </div>
           <div className="swg-card-arr">&rarr;</div>
         </a>`).join("\n        ");
   return `---
 title: "SWG Audit"
-description: "Validate the real-world effectiveness of your perimeter security."
+description: "Run safe browser tests against your own perimeter controls."
 mode: "custom"
 ---
 
@@ -899,7 +1105,8 @@ mode: "custom"
       <div className="swg-home-main">
         <div className="swg-hero">
           <div className="swg-container swg-hero-copy">
-            <h1>Validate the real-world effectiveness of your perimeter security</h1>
+            <h1>Test what your web security really blocks</h1>
+            <p className="swg-hero-sub">Security claims are hard to verify from a brochure. SWG Audit lets you run safe, open-source simulations and see how your controls behave.</p>
             <div className="swg-cta-row">
               <a className="swg-cta" href="/getting-started">
                 <span className="swg-cta-glow" aria-hidden="true" />
