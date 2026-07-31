@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encrypting a file before upload hides its content from inspection entirely, since only someone with the key can read it. Attackers use this to move data past scanners that rely on reading file contents.</p>
+            <p className="swg-block-text">Encrypted uploads hide file contents from controls that depend on reading the body.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose a file and an encryption method, then submit. The file is encrypted in the browser with AES-GCM and sent along with the metadata needed to decrypt it on the server.</p>
+            <p className="swg-block-text">Choose a dummy file and encryption mode. The browser encrypts it and sends the metadata needed for reconstruction.</p>
           </section>
         </div>
         <div className="swg-run">
@@ -121,20 +121,20 @@ mode: "custom"
             <button className="swg-chip is-active" type="button" data-chip data-mode="aes-gcm">AES-GCM</button>
             <button className="swg-chip" type="button" data-chip data-mode="aes-gcm-password">AES-GCM with password</button>
           </div>
-          <p className="swg-run-hint">Password: 123456. Reconstructed files are deleted from the server after 10 minutes.</p>
+          <p className="swg-run-hint">Password: 123456. Use dummy files only. Reconstructed files are auto-deleted after 10 minutes.</p>
               <div className="swg-pf">
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
                     <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The upload is blocked, or the server can't decrypt and reconstruct the file.</p>
+                    <p className="swg-pf-text">The upload is blocked, or the file cannot be decrypted and reconstructed.</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
                     <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The server successfully decrypts and reconstructs the original file.</p>
+                    <p className="swg-pf-text">The server decrypts and reconstructs the original file.</p>
                   </div>
                 </div>
               </div>
@@ -149,7 +149,7 @@ mode: "custom"
         <script src="/swg.js" defer></script>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>

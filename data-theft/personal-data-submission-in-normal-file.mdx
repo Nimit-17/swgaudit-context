@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Files leave the network all the time, and any of them can carry sensitive material out with them — personal data, PII, financial records, or confidential documents. A gateway that doesn't inspect outbound uploads can't tell an ordinary file from one that is quietly leaking data.</p>
+            <p className="swg-block-text">Sensitive data often leaves as a normal upload, not as malware. If outbound files are not inspected, data can leave quietly.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Choose any file and upload it. This test is designed to check how your SWG treats outbound file uploads in general — whether it inspects, restricts, or freely allows different file types (personal data, PII, and other documents) leaving the network.</p>
+            <p className="swg-block-text">Upload a dummy or public test file only. The endpoint records whether the upload reached the server.</p>
           </section>
         </div>
         <div className="swg-run">
@@ -117,20 +117,20 @@ mode: "custom"
             <div className="swg-run-controls">
 <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>
           <label className="swg-file-field"><span className="swg-file-button">Choose file</span><span className="swg-file-name" data-file-name>No file chosen</span><input className="swg-file-input" type="file" name="personal_data_file" /></label>
-          <p className="swg-run-hint">Submitted files are deleted from the server after 10 minutes.</p>
+          <p className="swg-run-hint">Use dummy or public test files only. Temporary uploads are auto-deleted after 10 minutes.</p>
               <div className="swg-pf">
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
                   <div>
                     <div className="swg-pf-label">Test pass condition</div>
-                    <p className="swg-pf-text">The upload is blocked or intercepted before it leaves the browser.</p>
+                    <p className="swg-pf-text">The upload is blocked or intercepted before it reaches the server.</p>
                   </div>
                 </div>
                 <div className="swg-pf-card swg-pf-fail">
                   <span className="swg-pf-glyph">&#10007;</span>
                   <div>
                     <div className="swg-pf-label">Test fail condition</div>
-                    <p className="swg-pf-text">The file uploads successfully with no interruption.</p>
+                    <p className="swg-pf-text">The file uploads successfully.</p>
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ mode: "custom"
         <script src="/swg.js" defer></script>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>

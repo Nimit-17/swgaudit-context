@@ -10,7 +10,7 @@ const paths = [
   { path: "/malware", text: /Malware/i },
   { path: "/phishing", text: /Phishing/i },
   { path: "/data-theft", text: /Data Theft|Data Exfiltration/i },
-  { path: "/cyberslacking", text: /Cyberslacking|Productivity/i },
+  { path: "/cyberslacking", text: /Facility Abuse|Cyberslacking|Productivity/i },
 ];
 
 const allowedConsoleNoise = [
@@ -74,7 +74,7 @@ async function assertNavigation(driver) {
   await driver.get(`${baseUrl}/`);
   await driver.wait(until.elementLocated(By.css("body")), timeoutMs);
   const linkChecks = await driver.executeScript(`
-    const labels = ["Malware", "Phishing", "Data Theft", "Cyberslacking"];
+    const labels = ["Malware", "Phishing", "Data Theft", "Facility Abuse"];
     return labels.map((label) => {
       const link = Array.from(document.querySelectorAll("a")).find((anchor) =>
         anchor.textContent && anchor.textContent.trim().toLowerCase().includes(label.toLowerCase())

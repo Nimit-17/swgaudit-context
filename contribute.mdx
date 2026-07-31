@@ -78,8 +78,8 @@ mode: "custom"
       </div>
       <div className="swg-sb-sep" />
       <div className="swg-sb-cat is-collapsed">
-        <a className="swg-sb-cat-link" href="/cyberslacking/">Cyberslacking</a>
-        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Cyberslacking tests" aria-expanded="false">
+        <a className="swg-sb-cat-link" href="/cyberslacking/">Facility Abuse</a>
+        <button className="swg-sb-toggle" type="button" data-sb-toggle="sbg-cyberslacking" aria-label="Expand Facility Abuse tests" aria-expanded="false">
           <span className="swg-caret" aria-hidden="true" />
         </button>
       </div>
@@ -93,30 +93,25 @@ mode: "custom"
     <div className="swg-main swg-article-body" role="main">
       <div className="swg-article swg-container">
         <h1 className="swg-article-title">Contributing to SWG Audit</h1>
-        <p>Thank you for considering contributing to SWG Audit! We welcome contributions from the community to help improve this project. Please take a moment to review this document to make the contribution process easy and effective for everyone involved.</p>
-        <h2>How Can You Contribute?</h2>
-        <h3>Reporting Issues</h3>
-        <p>If you encounter any bugs, issues, or have suggestions for improvements, please open an issue in the repository. Provide as much detail as possible, including steps to reproduce the issue and any relevant screenshots or logs.</p>
-        <h3>Submitting Code Changes</h3>
+        <p>SWG Audit is open source because the tests should be inspectable. If a simulation is unclear, unsafe, inaccurate, or missing an important bypass pattern, contributions are welcome.</p>
+        <h2>How to contribute</h2>
+        <h3>Report an issue</h3>
+        <p>Open an issue with the affected page, expected behavior, actual behavior, browser/SWG context, and screenshots or logs when useful. Do not include secrets or sensitive data.</p>
+        <h3>Submit a change</h3>
         <ol>
-          <li><strong>Fork the Repository</strong>: Create a personal fork of the repository on GitHub.</li>
-          <li><strong>Create a Branch</strong>: Create a new branch for your changes. Use a descriptive name, such as <code>fix-bug-123</code> or <code>add-new-feature</code>.</li>
-          <li><strong>Make Changes</strong>: Implement your changes in the appropriate files. Ensure your code follows the project's coding standards.</li>
-          <li><strong>Test Your Changes</strong>: Verify that your changes work as expected and do not break existing functionality.</li>
-          <li><strong>Submit a Pull Request</strong>: Push your changes to your fork and submit a pull request to the main repository. Provide a clear and concise description of your changes.</li>
+          <li>Fork the repository.</li>
+          <li>Create a focused branch.</li>
+          <li>Keep the simulation safe, transparent, and scoped.</li>
+          <li>Test the affected page or mechanism.</li>
+          <li>Open a pull request with a short explanation.</li>
         </ol>
-        <h3>Writing Documentation</h3>
-        <p>If you notice missing or outdated documentation, feel free to update it. This includes updating <code>README.md</code> files, adding comments to code, or creating new documentation files.</p>
-        <h3>Suggesting Features</h3>
-        <p>If you have an idea for a new feature, open an issue to discuss it with the maintainers. Provide as much detail as possible about the feature and its potential benefits.</p>
-        <h2>Code of Conduct</h2>
-        <p>Please adhere to our <a href="https://github.com/Nimit-17/swgaudit-context" target="_blank" rel="noreferrer">Code of Conduct</a> to ensure a welcoming and inclusive environment for everyone.</p>
-        <h2>Getting Help</h2>
-        <p>If you have any questions or need assistance, feel free to reach out by opening an issue or contacting the maintainers directly.</p>
-        <p>We appreciate your contributions and look forward to working together to improve SWG Audit!</p>
+        <h3>Add or improve a test</h3>
+        <p>Every test should explain the threat, the mechanism, pass criteria, fail criteria, and safe-use limits. Do not add real malware, credential theft, or uncontrolled exfiltration.</p>
+        <h2>Safety standard</h2>
+        <p>Good contributions make attacker techniques understandable without making the site harmful. Prefer dummy data, EICAR, controlled endpoints, and visible source code.</p>
       </div>
       <div className="swg-foot">
-        All tests are non-malicious and safe for production environments. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
+        Use SWG Audit only in authorized environments with dummy data. By continuing, you agree to our <a className="swg-foot-link" href="/terms">Terms of Use</a> and <a className="swg-foot-link" href="/privacy">Privacy Policy</a>.
       </div>
     </div>
   </div>
