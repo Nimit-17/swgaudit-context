@@ -108,22 +108,13 @@ mode: "custom"
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server; merely attempting to leave the browser is not counted as success.</p>
+            <p className="swg-block-text">The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server.</p>
           </section>
         </div>
         <div className="swg-run swg-run--form">
           <div className="swg-run-label">Try it yourself</div>
           <div className="swg-run-body">
             <div className="swg-run-controls">
-<form className="swg-form" method="post" action="/phishing/credential-submit.php" autoComplete="off" data-credential-form>
-          <label className="swg-field">Username <input name="swg_audit_username" defaultValue="user@example.com" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
-          <label className="swg-field">Password <input name="swg_audit_password" type="password" defaultValue="password" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
-          <p className="swg-run-hint">Use dummy credentials only. Do not submit real usernames or passwords.</p>
-          <div className="swg-dl-row">
-            <button className="swg-dl" type="submit">Submit credentials</button>
-          </div>
-          <div className="swg-output" data-test-output hidden />
-        </form>
               <div className="swg-pf">
                 <div className="swg-pf-card swg-pf-pass">
                   <span className="swg-pf-glyph">&#10003;</span>
@@ -142,17 +133,17 @@ mode: "custom"
               </div>
 
             </div>
-            <div className="swg-cred-panel" aria-label="Dummy credential payload">
-              <div className="swg-cred-title">Dummy credential payload</div>
-              <div className="swg-cred-row">
-                <span>Username</span>
-                <code>user@example.com</code>
-              </div>
-              <div className="swg-cred-row">
-                <span>Password</span>
-                <code>password</code>
-              </div>
-              <p>The test fails only if this dummy payload reaches the simulation endpoint.</p>
+            <div className="swg-cred-panel" aria-label="Credential submission form">
+              <div className="swg-cred-title">Credential submission form</div>
+<form className="swg-form" method="post" action="/phishing/credential-submit.php" autoComplete="off" data-credential-form>
+          <label className="swg-field">Username <input name="swg_audit_username" defaultValue="user@example.com" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
+          <label className="swg-field">Password <input name="swg_audit_password" type="password" defaultValue="password" autoComplete="off" data-lpignore="true" data-1p-ignore required /></label>
+          <p className="swg-run-hint">Use dummy credentials only. Do not submit real usernames or passwords.</p>
+          <div className="swg-dl-row">
+            <button className="swg-dl" type="submit">Submit credentials</button>
+          </div>
+          <div className="swg-output" data-test-output hidden />
+        </form>
             </div>
           </div>
         </div>

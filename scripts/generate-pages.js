@@ -265,7 +265,7 @@ const testCopy = {
   },
   "phishing/canvas-engine": {
     threat: "Canvas is a browser drawing surface, similar to a blank sheet that JavaScript can paint on. A phishing kit can paint a fake login screen as pixels instead of using readable HTML text, labels, and input fields.",
-    how: "The test opens a GitHub-style dummy login page rendered entirely on canvas. 'Drawn' means the browser paints the words, boxes, and button onto the canvas image; scanners looking at the page structure do not see normal form fields or text such as 'password'.",
+    how: "The test opens a GitHub-style dummy login page rendered entirely on canvas. The page looks like a normal login screen, but simple scanners looking at the page structure do not see normal form fields or text such as 'password'.",
     pass: "The gateway blocks or warns on the canvas-rendered page.",
     fail: "The canvas-rendered login page opens normally.",
   },
@@ -277,7 +277,7 @@ const testCopy = {
   },
   "phishing/form-submission-on-random-site": {
     threat: "The landing page is only half of a phishing attack. The real damage happens when a credential form can deliver a username and password to the attacker-controlled server.",
-    how: "The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server; merely attempting to leave the browser is not counted as success.",
+    how: "The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server.",
     pass: "The submission is blocked, stripped, interrupted, or cannot complete through the protected path.",
     fail: "The dummy credential payload reaches the simulation endpoint.",
   },
@@ -300,8 +300,8 @@ const testCopy = {
     fail: "The selected file downloads normally.",
   },
   "malware/executable-files": {
-    threat: "Executables and scripts are direct code-delivery paths. Attackers rotate between file extensions when one format is blocked or when users are trained to distrust only one type.",
-    how: "The test serves harmless stand-in files across common executable and script extensions. It checks whether policy is consistent across the formats attackers commonly abuse.",
+    threat: "Executables and scripts are files that can run programs or commands on a device. Attackers rotate between file extensions when one format is blocked or when users are trained to distrust only one type.",
+    how: "The test serves harmless files with common executable and script extensions. It checks whether policy is consistent across the formats attackers commonly abuse.",
     pass: "The selected executable or script is blocked.",
     fail: "The selected executable or script downloads normally.",
   },
@@ -337,7 +337,7 @@ const testCopy = {
   },
   "malware/encrypted-files": {
     threat: "Encryption hides file contents from inspection while the payload is moving across the network. Attackers use that gap to delay visibility until the endpoint receives or rebuilds the file.",
-    how: "The test uses harmless encrypted payloads and protected archives. Some options decrypt in the browser before download, which checks whether controls can stop the pattern or final object.",
+    how: "The test uses harmless encrypted files and protected archives. Some options decrypt in the browser before download, which checks whether controls can stop the transfer or the final rebuilt file.",
     pass: "The encrypted transfer, decryption step, or final file is blocked.",
     fail: "The encrypted or rebuilt file downloads normally.",
   },
@@ -378,8 +378,8 @@ const testCopy = {
     fail: "The server reconstructs the original file.",
   },
   "data-theft/file-encrypting": {
-    threat: "Encryption can turn a readable outbound file into opaque data. Controls that depend on inspecting the raw body may not know what left the network.",
-    how: "The browser encrypts the selected dummy file and sends the metadata required for the controlled server to decrypt it. The test checks whether encrypted exfiltration patterns are stopped.",
+    threat: "Encryption can turn a readable outbound file into unreadable data. Controls that depend on inspecting the original file contents may not know what left the network.",
+    how: "The browser encrypts the selected dummy file and sends the metadata required for the controlled server to decrypt it. The test checks whether encrypted data leaving the network is stopped.",
     pass: "The upload is blocked, or the file cannot be decrypted and reconstructed.",
     fail: "The server decrypts and reconstructs the original file.",
   },
@@ -755,21 +755,12 @@ function credentialRunAreaHtml(p, run) {
           <div className="swg-run-label">Try it yourself</div>
           <div className="swg-run-body">
             <div className="swg-run-controls">
-${run.trim()}
 ${passFailHtml(p)}
 ${banner()}
             </div>
-            <div className="swg-cred-panel" aria-label="Dummy credential payload">
-              <div className="swg-cred-title">Dummy credential payload</div>
-              <div className="swg-cred-row">
-                <span>Username</span>
-                <code>user@example.com</code>
-              </div>
-              <div className="swg-cred-row">
-                <span>Password</span>
-                <code>password</code>
-              </div>
-              <p>The test fails only if this dummy payload reaches the simulation endpoint.</p>
+            <div className="swg-cred-panel" aria-label="Credential submission form">
+              <div className="swg-cred-title">Credential submission form</div>
+${run.trim()}
             </div>
           </div>
         </div>`;
