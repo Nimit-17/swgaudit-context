@@ -104,11 +104,11 @@ mode: "custom"
         <div className="swg-info">
           <section className="swg-block">
             <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Encryption can turn a readable outbound file into opaque data. Controls that depend on inspecting the raw body may not know what left the network.</p>
+            <p className="swg-block-text">Encryption can turn a readable outbound file into unreadable data. Controls that depend on inspecting the original file contents may not know what left the network.</p>
           </section>
           <section className="swg-block">
             <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The browser encrypts the selected dummy file and sends the metadata required for the controlled server to decrypt it. The test checks whether encrypted exfiltration patterns are stopped.</p>
+            <p className="swg-block-text">The browser encrypts the selected dummy file and sends the metadata required for the controlled server to decrypt it. The test checks whether encrypted data leaving the network is stopped.</p>
           </section>
         </div>
         <div className="swg-run">
