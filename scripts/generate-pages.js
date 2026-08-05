@@ -154,6 +154,16 @@ const pages = [
   page("malware/browser-resource-abuse", "Browser resource abuse", "Malware", "Advanced Threat Simulation", "Browser-side JavaScript resource abuse", `
         <p className="swg-run-hint">Warning: close other browser tabs and save work before running. This test intentionally makes this tab sluggish and may make the browser feel slow until it stops.</p>
         <label className="swg-field"><input type="checkbox" data-resource-confirm /> I understand this may temporarily slow or freeze this browser tab.</label>
+        <div className="swg-resource-meter" data-resource-meter>
+          <div className="swg-resource-stats">
+            <span>Frame delay <strong data-resource-delay>0 ms</strong></span>
+            <span>Allocated <strong data-resource-memory>0 MB</strong></span>
+          </div>
+          <div className="swg-resource-bar" aria-hidden="true"><span data-resource-bar /></div>
+          <div className="swg-resource-animation" data-resource-animation aria-hidden="true"><span /></div>
+          <div className="swg-resource-grid" data-resource-grid aria-hidden="true"></div>
+          <p className="swg-resource-status" data-resource-status>Ready. The animation should stutter heavily while the test runs.</p>
+        </div>
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="standard">Run standard test</button>
           <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense test</button>

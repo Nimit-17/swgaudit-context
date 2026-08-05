@@ -791,12 +791,16 @@
     domRoot: null,
     timers: [],
     frameTimes: [],
+    visibleReached: false,
+    allocatedMb: 0,
   };
 
   function releaseResourceAbuse() {
     resourceAbuseState.running = false;
     resourceAbuseState.buffers = [];
     resourceAbuseState.frameTimes = [];
+    resourceAbuseState.visibleReached = false;
+    resourceAbuseState.allocatedMb = 0;
     resourceAbuseState.timers.forEach(function (timer) { clearTimeout(timer); });
     resourceAbuseState.timers = [];
     if (resourceAbuseState.domRoot) resourceAbuseState.domRoot.remove();
@@ -839,6 +843,65 @@
     resourceAbuseState.domRoot.appendChild(frag);
   }
 
+  function resourceMeter(control) {
+    var run = control && control.closest(".swg-run");
+    return run && run.querySelector("[data-resource-meter]");
+  }
+
+  function prepareResourceMeter(control) {
+    var meter = resourceMeter(control);
+    if (!meter) return null;
+    meter.classList.add("is-running");
+    meter.classList.remove("is-warning", "is-finished");
+    var grid = meter.querySelector("[data-resource-grid]");
+    if (grid && !grid.children.length) {
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < 96; i += 1) {
+        frag.appendChild(document.createElement("i"));
+      }
+      grid.appendChild(frag);
+    }
+    return meter;
+  }
+
+  function updateResourceMeter(control, allocatedMb, delay, status) {
+    var meter = resourceMeter(control);
+    if (!meter) return;
+    var delayEl = meter.querySelector("[data-resource-delay]");
+    var memoryEl = meter.querySelector("[data-resource-memory]");
+    var bar = meter.querySelector("[data-resource-bar]");
+    var statusEl = meter.querySelector("[data-resource-status]");
+    if (delayEl) delayEl.textContent = Math.round(delay) + " ms";
+    if (memoryEl) memoryEl.textContent = allocatedMb + " MB";
+    if (bar) bar.style.width = Math.max(3, Math.min(100, delay / 12)) + "%";
+    if (statusEl) statusEl.textContent = status;
+    meter.classList.toggle("is-warning", delay >= 300);
+  }
+
+  function finishResourceMeter(control, allocatedMb, delay, status) {
+    var meter = resourceMeter(control);
+    updateResourceMeter(control, allocatedMb, delay, status);
+    if (meter) {
+      meter.classList.remove("is-running");
+      meter.classList.add("is-finished");
+    }
+  }
+
+  function thrashVisibleLayout(control, count) {
+    var meter = resourceMeter(control);
+    var grid = meter && meter.querySelector("[data-resource-grid]");
+    if (!grid) return 0;
+    var cells = grid.children;
+    var sum = 0;
+    for (var i = 0; i < count; i += 1) {
+      var cell = cells[i % cells.length];
+      cell.style.opacity = String(0.25 + ((i % 11) / 14));
+      cell.style.transform = "scale(" + (0.85 + ((i % 7) / 22)) + ")";
+      sum += grid.offsetHeight + cell.offsetWidth;
+    }
+    return sum;
+  }
+
   function blockMainThread(ms) {
     var end = performance.now() + ms;
     var value = 0;
@@ -861,16 +924,21 @@
     resourceAbuseState.running = true;
 
     var intense = control.getAttribute("data-resource-mode") === "intense";
-    var capMb = intense ? 2048 : 768;
-    var maxMs = intense ? 22000 : 12000;
-    var chunkMb = intense ? 64 : 32;
-    var jankMs = intense ? 320 : 180;
-    var domBatch = intense ? 2200 : 900;
+    var capMb = intense ? 4096 : 1536;
+    var maxMs = intense ? 45000 : 30000;
+    var chunkMb = intense ? 128 : 64;
+    var baseJankMs = intense ? 900 : 360;
+    var maxJankMs = intense ? 3000 : 1400;
+    var domBatch = intense ? 7000 : 3200;
+    var layoutBatch = intense ? 2800 : 900;
     var started = performance.now();
     var allocatedMb = 0;
+    var stepCount = 0;
+    resourceAbuseState.allocatedMb = 0;
 
     startConsole(control, "swg-audit browser-resource-abuse --mode=" + (intense ? "intense" : "standard"));
-    terminalLine(control, "allocating capped memory and adding render pressure ...");
+    terminalLine(control, "ramping memory, layout thrash, and main-thread blocking ...");
+    prepareResourceMeter(control);
     measureResourceFrames(control);
 
     function step() {
@@ -878,9 +946,16 @@
       var elapsed = performance.now() - started;
       var avgDelay = averageFrameDelay();
 
-      if (elapsed > maxMs || allocatedMb >= capMb || avgDelay > 250) {
-        terminalLine(control, "stopped at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
-        terminalFail(control, "active JavaScript caused measurable browser resource pressure.");
+      if (avgDelay >= 300 && !resourceAbuseState.visibleReached) {
+        resourceAbuseState.visibleReached = true;
+        terminalLine(control, "visible frame delay reached; continuing pressure until cap or stop.");
+      }
+
+      if (elapsed > maxMs || allocatedMb >= capMb) {
+        finishResourceMeter(control, allocatedMb, avgDelay, "Finished. Use Stop and release if the browser still feels sluggish.");
+        terminalLine(control, "finished at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
+        terminalFail(control, "active JavaScript caused visible browser resource pressure.");
+        resourceAbuseState.running = false;
         return;
       }
 
@@ -890,16 +965,22 @@
         for (var i = 0; i < bytes; i += 4096) buf[i] = (i + allocatedMb) & 255;
         resourceAbuseState.buffers.push(buf);
         allocatedMb += chunkMb;
+        resourceAbuseState.allocatedMb = allocatedMb;
         addDomPressure(domBatch);
-        blockMainThread(jankMs);
+        stepCount += 1;
+        updateResourceMeter(control, allocatedMb, avgDelay, "Running. The bar animation should visibly freeze or jump.");
+        thrashVisibleLayout(control, layoutBatch + stepCount * (intense ? 140 : 45));
+        blockMainThread(Math.min(maxJankMs, baseJankMs + stepCount * (intense ? 180 : 95)));
         terminalLine(control, "pressure: " + allocatedMb + " MB allocated; frame delay " + Math.round(avgDelay) + " ms.");
       } catch (err) {
+        finishResourceMeter(control, allocatedMb, averageFrameDelay(), "The browser stopped allocation or execution pressure reached its limit.");
         terminalLine(control, "browser stopped allocation: " + (err && err.message ? err.message : "allocation failed"));
         terminalFail(control, "active JavaScript reached the browser's allocation limit.");
+        resourceAbuseState.running = false;
         return;
       }
 
-      resourceAbuseState.timers.push(setTimeout(step, intense ? 120 : 220));
+      resourceAbuseState.timers.push(setTimeout(step, intense ? 40 : 90));
     }
 
     step();
@@ -1790,7 +1871,10 @@
     var resourceStop = event.target.closest("[data-resource-stop]");
     if (resourceStop) {
       event.preventDefault();
+      var stopDelay = averageFrameDelay();
+      var stopMb = resourceAbuseState.allocatedMb || 0;
       releaseResourceAbuse();
+      finishResourceMeter(resourceStop, stopMb, stopDelay, "Stopped and released. Reload the page if any browser pressure remains.");
       startConsole(resourceStop, "swg-audit browser-resource-abuse --release");
       terminalLine(resourceStop, "released allocated memory and DOM pressure.");
       return;
