@@ -152,23 +152,20 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="smuggling-html-js-css-or-svg">Extract smuggled file</button></div>`, "HTML smuggling hides a file's data inside a web page, script, stylesheet, or image metadata, then rebuilds it entirely inside the browser. Because the file never crosses the network as a normal download, many gateways never see it.", "Choose a carrier format. The payload is already embedded in the page using that method. Clicking the button extracts and reassembles it into a downloadable file, entirely in your browser.", "The reconstruction is detected and blocked before the file is produced.", "The file is rebuilt and downloaded with no interruption."),
   page("malware/browser-resource-abuse", "Browser resource abuse", "Malware", "Advanced Threat Simulation", "Browser-side JavaScript resource abuse", `
-        <p className="swg-run-hint">Warning: close other browser tabs and save work before running. Standard mode creates visible resource pressure. Intense mode adds heavy memory pressure, then deliberately locks this tab for about 45 seconds. Memory is released automatically 15 seconds after the test finishes.</p>
-        <label className="swg-field"><input type="checkbox" data-resource-confirm /> I understand this may temporarily slow or freeze this browser tab.</label>
+        <p className="swg-run-hint">Warning: save your work first. This test may freeze or crash this browser tab.</p>
+        <label className="swg-resource-confirm"><input type="checkbox" data-resource-confirm /> I understand the tab may freeze.</label>
         <div className="swg-resource-meter" data-resource-meter>
           <div className="swg-resource-stats">
             <span>Frame delay <strong data-resource-delay>0 ms</strong></span>
             <span>Allocated <strong data-resource-memory>0 MB</strong></span>
           </div>
           <div className="swg-resource-bar" aria-hidden="true"><span data-resource-bar /></div>
-          <div className="swg-resource-animation" data-resource-animation aria-hidden="true"><span /></div>
           <div className="swg-resource-grid" data-resource-grid aria-hidden="true"></div>
-          <p className="swg-resource-status" data-resource-status>Ready. Standard mode should stutter; intense mode will intentionally stop this tab from responding and retain memory briefly.</p>
+          <p className="swg-resource-status" data-resource-status>Ready. After starting, try to right-click or select this text to feel the delay.</p>
         </div>
         <div className="swg-dl-row">
-          <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="standard">Run standard test</button>
-          <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense lock test</button>
-          <button className="swg-dl swg-dl-alt" type="button" data-resource-stop>Stop and release</button>
-        </div>`, "", "", "", ""),
+          <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="intense">Run browser freeze test</button>
+        </div>`, "A web page can use ordinary JavaScript to consume browser resources after it loads. This does not need a download, popup, iframe, blob, or WebAssembly. If JavaScript is allowed to run freely, the page itself can make the browser tab hard to use or crash.", "Click the test button, then try to right-click the page or select text. The page allocates memory, makes the browser tab busy for a short time, and then frees the memory automatically after 15 seconds.", "The browser or gateway prevents the page script from making the tab unresponsive.", "The tab becomes slow, stops responding, or crashes while JavaScript is running."),
 
   page("data-theft/personal-data-submission-in-normal-file", "File submission", "Data Theft", "Bare Minimum", "Outbound file upload detection", `
         <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>

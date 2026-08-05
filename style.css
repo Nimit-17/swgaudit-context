@@ -1065,6 +1065,27 @@ div[class*="max-w-8xl"] {
   font-family: var(--font-mono);
   text-align: right;
 }
+.swg-resource-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 10px 0 2px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 37, 56, 0.46);
+  border-radius: 6px;
+  color: var(--text-body);
+  background: rgba(255, 37, 56, 0.1);
+  font-size: 12px;
+  font-weight: 650;
+}
+.swg-resource-confirm input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #ff2538;
+}
 .swg-resource-bar {
   height: 10px;
   overflow: hidden;
@@ -1078,26 +1099,6 @@ div[class*="max-w-8xl"] {
   border-radius: inherit;
   background: linear-gradient(90deg, #34d399, #fbbf24, #ff2538);
   transition: width 0.12s linear;
-}
-.swg-resource-animation {
-  position: relative;
-  height: 34px;
-  overflow: hidden;
-  border-radius: 7px;
-  background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 14px, rgba(255,255,255,0.02) 14px 28px),
-    rgba(0, 0, 0, 0.16);
-}
-.swg-resource-animation span {
-  position: absolute;
-  top: 5px;
-  left: -26%;
-  width: 24%;
-  height: 24px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 37, 56, 0), rgba(255, 37, 56, 0.9), rgba(251, 191, 36, 0.95));
-  box-shadow: 0 0 24px rgba(255, 37, 56, 0.38);
-  animation: swg-resource-sweep 0.7s linear infinite;
 }
 .swg-resource-grid {
   display: grid;
@@ -1121,13 +1122,6 @@ div[class*="max-w-8xl"] {
 }
 .swg-resource-meter.is-warning .swg-resource-status {
   color: #ffc2c7;
-}
-.swg-resource-meter.is-finished .swg-resource-animation span {
-  animation-play-state: paused;
-}
-@keyframes swg-resource-sweep {
-  from { transform: translateX(0); }
-  to { transform: translateX(540%); }
 }
 
 .swg-form {

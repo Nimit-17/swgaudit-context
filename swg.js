@@ -933,13 +933,13 @@
 
     var lockMs = 45000;
     var deviceGb = navigator.deviceMemory || 8;
-    var targetMb = Math.max(1536, Math.min(3072, Math.floor(deviceGb * 384)));
+    var targetMb = Math.max(2048, Math.min(4096, Math.floor(deviceGb * 512)));
     var chunkMb = 128;
     var allocatedMb = 0;
     startConsole(control, "swg-audit browser-resource-abuse --mode=intense-lock");
-    terminalLine(control, "building memory pressure before controlled tab lock; stop works until the lock begins.");
+    terminalLine(control, "building memory load before freezing the tab.");
     prepareResourceMeter(control);
-    updateResourceMeter(control, 0, lockMs, "Armed. Building memory pressure before the tab lock.");
+    updateResourceMeter(control, 0, lockMs, "Starting. Try right-clicking or selecting text after the button responds.");
 
     function allocateThenLock() {
       if (!resourceAbuseState.running) return;
@@ -952,7 +952,7 @@
           allocatedMb += chunkMb;
           resourceAbuseState.allocatedMb = allocatedMb;
           addDomPressure(9000);
-          updateResourceMeter(control, allocatedMb, lockMs, "Preparing intense mode. Stop still works until lock begins.");
+          updateResourceMeter(control, allocatedMb, lockMs, "Loading memory. The page will become hard to use.");
           thrashVisibleLayout(control, 3600);
           blockMainThread(450);
           resourceAbuseState.timers.push(setTimeout(allocateThenLock, 60));
@@ -964,7 +964,7 @@
 
       var started = performance.now();
       var score = 0;
-      updateResourceMeter(control, allocatedMb, lockMs, "Locked. Browser UI should be unresponsive until the lock releases.");
+      updateResourceMeter(control, allocatedMb, lockMs, "Frozen. The tab may not respond until the test ends.");
 
       while (performance.now() - started < lockMs) {
         for (var i = 0; i < 60000; i += 1) {
@@ -974,7 +974,7 @@
       }
 
       resourceAbuseState.running = false;
-      finishResourceMeter(control, allocatedMb, lockMs, "Released. Memory will be freed automatically in 15 seconds.");
+      finishResourceMeter(control, allocatedMb, lockMs, "The tab responded again. Memory will be freed automatically in 15 seconds.");
       terminalLine(control, "controlled lock released after " + Math.round((performance.now() - started) / 1000) + " seconds.");
       terminalFail(control, "active JavaScript made the tab stop responding without a download, iframe, popup, blob, or wasm.");
       scheduleResourceAutoRelease(control, allocatedMb);
@@ -1029,9 +1029,9 @@
       }
 
       if (elapsed > maxMs || allocatedMb >= capMb) {
-        finishResourceMeter(control, allocatedMb, avgDelay, "Finished. Use Stop and release if the browser still feels sluggish.");
+        finishResourceMeter(control, allocatedMb, avgDelay, "Finished. Memory will be freed automatically in 15 seconds.");
         terminalLine(control, "finished at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
-        terminalFail(control, "active JavaScript caused visible browser resource pressure.");
+        terminalFail(control, "active JavaScript made the browser tab visibly slow.");
         resourceAbuseState.running = false;
         scheduleResourceAutoRelease(control, allocatedMb);
         return;
