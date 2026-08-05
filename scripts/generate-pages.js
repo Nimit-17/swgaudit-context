@@ -9,10 +9,10 @@ const page = (slug, title, category, tier, control, run, threat, how, pass, fail
   tier,
   control,
   run,
-  threat: threat || "This test safely reproduces a web security bypass pattern from the v2 SWG Audit site.",
-  how: how || "Run the sample and confirm whether the SWG blocks, warns, rewrites, or otherwise prevents the risky action.",
-  pass: pass || "The gateway blocks, warns on, or otherwise stops the risky action.",
-  fail: fail || "The action completes with no warning or interruption.",
+  threat: threat === undefined ? "This test safely reproduces a web security bypass pattern from the v2 SWG Audit site." : threat,
+  how: how === undefined ? "Run the sample and confirm whether the SWG blocks, warns, rewrites, or otherwise prevents the risky action." : how,
+  pass: pass === undefined ? "The gateway blocks, warns on, or otherwise stops the risky action." : pass,
+  fail: fail === undefined ? "The action completes with no warning or interruption." : fail,
 });
 
 const pages = [
@@ -151,6 +151,14 @@ const pages = [
           <button className="swg-chip" type="button" data-chip data-kind="smuggle" data-carrier="svg" data-name="svg-smuggled-eicar.docm">SVG</button>
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="smuggling-html-js-css-or-svg">Extract smuggled file</button></div>`, "HTML smuggling hides a file's data inside a web page, script, stylesheet, or image metadata, then rebuilds it entirely inside the browser. Because the file never crosses the network as a normal download, many gateways never see it.", "Choose a carrier format. The payload is already embedded in the page using that method. Clicking the button extracts and reassembles it into a downloadable file, entirely in your browser.", "The reconstruction is detected and blocked before the file is produced.", "The file is rebuilt and downloaded with no interruption."),
+  page("malware/browser-resource-abuse", "Browser resource abuse", "Malware", "Advanced Threat Simulation", "Browser-side JavaScript resource abuse", `
+        <p className="swg-run-hint">Warning: close other browser tabs and save work before running. This test intentionally makes this tab sluggish and may make the browser feel slow until it stops.</p>
+        <label className="swg-field"><input type="checkbox" data-resource-confirm /> I understand this may temporarily slow or freeze this browser tab.</label>
+        <div className="swg-dl-row">
+          <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="standard">Run standard test</button>
+          <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense test</button>
+          <button className="swg-dl swg-dl-alt" type="button" data-resource-stop>Stop and release</button>
+        </div>`, "", "", "", ""),
 
   page("data-theft/personal-data-submission-in-normal-file", "File submission", "Data Theft", "Bare Minimum", "Outbound file upload detection", `
         <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>
@@ -1045,6 +1053,7 @@ function privacyHtml() {
         <h3>a. Information You Provide</h3>
         <ul>
           <li><strong>Contact Information:</strong> When you contact us or submit forms, we may collect your name, email address, and any other information you provide.</li>
+          <li><strong>Test access and activity:</strong> To protect the simulations and understand their use, we collect the work email entered during verification, your IP address, an IP-derived country/region/city, and the simulation pages you complete.</li>
           <li><strong>Uploaded Files:</strong> If you use our data exfiltration simulation or upload files, we process and temporarily store those files for the purpose of the simulation.</li>
         </ul>
         <h3>b. Automatically Collected Information</h3>
@@ -1057,20 +1066,21 @@ function privacyHtml() {
           <li>To provide, operate, and maintain the Service.</li>
           <li>To improve, personalize, and expand our Service.</li>
           <li>To communicate with you, including responding to your inquiries.</li>
-          <li>To monitor and analyze usage and trends to improve user experience.</li>
+          <li>To monitor and analyze usage and trends to improve user experience, including the tests that verified visitors complete.</li>
           <li>To ensure the security and integrity of our Service.</li>
         </ul>
         <h2>3. How We Share Your Information</h2>
         <p>We do <strong>not</strong> sell or rent your personal information. We may share information:</p>
         <ul>
           <li>With service providers who assist us in operating the Service (subject to confidentiality agreements).</li>
+          <li>With the IP geolocation provider used to derive the approximate country, region, and city recorded for verified visitors.</li>
           <li>If required by law, regulation, or legal process.</li>
           <li>To protect the rights, property, or safety of SWG Audit, our users, or others.</li>
         </ul>
         <h2>4. Data Retention</h2>
         <ul>
           <li>Uploaded files and simulation data are stored only as long as necessary for the simulation and are deleted automatically after a short period (e.g., 10 minutes).</li>
-          <li>Other information is retained only as long as necessary for the purposes described in this policy.</li>
+          <li>Visitor verification and test-activity records are retained only as long as necessary for service security, dashboard reporting, and the purposes described in this policy.</li>
         </ul>
         <h2>5. Security</h2>
         <p>We implement reasonable technical and organizational measures to protect your information. However, no method of transmission or storage is 100% secure.</p>

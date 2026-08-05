@@ -51,6 +51,7 @@
       "malware/webassembly-eicar",
       "malware/chunk-attacks-different-orders",
       "malware/smuggling-html-js-css-or-svg",
+      "malware/browser-resource-abuse",
       "data-theft",
       "data-theft/personal-data-submission-in-normal-file",
       "data-theft/file-encoding",
