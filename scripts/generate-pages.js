@@ -152,7 +152,7 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="smuggling-html-js-css-or-svg">Extract smuggled file</button></div>`, "HTML smuggling hides a file's data inside a web page, script, stylesheet, or image metadata, then rebuilds it entirely inside the browser. Because the file never crosses the network as a normal download, many gateways never see it.", "Choose a carrier format. The payload is already embedded in the page using that method. Clicking the button extracts and reassembles it into a downloadable file, entirely in your browser.", "The reconstruction is detected and blocked before the file is produced.", "The file is rebuilt and downloaded with no interruption."),
   page("malware/browser-resource-abuse", "Browser resource abuse", "Malware", "Advanced Threat Simulation", "Browser-side JavaScript resource abuse", `
-        <p className="swg-run-hint">Warning: close other browser tabs and save work before running. This test intentionally makes this tab sluggish and may make the browser feel slow until it stops.</p>
+        <p className="swg-run-hint">Warning: close other browser tabs and save work before running. Standard mode creates visible resource pressure. Intense mode deliberately locks this tab for about 30 seconds, and Stop only works before the lock begins.</p>
         <label className="swg-field"><input type="checkbox" data-resource-confirm /> I understand this may temporarily slow or freeze this browser tab.</label>
         <div className="swg-resource-meter" data-resource-meter>
           <div className="swg-resource-stats">
@@ -162,11 +162,11 @@ const pages = [
           <div className="swg-resource-bar" aria-hidden="true"><span data-resource-bar /></div>
           <div className="swg-resource-animation" data-resource-animation aria-hidden="true"><span /></div>
           <div className="swg-resource-grid" data-resource-grid aria-hidden="true"></div>
-          <p className="swg-resource-status" data-resource-status>Ready. The animation should stutter heavily while the test runs.</p>
+          <p className="swg-resource-status" data-resource-status>Ready. Standard mode should stutter; intense mode will intentionally stop this tab from responding.</p>
         </div>
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="standard">Run standard test</button>
-          <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense test</button>
+          <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense lock test</button>
           <button className="swg-dl swg-dl-alt" type="button" data-resource-stop>Stop and release</button>
         </div>`, "", "", "", ""),
 

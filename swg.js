@@ -911,6 +911,37 @@
     return value;
   }
 
+  function runControlledTabLock(control) {
+    releaseResourceAbuse();
+    resourceAbuseState.running = true;
+
+    var lockMs = 32000;
+    startConsole(control, "swg-audit browser-resource-abuse --mode=intense-lock");
+    terminalLine(control, "arming controlled tab lock; stop works until the lock begins.");
+    prepareResourceMeter(control);
+    updateResourceMeter(control, 0, lockMs, "Armed. This tab will stop responding in 1 second for about 30 seconds.");
+
+    resourceAbuseState.timers.push(setTimeout(function () {
+      if (!resourceAbuseState.running) return;
+
+      var started = performance.now();
+      var score = 0;
+      updateResourceMeter(control, 0, lockMs, "Locked. Browser UI should be unresponsive until the lock releases.");
+
+      while (performance.now() - started < lockMs) {
+        for (var i = 0; i < 60000; i += 1) {
+          score += Math.sqrt((i + score) % 9973);
+        }
+        if (score > 1000000000) score = score % 9973;
+      }
+
+      resourceAbuseState.running = false;
+      finishResourceMeter(control, 0, lockMs, "Released. The tab recovered after a controlled JavaScript main-thread lock.");
+      terminalLine(control, "controlled lock released after " + Math.round((performance.now() - started) / 1000) + " seconds.");
+      terminalFail(control, "active JavaScript made the tab stop responding without a download, iframe, popup, blob, or wasm.");
+    }, 1000));
+  }
+
   function runResourceAbuse(control) {
     var run = control.closest(".swg-run");
     var confirm = run && run.querySelector("[data-resource-confirm]");
@@ -920,23 +951,28 @@
       return;
     }
 
+    var intense = control.getAttribute("data-resource-mode") === "intense";
+    if (intense) {
+      runControlledTabLock(control);
+      return;
+    }
+
     releaseResourceAbuse();
     resourceAbuseState.running = true;
 
-    var intense = control.getAttribute("data-resource-mode") === "intense";
-    var capMb = intense ? 4096 : 1536;
-    var maxMs = intense ? 45000 : 30000;
-    var chunkMb = intense ? 128 : 64;
-    var baseJankMs = intense ? 900 : 360;
-    var maxJankMs = intense ? 3000 : 1400;
-    var domBatch = intense ? 7000 : 3200;
-    var layoutBatch = intense ? 2800 : 900;
+    var capMb = 1536;
+    var maxMs = 30000;
+    var chunkMb = 64;
+    var baseJankMs = 360;
+    var maxJankMs = 1400;
+    var domBatch = 3200;
+    var layoutBatch = 900;
     var started = performance.now();
     var allocatedMb = 0;
     var stepCount = 0;
     resourceAbuseState.allocatedMb = 0;
 
-    startConsole(control, "swg-audit browser-resource-abuse --mode=" + (intense ? "intense" : "standard"));
+    startConsole(control, "swg-audit browser-resource-abuse --mode=standard");
     terminalLine(control, "ramping memory, layout thrash, and main-thread blocking ...");
     prepareResourceMeter(control);
     measureResourceFrames(control);
@@ -969,8 +1005,8 @@
         addDomPressure(domBatch);
         stepCount += 1;
         updateResourceMeter(control, allocatedMb, avgDelay, "Running. The bar animation should visibly freeze or jump.");
-        thrashVisibleLayout(control, layoutBatch + stepCount * (intense ? 140 : 45));
-        blockMainThread(Math.min(maxJankMs, baseJankMs + stepCount * (intense ? 180 : 95)));
+        thrashVisibleLayout(control, layoutBatch + stepCount * 45);
+        blockMainThread(Math.min(maxJankMs, baseJankMs + stepCount * 95));
         terminalLine(control, "pressure: " + allocatedMb + " MB allocated; frame delay " + Math.round(avgDelay) + " ms.");
       } catch (err) {
         finishResourceMeter(control, allocatedMb, averageFrameDelay(), "The browser stopped allocation or execution pressure reached its limit.");
@@ -980,7 +1016,7 @@
         return;
       }
 
-      resourceAbuseState.timers.push(setTimeout(step, intense ? 40 : 90));
+      resourceAbuseState.timers.push(setTimeout(step, 90));
     }
 
     step();
