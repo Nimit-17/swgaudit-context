@@ -785,6 +785,125 @@
   var outputState = {};
   var serverFileState = {};
   var selectedFileState = {};
+  var resourceAbuseState = {
+    running: false,
+    buffers: [],
+    domRoot: null,
+    timers: [],
+    frameTimes: [],
+  };
+
+  function releaseResourceAbuse() {
+    resourceAbuseState.running = false;
+    resourceAbuseState.buffers = [];
+    resourceAbuseState.frameTimes = [];
+    resourceAbuseState.timers.forEach(function (timer) { clearTimeout(timer); });
+    resourceAbuseState.timers = [];
+    if (resourceAbuseState.domRoot) resourceAbuseState.domRoot.remove();
+    resourceAbuseState.domRoot = null;
+  }
+
+  function measureResourceFrames(control) {
+    var last = performance.now();
+    function tick(now) {
+      if (!resourceAbuseState.running) return;
+      resourceAbuseState.frameTimes.push(now - last);
+      if (resourceAbuseState.frameTimes.length > 80) resourceAbuseState.frameTimes.shift();
+      last = now;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    terminalLine(control, "measuring responsiveness while pressure ramps ...");
+  }
+
+  function averageFrameDelay() {
+    var frames = resourceAbuseState.frameTimes;
+    if (!frames.length) return 0;
+    return frames.reduce(function (sum, value) { return sum + value; }, 0) / frames.length;
+  }
+
+  function addDomPressure(count) {
+    if (!resourceAbuseState.domRoot) {
+      var root = document.createElement("div");
+      root.setAttribute("aria-hidden", "true");
+      root.style.cssText = "position:absolute;left:-10000px;top:0;width:1px;height:1px;overflow:hidden;";
+      document.body.appendChild(root);
+      resourceAbuseState.domRoot = root;
+    }
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i += 1) {
+      var node = document.createElement("span");
+      node.textContent = "swg-audit-resource-pressure-" + i;
+      frag.appendChild(node);
+    }
+    resourceAbuseState.domRoot.appendChild(frag);
+  }
+
+  function blockMainThread(ms) {
+    var end = performance.now() + ms;
+    var value = 0;
+    while (performance.now() < end) {
+      value += Math.sqrt(value + 42.17);
+    }
+    return value;
+  }
+
+  function runResourceAbuse(control) {
+    var run = control.closest(".swg-run");
+    var confirm = run && run.querySelector("[data-resource-confirm]");
+    if (!confirm || !confirm.checked) {
+      startConsole(control, "swg-audit browser-resource-abuse");
+      terminalLine(control, "confirm the warning before running this test.");
+      return;
+    }
+
+    releaseResourceAbuse();
+    resourceAbuseState.running = true;
+
+    var intense = control.getAttribute("data-resource-mode") === "intense";
+    var capMb = intense ? 2048 : 768;
+    var maxMs = intense ? 22000 : 12000;
+    var chunkMb = intense ? 64 : 32;
+    var jankMs = intense ? 320 : 180;
+    var domBatch = intense ? 2200 : 900;
+    var started = performance.now();
+    var allocatedMb = 0;
+
+    startConsole(control, "swg-audit browser-resource-abuse --mode=" + (intense ? "intense" : "standard"));
+    terminalLine(control, "allocating capped memory and adding render pressure ...");
+    measureResourceFrames(control);
+
+    function step() {
+      if (!resourceAbuseState.running) return;
+      var elapsed = performance.now() - started;
+      var avgDelay = averageFrameDelay();
+
+      if (elapsed > maxMs || allocatedMb >= capMb || avgDelay > 250) {
+        terminalLine(control, "stopped at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
+        terminalFail(control, "active JavaScript caused measurable browser resource pressure.");
+        return;
+      }
+
+      try {
+        var bytes = chunkMb * 1024 * 1024;
+        var buf = new Uint8Array(bytes);
+        for (var i = 0; i < bytes; i += 4096) buf[i] = (i + allocatedMb) & 255;
+        resourceAbuseState.buffers.push(buf);
+        allocatedMb += chunkMb;
+        addDomPressure(domBatch);
+        blockMainThread(jankMs);
+        terminalLine(control, "pressure: " + allocatedMb + " MB allocated; frame delay " + Math.round(avgDelay) + " ms.");
+      } catch (err) {
+        terminalLine(control, "browser stopped allocation: " + (err && err.message ? err.message : "allocation failed"));
+        terminalFail(control, "active JavaScript reached the browser's allocation limit.");
+        return;
+      }
+
+      resourceAbuseState.timers.push(setTimeout(step, intense ? 120 : 220));
+    }
+
+    step();
+  }
 
   function outputMarker(out) {
     if (!out) return "swg-output";
@@ -1668,6 +1787,22 @@
       return;
     }
 
+    var resourceStop = event.target.closest("[data-resource-stop]");
+    if (resourceStop) {
+      event.preventDefault();
+      releaseResourceAbuse();
+      startConsole(resourceStop, "swg-audit browser-resource-abuse --release");
+      terminalLine(resourceStop, "released allocated memory and DOM pressure.");
+      return;
+    }
+
+    var resourceAbuse = event.target.closest("[data-resource-abuse]");
+    if (resourceAbuse) {
+      event.preventDefault();
+      runResourceAbuse(resourceAbuse);
+      return;
+    }
+
     // 3) JS download button driven by a chip group
     var dl = event.target.closest("[data-dl]");
     if (!dl) return;
@@ -1876,6 +2011,8 @@
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") closeMobileSidebar();
   });
+
+  window.addEventListener("pagehide", releaseResourceAbuse);
 
   document.addEventListener("click", function (event) {
     var dnsReset = event.target.closest("[data-dns-tunnel-reset]");
