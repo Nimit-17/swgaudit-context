@@ -790,6 +790,7 @@
     buffers: [],
     domRoot: null,
     timers: [],
+    autoReleaseTimer: null,
     frameTimes: [],
     visibleReached: false,
     allocatedMb: 0,
@@ -797,6 +798,8 @@
 
   function releaseResourceAbuse() {
     resourceAbuseState.running = false;
+    if (resourceAbuseState.autoReleaseTimer) clearTimeout(resourceAbuseState.autoReleaseTimer);
+    resourceAbuseState.autoReleaseTimer = null;
     resourceAbuseState.buffers = [];
     resourceAbuseState.frameTimes = [];
     resourceAbuseState.visibleReached = false;
@@ -805,6 +808,19 @@
     resourceAbuseState.timers = [];
     if (resourceAbuseState.domRoot) resourceAbuseState.domRoot.remove();
     resourceAbuseState.domRoot = null;
+  }
+
+  function scheduleResourceAutoRelease(control, allocatedMb) {
+    if (resourceAbuseState.autoReleaseTimer) clearTimeout(resourceAbuseState.autoReleaseTimer);
+    resourceAbuseState.autoReleaseTimer = setTimeout(function () {
+      resourceAbuseState.buffers = [];
+      resourceAbuseState.allocatedMb = 0;
+      if (resourceAbuseState.domRoot) resourceAbuseState.domRoot.remove();
+      resourceAbuseState.domRoot = null;
+      updateResourceMeter(control, 0, averageFrameDelay(), "Released. Test memory was automatically freed after 15 seconds.");
+      terminalLine(control, "auto-released " + allocatedMb + " MB after 15 seconds.");
+      resourceAbuseState.autoReleaseTimer = null;
+    }, 15000);
   }
 
   function measureResourceFrames(control) {
@@ -915,18 +931,40 @@
     releaseResourceAbuse();
     resourceAbuseState.running = true;
 
-    var lockMs = 32000;
+    var lockMs = 45000;
+    var deviceGb = navigator.deviceMemory || 8;
+    var targetMb = Math.max(1536, Math.min(3072, Math.floor(deviceGb * 384)));
+    var chunkMb = 128;
+    var allocatedMb = 0;
     startConsole(control, "swg-audit browser-resource-abuse --mode=intense-lock");
-    terminalLine(control, "arming controlled tab lock; stop works until the lock begins.");
+    terminalLine(control, "building memory pressure before controlled tab lock; stop works until the lock begins.");
     prepareResourceMeter(control);
-    updateResourceMeter(control, 0, lockMs, "Armed. This tab will stop responding in 1 second for about 30 seconds.");
+    updateResourceMeter(control, 0, lockMs, "Armed. Building memory pressure before the tab lock.");
 
-    resourceAbuseState.timers.push(setTimeout(function () {
+    function allocateThenLock() {
       if (!resourceAbuseState.running) return;
+      try {
+        if (allocatedMb < targetMb) {
+          var bytes = chunkMb * 1024 * 1024;
+          var buf = new Uint8Array(bytes);
+          for (var j = 0; j < bytes; j += 4096) buf[j] = (j + allocatedMb) & 255;
+          resourceAbuseState.buffers.push(buf);
+          allocatedMb += chunkMb;
+          resourceAbuseState.allocatedMb = allocatedMb;
+          addDomPressure(9000);
+          updateResourceMeter(control, allocatedMb, lockMs, "Preparing intense mode. Stop still works until lock begins.");
+          thrashVisibleLayout(control, 3600);
+          blockMainThread(450);
+          resourceAbuseState.timers.push(setTimeout(allocateThenLock, 60));
+          return;
+        }
+      } catch (err) {
+        terminalLine(control, "memory pressure stopped at " + allocatedMb + " MB: " + (err && err.message ? err.message : "allocation failed"));
+      }
 
       var started = performance.now();
       var score = 0;
-      updateResourceMeter(control, 0, lockMs, "Locked. Browser UI should be unresponsive until the lock releases.");
+      updateResourceMeter(control, allocatedMb, lockMs, "Locked. Browser UI should be unresponsive until the lock releases.");
 
       while (performance.now() - started < lockMs) {
         for (var i = 0; i < 60000; i += 1) {
@@ -936,10 +974,13 @@
       }
 
       resourceAbuseState.running = false;
-      finishResourceMeter(control, 0, lockMs, "Released. The tab recovered after a controlled JavaScript main-thread lock.");
+      finishResourceMeter(control, allocatedMb, lockMs, "Released. Memory will be freed automatically in 15 seconds.");
       terminalLine(control, "controlled lock released after " + Math.round((performance.now() - started) / 1000) + " seconds.");
       terminalFail(control, "active JavaScript made the tab stop responding without a download, iframe, popup, blob, or wasm.");
-    }, 1000));
+      scheduleResourceAutoRelease(control, allocatedMb);
+    }
+
+    resourceAbuseState.timers.push(setTimeout(allocateThenLock, 1000));
   }
 
   function runResourceAbuse(control) {
@@ -992,6 +1033,7 @@
         terminalLine(control, "finished at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
         terminalFail(control, "active JavaScript caused visible browser resource pressure.");
         resourceAbuseState.running = false;
+        scheduleResourceAutoRelease(control, allocatedMb);
         return;
       }
 
@@ -1013,6 +1055,7 @@
         terminalLine(control, "browser stopped allocation: " + (err && err.message ? err.message : "allocation failed"));
         terminalFail(control, "active JavaScript reached the browser's allocation limit.");
         resourceAbuseState.running = false;
+        scheduleResourceAutoRelease(control, allocatedMb);
         return;
       }
 
