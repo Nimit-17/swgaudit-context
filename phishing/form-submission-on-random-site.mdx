@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-open">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">The landing page is only half of a phishing attack. The real damage happens when a credential form can deliver a username and password to the attacker-controlled server.</p>
+            <div className="swg-block-label">Sending passwords out</div>
+            <p className="swg-block-text">Blocking the lure page is only half the defense. If a login form can still send credentials out of the network, the theft succeeds.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server.</p>
+            <div className="swg-block-label">Submit dummy credentials</div>
+            <p className="swg-block-text">Submit the prefilled dummy username and password. The collector records arrival, then discards the values.</p>
           </section>
         </div>
         <div className="swg-run swg-run--form">

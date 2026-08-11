@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">DNS traffic is often allowed broadly because it is required for normal browsing. Attackers can abuse that trust by encoding data into many small lookup-like requests.</p>
+            <div className="swg-block-label">Move data through DNS</div>
+            <p className="swg-block-text">DNS lookups often face less inspection than web uploads. File bytes can ride inside DNS names and rebuild at a collector.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The browser encodes a small dummy file into DNS-style request labels and sends them to a controlled endpoint. The server attempts to reconstruct the file from those labels.</p>
+            <div className="swg-block-label">Send file bytes as DNS queries</div>
+            <p className="swg-block-text">Choose a small dummy file and run the tunnel. The result shows whether the file can be rebuilt from DNS traffic.</p>
           </section>
         </div>
         <div className="swg-run">

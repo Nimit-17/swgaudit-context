@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Splitting a file across many requests can bypass controls that only inspect complete uploads. No single request has to contain the full file.</p>
+            <div className="swg-block-label">Upload in small pieces</div>
+            <p className="swg-block-text">Sending a file as many small uploads can bypass rules that look for one full file in one request.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The browser divides the selected dummy file into chunks and sends a manifest for reconstruction. The server attempts to reassemble the original file from those pieces.</p>
+            <div className="swg-block-label">Split, then reassemble</div>
+            <p className="swg-block-text">Choose a chunk pattern and submit. The collector joins the pieces and reports whether the full file returns.</p>
           </section>
         </div>
         <div className="swg-run">

@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Data can be carried in URL paths instead of request bodies. Controls focused only on upload forms or POST bodies may miss data hidden in ordinary-looking GET traffic.</p>
+            <div className="swg-block-label">Move data in the URL path</div>
+            <p className="swg-block-text">File data can move inside long URL paths without a normal upload form. Filters that only watch POST uploads can miss this.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The browser encodes a small dummy file into URL path chunks and sends them as requests. The server attempts to reconstruct the file from the path data.</p>
+            <div className="swg-block-label">Send pieces in GET paths</div>
+            <p className="swg-block-text">Choose a file under the size limit and run. Path pieces hit the tunnel endpoint. Status shows whether rebuild succeeds.</p>
           </section>
         </div>
         <div className="swg-run">
