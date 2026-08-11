@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Redirect</title>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var target = params.get("url") || "/phishing/rnicrosoft-Iogin/";
+      var allowed = [
+        "/phishing/rnicrosoft-Iogin/",
+        "/phishing/micr%D0%BEsoft-Iogin/",
+        "/phishing/micr\u043Esoft-Iogin/",
+      ];
+      if (allowed.indexOf(target) === -1) {
+        document.write("Unsupported redirect target.");
+        return;
+      }
+      location.replace(target);
+    })();
+  </script>
+</head>
+<body></body>
+</html>
