@@ -1,6 +1,6 @@
 ---
 title: "SWG Audit"
-description: "Run safe browser tests against your own perimeter controls."
+description: "Open-source simulations that show what perimeter controls stop."
 mode: "custom"
 ---
 
@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-collapsed">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,22 +85,16 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-home-body" role="main">
       <div className="swg-home-main">
         <div className="swg-hero">
           <div className="swg-container swg-hero-copy">
-            <h1>Test what your web security really blocks</h1>
-            <p className="swg-hero-sub">Security claims are hard to verify from a brochure. SWG Audit lets you run safe, open-source simulations and see how your controls behave.</p>
-            <div className="swg-cta-row">
-              <a className="swg-cta" href="/getting-started">
-                <span className="swg-cta-glow" aria-hidden="true" />
-                <span className="swg-cta-text">Get started</span>
-                <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
-              </a>
+            {/* LOCKED: do not change HOME_H1 / HOME_LEAD unless a human user explicitly asks. */}
+            <h1>Validate the real-world effectiveness of your perimeter security</h1>
+            <p className="swg-hero-sub">SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats.</p>
+            <div className="swg-home-intro">
+            <p>Pick a category, run a test, and compare what happens to the pass and fail conditions on that page. Pass means the web filter or browser blocked or warned. Fail means the action completed with no block. Use dummy credentials and disposable files only. Do not use live credentials or live business files. One result is evidence for that technique, not a full security score.</p>
             </div>
           </div>
         </div>

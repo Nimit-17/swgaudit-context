@@ -18,15 +18,33 @@ required_paths=(
   "data-theft/index.html"
   "data-theft/dns-tunneling/index.html"
   "data-theft/path-tunnel.php"
+  "data-theft/upload.php"
+  "data-theft/process_evasion_upload.php"
+  "data-theft/fetch_uploaded_data.php"
+  "data-theft/uploads"
   "phishing/index.html"
   "phishing/credential-submit.php"
   "go/ms-login/index.php"
   "test-access.php"
+  "test-files/malware/payloads/decode-eicar-docm.json"
+  "test-files/malware/payloads/decode-eicar-docm-base32.json"
+  "test-files/malware/payloads/decrypt-eicar-docm.json"
+  "test-files/malware/payloads/decrypt-eicar-txt.json"
+  "test-files/malware/chunk-attacks/straight-split/manifest.json"
+  "test-files/malware/chunk-attacks/reverse-order/manifest.json"
+  "test-files/malware/chunk-attacks/randomized-size/manifest.json"
+  "test-files/malware/chunk-attacks/parallel-burst/manifest.json"
+  "test-files/malware/chunk-attacks/mixed-noise/manifest.json"
 )
 
 for path in "${required_paths[@]}"; do
   [ -e "$path" ] || fail "missing required path: $path"
 done
+
+# uploads must be writable by the web server user for live data-theft tests
+if [ ! -w "data-theft/uploads" ]; then
+  fail "data-theft/uploads is not writable"
+fi
 
 route_count="$(find . -type f -name index.html -not -path './.git/*' | wc -l | tr -d ' ')"
 [ "$route_count" -ge 35 ] || fail "expected at least 35 rendered routes, found $route_count"
