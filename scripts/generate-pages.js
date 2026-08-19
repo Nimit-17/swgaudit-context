@@ -23,13 +23,14 @@ const pages = [
           <div className="swg-dd-menu" data-dd-menu hidden>
             <button className="swg-dd-opt is-active" type="button" data-dd-opt data-url="/phishing/rnicrosoft-Iogin/">Typo lookalike URL</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/micrоsoft-Iogin/">Homograph URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/%72%6E%69%63%72%6F%73%6F%66%74%2D%49%6F%67%69%6E/">Encoded URL</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/">Redirect to lookalike</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/go/ms-login/">Short URL redirect</button>
           </div>
         </div>
         <div className="swg-dl-row">
           <button className="swg-dl" type="button" data-open="url-manipulation">Open selected URL</button>
-        </div>`, "Attackers rarely link to a domain that obviously looks fake. They rely on typo squatting, lookalike characters, redirects, and shortened links to get past a quick glance and past simple blocklists.", "Pick one of the sample links below. Each one opens in a new tab and points to a page built to imitate a real login page using a different disguise technique.", "The gateway blocks the link, shows a warning page, or stops the page from loading.", "The lookalike login page opens normally in the new tab."),
+        </div>`, "Attackers rarely link to a domain that obviously looks fake. They rely on typo squatting, lookalike characters, percent-encoded paths, redirects, and shortened links to get past a quick glance and past simple blocklists.", "Pick one of the sample links below. Each one opens in a new tab and points to a page built to imitate a real login page using a different disguise technique.", "The gateway blocks the link, shows a warning page, or stops the page from loading.", "The lookalike login page opens normally in the new tab."),
   page("phishing/site-stored-as-mhtml-or-raw-html", "Page assembled on browser", "Phishing", "Evasion Detection", "Locally stored phishing page detection", `
         <div className="swg-run-pick">Choose a stored page format:</div>
         <div className="swg-pick" data-pick="stored-site">
@@ -152,23 +153,11 @@ const pages = [
         </div>
         <div className="swg-dl-row"><button className="swg-dl" type="button" data-dl="smuggling-html-js-css-or-svg">Extract smuggled file</button></div>`, "HTML smuggling hides a file's data inside a web page, script, stylesheet, or image metadata, then rebuilds it entirely inside the browser. Because the file never crosses the network as a normal download, many gateways never see it.", "Choose a carrier format. The payload is already embedded in the page using that method. Clicking the button extracts and reassembles it into a downloadable file, entirely in your browser.", "The reconstruction is detected and blocked before the file is produced.", "The file is rebuilt and downloaded with no interruption."),
   page("malware/browser-resource-abuse", "Browser resource abuse", "Malware", "Advanced Threat Simulation", "Browser-side JavaScript resource abuse", `
-        <p className="swg-run-hint">Warning: close other browser tabs and save work before running. Standard mode creates visible resource pressure. Intense mode deliberately locks this tab for about 30 seconds, and Stop only works before the lock begins.</p>
-        <label className="swg-field"><input type="checkbox" data-resource-confirm /> I understand this may temporarily slow or freeze this browser tab.</label>
-        <div className="swg-resource-meter" data-resource-meter>
-          <div className="swg-resource-stats">
-            <span>Frame delay <strong data-resource-delay>0 ms</strong></span>
-            <span>Allocated <strong data-resource-memory>0 MB</strong></span>
-          </div>
-          <div className="swg-resource-bar" aria-hidden="true"><span data-resource-bar /></div>
-          <div className="swg-resource-animation" data-resource-animation aria-hidden="true"><span /></div>
-          <div className="swg-resource-grid" data-resource-grid aria-hidden="true"></div>
-          <p className="swg-resource-status" data-resource-status>Ready. Standard mode should stutter; intense mode will intentionally stop this tab from responding.</p>
-        </div>
+        <p className="swg-run-hint">Warning: save your work first. This test may freeze or crash this browser tab.</p>
+        <label className="swg-resource-confirm"><input type="checkbox" data-resource-confirm /> I understand the tab may freeze.</label>
         <div className="swg-dl-row">
-          <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="standard">Run standard test</button>
-          <button className="swg-dl swg-dl-alt" type="button" data-resource-abuse data-resource-mode="intense">Run intense lock test</button>
-          <button className="swg-dl swg-dl-alt" type="button" data-resource-stop>Stop and release</button>
-        </div>`, "", "", "", ""),
+          <button className="swg-dl" type="button" data-resource-abuse data-resource-mode="intense">Run browser freeze test</button>
+        </div>`, "A web page can use ordinary JavaScript to consume browser resources after it loads. This does not need a download, popup, iframe, blob, or WebAssembly. If JavaScript is allowed to run freely, the page itself can make the browser tab hard to use or crash.", "Click the test button, then try to right-click the page or select text. The page allocates memory and freezes the tab for about 30 seconds while the terminal shows progress, then frees the memory 10 seconds later.", "The browser or gateway prevents the page script from making the tab unresponsive.", "The tab becomes slow, stops responding, or crashes while JavaScript is running."),
 
   page("data-theft/personal-data-submission-in-normal-file", "File submission", "Data Theft", "Bare Minimum", "Outbound file upload detection", `
         <form className="swg-form" method="post" action="/data-theft/upload.php" encType="multipart/form-data" data-file-submission-form>
@@ -446,6 +435,7 @@ const pickDescriptions = {
   "phishing/url-manipulation": {
     "Typo lookalike URL": "Lookalike path: 'rn' mimics 'm' and a capital I stands in for a lowercase L, so rnicrosoft-Iogin reads as 'microsoft-login' at a glance.",
     "Homograph URL": "Homograph path: the Latin 'o' is replaced with a Cyrillic 'o' lookalike. The text looks identical but uses a different character, defeating simple string matching.",
+    "Encoded URL": "Percent-encoded path: the same lookalike destination is written with %XX escapes so readable path text is hidden from simple string matches. The browser still decodes it to the dummy login page.",
     "Redirect to lookalike": "Redirect parameter: a clean-looking URL carries a destination value that forwards to the lookalike page, hiding the real target from a quick glance.",
     "Short URL redirect": "Short URL: a short, friendly path redirects to the phishing page, masking the final URL behind a shortener-style link.",
   },
@@ -515,6 +505,20 @@ const pickDescriptions = {
     "parallel burst": "Submits a burst-style chunk set using the same reconstruction mechanism.",
   },
 };
+
+
+const narrativeCopy = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "narrative-copy.json"), "utf8")
+);
+
+for (const p of pages) {
+  const n = narrativeCopy.tests && narrativeCopy.tests[p.slug];
+  if (!n) continue;
+  if (n.hook) p.threat = n.hook;
+  if (n.buildup) p.how = n.buildup;
+  if (n.hookHeading) p.hookHeading = n.hookHeading;
+  if (n.buildupHeading) p.buildupHeading = n.buildupHeading;
+}
 
 const descriptionlessRunSlugs = new Set([
   "phishing/site-stored-as-mhtml-or-raw-html",
@@ -618,12 +622,7 @@ function navHtml(active) {
 
 function sidebarHtml(currentSlug) {
   const groups = ["Phishing", "Malware", "Data Theft", "Cyberslacking"];
-  const gsActive = currentSlug === "getting-started" ? " is-active" : "";
-  const aboutActive = currentSlug === "about" ? " is-active" : "";
-  const contributeActive = currentSlug === "contribute" ? " is-active" : "";
   return `<div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link${gsActive}" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       ${groups.map((group, index) => {
         const id = `sbg-${group.toLowerCase().replace(/\s+/g, "-")}`;
         const items = pages.filter((p) => p.category === group);
@@ -639,9 +638,6 @@ function sidebarHtml(currentSlug) {
         ${items.map((p) => `<a className="swg-si${p.slug === currentSlug ? " is-active" : ""}" href="/${p.slug}"${p.slug === currentSlug ? ' aria-current="page"' : ""}>${p.title}</a>`).join("\n        ")}
       </div>`;
       }).join("\n      ")}
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link${aboutActive}" href="/about">About us</a>
-      <a className="swg-sb-link${contributeActive}" href="/contribute">Contribute</a>
     </div>`;
 }
 
@@ -803,11 +799,11 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
+            <div className="swg-block-label">${p.hookHeading || "Hook"}</div>
             <p className="swg-block-text">${p.threat}</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
+            <div className="swg-block-label">${p.buildupHeading || "Buildup"}</div>
             <p className="swg-block-text">${p.how}</p>
           </section>
         </div>
@@ -858,6 +854,10 @@ Object.assign(categoryCopy, {
     "This simulation checks whether policy follows the requested media category instead of only trusting the host. It is useful for validating content controls, bandwidth policy, and category enforcement without making assumptions about any specific workplace rule.",
   ],
 });
+if (narrativeCopy.categories) {
+  Object.assign(categoryCopy, narrativeCopy.categories);
+}
+
 
 function categoryPageHtml(category) {
   const slug = nav[category].replace(/^\/|\/$/g, "");
@@ -1116,6 +1116,16 @@ function indexHtml() {
     "Data Theft": pages.filter((p) => p.category === "Data Theft").length,
     Cyberslacking: pages.filter((p) => p.category === "Cyberslacking").length,
   };
+
+  // ---------------------------------------------------------------------------
+  // LOCKED HOMEPAGE LINES — do not change unless a human user explicitly asks.
+  // Agents / automated edits must leave HOME_H1 and HOME_LEAD alone.
+  // ---------------------------------------------------------------------------
+  const HOME_H1 = "Validate the real-world effectiveness of your perimeter security";
+  const HOME_LEAD = "SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats.";
+  // Getting-started guidance (editable):
+  const HOME_INTRO = "Pick a category, run a test, and compare what happens to the pass and fail conditions on that page. Pass means the web filter or browser blocked or warned. Fail means the action completed with no block. Use dummy credentials and disposable files only. Do not use live credentials or live business files. One result is evidence for that technique, not a full security score.";
+
   const cards = [
     ["Phishing", "phishing-icon.png"],
     ["Malware", "malware-icon.png"],
@@ -1129,9 +1139,10 @@ function indexHtml() {
           </div>
           <div className="swg-card-arr">&rarr;</div>
         </a>`).join("\n        ");
+  const introHtml = `            <p>${HOME_INTRO}</p>`;
   return `---
 title: "SWG Audit"
-description: "Run safe browser tests against your own perimeter controls."
+description: "Open-source simulations that show what perimeter controls stop."
 mode: "custom"
 ---
 
@@ -1143,14 +1154,11 @@ mode: "custom"
       <div className="swg-home-main">
         <div className="swg-hero">
           <div className="swg-container swg-hero-copy">
-            <h1>Test what your web security really blocks</h1>
-            <p className="swg-hero-sub">Security claims are hard to verify from a brochure. SWG Audit lets you run safe, open-source simulations and see how your controls behave.</p>
-            <div className="swg-cta-row">
-              <a className="swg-cta" href="/getting-started">
-                <span className="swg-cta-glow" aria-hidden="true" />
-                <span className="swg-cta-text">Get started</span>
-                <span className="swg-cta-arrow" aria-hidden="true">&#8594;</span>
-              </a>
+            {/* LOCKED: do not change HOME_H1 / HOME_LEAD unless a human user explicitly asks. */}
+            <h1>${HOME_H1}</h1>
+            <p className="swg-hero-sub">${HOME_LEAD}</p>
+            <div className="swg-home-intro">
+${introHtml}
             </div>
           </div>
         </div>
@@ -1170,7 +1178,6 @@ mode: "custom"
 
 fs.writeFileSync(path.join(root, "index.mdx"), indexHtml());
 fs.writeFileSync(path.join(root, "about.mdx"), aboutHtml());
-fs.writeFileSync(path.join(root, "getting-started.mdx"), gettingStartedHtml());
 fs.writeFileSync(path.join(root, "contribute.mdx"), contributeHtml());
 fs.writeFileSync(path.join(root, "terms.mdx"), termsHtml());
 fs.writeFileSync(path.join(root, "privacy.mdx"), privacyHtml());
@@ -1196,7 +1203,6 @@ fs.writeFileSync(path.join(root, "docs.json"), JSON.stringify({
   navigation: {
     pages: [
       "index",
-      "getting-started",
       "about",
       "contribute",
       ...Object.keys(nav).flatMap((category) => [

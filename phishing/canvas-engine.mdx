@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-open">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Canvas is a browser drawing surface, similar to a blank sheet that JavaScript can paint on. A phishing kit can paint a fake login screen as pixels instead of using readable HTML text, labels, and input fields.</p>
+            <div className="swg-block-label">Login drawn as an image</div>
+            <p className="swg-block-text">Many scanners search page text for words like password. A canvas can draw a login screen as pixels so those words never appear in the page code.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The test opens a GitHub-style dummy login page rendered entirely on canvas. The page looks like a normal login screen, but simple scanners looking at the page structure do not see normal form fields or text such as 'password'.</p>
+            <div className="swg-block-label">Canvas login screen</div>
+            <p className="swg-block-text">Open the canvas login. The page draws a GitHub-style sign-in screen as an image instead of normal form fields.</p>
           </section>
         </div>
         <div className="swg-run">

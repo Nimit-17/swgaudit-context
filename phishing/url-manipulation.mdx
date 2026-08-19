@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-open">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">Attackers rarely send victims to a plain, obviously fake address. They use typo paths, lookalike characters, redirects, and short links to make a dangerous destination look familiar.</p>
+            <div className="swg-block-label">Links that hide the real site</div>
+            <p className="swg-block-text">Attackers hide the real destination with typos, lookalike characters, encoded paths, redirects, and short links. The link that looks trusted may open a different page.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">Each option resolves to the same safe dummy login page through a different URL disguise. The test checks whether your controls evaluate the real destination and redirect path, not only the visible link text or first hostname.</p>
+            <div className="swg-block-label">Five URL variations</div>
+            <p className="swg-block-text">Pick one variation and open it. Each choice opens the same dummy login page through a different URL disguise.</p>
           </section>
         </div>
         <div className="swg-run">
@@ -121,6 +116,7 @@ mode: "custom"
           <div className="swg-dd-menu" data-dd-menu hidden>
             <button className="swg-dd-opt is-active" type="button" data-dd-opt data-url="/phishing/rnicrosoft-Iogin/" data-desc="Lookalike path: 'rn' mimics 'm' and a capital I stands in for a lowercase L, so rnicrosoft-Iogin reads as 'microsoft-login' at a glance.">Typo lookalike URL</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/micrоsoft-Iogin/" data-desc="Homograph path: the Latin 'o' is replaced with a Cyrillic 'o' lookalike. The text looks identical but uses a different character, defeating simple string matching.">Homograph URL</button>
+            <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/%72%6E%69%63%72%6F%73%6F%66%74%2D%49%6F%67%69%6E/" data-desc="Percent-encoded path: the same lookalike destination is written with %XX escapes so readable path text is hidden from simple string matches. The browser still decodes it to the dummy login page.">Encoded URL</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/phishing/redirect/?url=/phishing/rnicrosoft-Iogin/" data-desc="Redirect parameter: a clean-looking URL carries a destination value that forwards to the lookalike page, hiding the real target from a quick glance.">Redirect to lookalike</button>
             <button className="swg-dd-opt" type="button" data-dd-opt data-url="/go/ms-login/" data-desc="Short URL: a short, friendly path redirects to the phishing page, masking the final URL behind a shortener-style link.">Short URL redirect</button>
           </div>

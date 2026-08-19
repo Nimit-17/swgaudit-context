@@ -634,6 +634,134 @@
     return opened;
   }
 
+  function absoluteTestUrl(url) {
+    if (!url) return "";
+    try { return new URL(url, window.location.href).href; }
+    catch (error) { return url; }
+  }
+
+  function displayTestUrl(url) {
+    var absolute = absoluteTestUrl(url);
+    if (!absolute) return "";
+    // Keep intentional percent-encoding visible (Encoded URL option).
+    if (/%[0-9A-Fa-f]{2}/.test(String(url || ""))) {
+      try {
+        var origin = new URL(absolute).origin;
+        if (/^https?:\/\//i.test(String(url))) return absoluteTestUrl(url);
+        return origin + (String(url).charAt(0) === "/" ? url : "/" + url);
+      } catch (keepError) {
+        return absolute;
+      }
+    }
+    // new URL().href percent-encodes non-ASCII (e.g. Cyrillic о -> %D0%BE).
+    // Show the readable Unicode form so homographs still look alike.
+    try {
+      var parsed = new URL(absolute);
+      return parsed.origin + decodeURIComponent(parsed.pathname + parsed.search + parsed.hash);
+    } catch (error) {
+      try { return decodeURIComponent(absolute); }
+      catch (decodeError) { return absolute; }
+    }
+  }
+
+  var openUrlTipEl = null;
+
+  function ensureOpenUrlTip() {
+    if (openUrlTipEl && openUrlTipEl.isConnected) return openUrlTipEl;
+    openUrlTipEl = document.createElement("div");
+    openUrlTipEl.className = "swg-open-url-tip";
+    openUrlTipEl.setAttribute("role", "tooltip");
+    openUrlTipEl.hidden = true;
+    openUrlTipEl.style.cssText = [
+      "position:fixed",
+      "z-index:2147483646",
+      "left:0",
+      "top:0",
+      "box-sizing:border-box",
+      "max-width:min(520px, calc(100vw - 24px))",
+      "padding:8px 10px",
+      "border:1px solid rgba(255,255,255,0.16)",
+      "border-radius:6px",
+      "background:#0b1220",
+      "color:#d7e3f7",
+      "font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace",
+      "font-size:11px",
+      "font-weight:500",
+      "line-height:1.35",
+      "word-break:break-all",
+      "white-space:normal",
+      "pointer-events:none",
+      "box-shadow:0 10px 28px rgba(0,0,0,0.35)",
+      "display:none",
+    ].join(";");
+    document.body.appendChild(openUrlTipEl);
+    return openUrlTipEl;
+  }
+
+  function hideOpenUrlTip() {
+    if (!openUrlTipEl) return;
+    openUrlTipEl.style.display = "none";
+    openUrlTipEl.hidden = true;
+    openUrlTipEl.textContent = "";
+  }
+
+  function showOpenUrlTip(button) {
+    var url = button && button.getAttribute("data-open-url");
+    if (!url) {
+      hideOpenUrlTip();
+      return;
+    }
+    var tip = ensureOpenUrlTip();
+    tip.textContent = url;
+    tip.hidden = false;
+    tip.style.display = "block";
+    tip.style.left = "0px";
+    tip.style.top = "0px";
+
+    var rect = button.getBoundingClientRect();
+    var tipRect = tip.getBoundingClientRect();
+    var left = Math.max(12, Math.min(rect.left, window.innerWidth - tipRect.width - 12));
+    var top = rect.bottom + 8;
+    if (top + tipRect.height > window.innerHeight - 12) {
+      top = Math.max(12, rect.top - tipRect.height - 8);
+    }
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+  }
+
+  function bindOpenUrlTip(button) {
+    if (!button || button.getAttribute("data-open-tip-bound") === "1") return;
+    button.setAttribute("data-open-tip-bound", "1");
+    button.addEventListener("mouseenter", function () { showOpenUrlTip(button); });
+    button.addEventListener("mousemove", function () { showOpenUrlTip(button); });
+    button.addEventListener("mouseleave", hideOpenUrlTip);
+    button.addEventListener("blur", hideOpenUrlTip);
+    button.addEventListener("focus", function () { showOpenUrlTip(button); });
+  }
+
+  function syncOpenUrlButtons(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll("[data-open]").forEach(function (button) {
+      var groupId = button.getAttribute("data-open");
+      var sel = activePick(groupId);
+      var url = sel && sel.getAttribute("data-url");
+      var absolute = absoluteTestUrl(url);
+      var display = displayTestUrl(url);
+      // Avoid native title tooltips — browsers delay them ~1s.
+      button.removeAttribute("title");
+      button.removeAttribute("data-tip");
+      if (absolute) {
+        button.setAttribute("data-open-url", display || absolute);
+        button.setAttribute("aria-label", "Open selected URL: " + (display || absolute));
+      } else {
+        button.removeAttribute("data-open-url");
+        button.removeAttribute("aria-label");
+      }
+      bindOpenUrlTip(button);
+    });
+  }
+
+
   function isNewTabActivation(event) {
     return event && (event.button === 1 || event.ctrlKey || event.metaKey);
   }
@@ -790,6 +918,7 @@
     buffers: [],
     domRoot: null,
     timers: [],
+    autoReleaseTimer: null,
     frameTimes: [],
     visibleReached: false,
     allocatedMb: 0,
@@ -797,6 +926,8 @@
 
   function releaseResourceAbuse() {
     resourceAbuseState.running = false;
+    if (resourceAbuseState.autoReleaseTimer) clearTimeout(resourceAbuseState.autoReleaseTimer);
+    resourceAbuseState.autoReleaseTimer = null;
     resourceAbuseState.buffers = [];
     resourceAbuseState.frameTimes = [];
     resourceAbuseState.visibleReached = false;
@@ -807,17 +938,16 @@
     resourceAbuseState.domRoot = null;
   }
 
-  function measureResourceFrames(control) {
-    var last = performance.now();
-    function tick(now) {
-      if (!resourceAbuseState.running) return;
-      resourceAbuseState.frameTimes.push(now - last);
-      if (resourceAbuseState.frameTimes.length > 80) resourceAbuseState.frameTimes.shift();
-      last = now;
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-    terminalLine(control, "measuring responsiveness while pressure ramps ...");
+  function scheduleResourceAutoRelease(control, allocatedMb) {
+    if (resourceAbuseState.autoReleaseTimer) clearTimeout(resourceAbuseState.autoReleaseTimer);
+    resourceAbuseState.autoReleaseTimer = setTimeout(function () {
+      resourceAbuseState.buffers = [];
+      resourceAbuseState.allocatedMb = 0;
+      if (resourceAbuseState.domRoot) resourceAbuseState.domRoot.remove();
+      resourceAbuseState.domRoot = null;
+      terminalLine(control, "auto-released " + allocatedMb + " MB after 10 seconds.");
+      resourceAbuseState.autoReleaseTimer = null;
+    }, 10000);
   }
 
   function averageFrameDelay() {
@@ -843,65 +973,6 @@
     resourceAbuseState.domRoot.appendChild(frag);
   }
 
-  function resourceMeter(control) {
-    var run = control && control.closest(".swg-run");
-    return run && run.querySelector("[data-resource-meter]");
-  }
-
-  function prepareResourceMeter(control) {
-    var meter = resourceMeter(control);
-    if (!meter) return null;
-    meter.classList.add("is-running");
-    meter.classList.remove("is-warning", "is-finished");
-    var grid = meter.querySelector("[data-resource-grid]");
-    if (grid && !grid.children.length) {
-      var frag = document.createDocumentFragment();
-      for (var i = 0; i < 96; i += 1) {
-        frag.appendChild(document.createElement("i"));
-      }
-      grid.appendChild(frag);
-    }
-    return meter;
-  }
-
-  function updateResourceMeter(control, allocatedMb, delay, status) {
-    var meter = resourceMeter(control);
-    if (!meter) return;
-    var delayEl = meter.querySelector("[data-resource-delay]");
-    var memoryEl = meter.querySelector("[data-resource-memory]");
-    var bar = meter.querySelector("[data-resource-bar]");
-    var statusEl = meter.querySelector("[data-resource-status]");
-    if (delayEl) delayEl.textContent = Math.round(delay) + " ms";
-    if (memoryEl) memoryEl.textContent = allocatedMb + " MB";
-    if (bar) bar.style.width = Math.max(3, Math.min(100, delay / 12)) + "%";
-    if (statusEl) statusEl.textContent = status;
-    meter.classList.toggle("is-warning", delay >= 300);
-  }
-
-  function finishResourceMeter(control, allocatedMb, delay, status) {
-    var meter = resourceMeter(control);
-    updateResourceMeter(control, allocatedMb, delay, status);
-    if (meter) {
-      meter.classList.remove("is-running");
-      meter.classList.add("is-finished");
-    }
-  }
-
-  function thrashVisibleLayout(control, count) {
-    var meter = resourceMeter(control);
-    var grid = meter && meter.querySelector("[data-resource-grid]");
-    if (!grid) return 0;
-    var cells = grid.children;
-    var sum = 0;
-    for (var i = 0; i < count; i += 1) {
-      var cell = cells[i % cells.length];
-      cell.style.opacity = String(0.25 + ((i % 11) / 14));
-      cell.style.transform = "scale(" + (0.85 + ((i % 7) / 22)) + ")";
-      sum += grid.offsetHeight + cell.offsetWidth;
-    }
-    return sum;
-  }
-
   function blockMainThread(ms) {
     var end = performance.now() + ms;
     var value = 0;
@@ -915,31 +986,66 @@
     releaseResourceAbuse();
     resourceAbuseState.running = true;
 
-    var lockMs = 32000;
+    var lockMs = 30000;
+    var lockSliceMs = 2000;
+    var deviceGb = navigator.deviceMemory || 8;
+    var targetMb = Math.max(2048, Math.min(4096, Math.floor(deviceGb * 512)));
+    var chunkMb = 128;
+    var allocatedMb = 0;
     startConsole(control, "swg-audit browser-resource-abuse --mode=intense-lock");
-    terminalLine(control, "arming controlled tab lock; stop works until the lock begins.");
-    prepareResourceMeter(control);
-    updateResourceMeter(control, 0, lockMs, "Armed. This tab will stop responding in 1 second for about 30 seconds.");
+    terminalLine(control, "building memory load before freezing the tab.");
+    terminalLine(control, "while it runs, try to right-click the page or select text.");
 
-    resourceAbuseState.timers.push(setTimeout(function () {
+    function finishLock(started) {
+      resourceAbuseState.running = false;
+      terminalLine(control, "controlled lock released after " + Math.round((performance.now() - started) / 1000) + " seconds; " + allocatedMb + " MB still held.");
+      terminalLine(control, "memory will free automatically in 10 seconds.");
+      terminalFail(control, "active JavaScript made the tab stop responding without a download, iframe, popup, blob, or wasm.");
+      scheduleResourceAutoRelease(control, allocatedMb);
+    }
+
+    function lockStep(started) {
       if (!resourceAbuseState.running) return;
+      var elapsed = performance.now() - started;
+      if (elapsed >= lockMs) {
+        finishLock(started);
+        return;
+      }
+      var remaining = lockMs - elapsed;
+      var slice = Math.min(lockSliceMs, remaining);
+      blockMainThread(slice);
+      var secs = Math.round((performance.now() - started) / 1000);
+      terminalLine(control, "running: tab locked " + secs + "s / " + Math.round(lockMs / 1000) + "s; " + allocatedMb + " MB allocated. Try right-click or select text.");
+      resourceAbuseState.timers.push(setTimeout(function () { lockStep(started); }, 0));
+    }
 
-      var started = performance.now();
-      var score = 0;
-      updateResourceMeter(control, 0, lockMs, "Locked. Browser UI should be unresponsive until the lock releases.");
-
-      while (performance.now() - started < lockMs) {
-        for (var i = 0; i < 60000; i += 1) {
-          score += Math.sqrt((i + score) % 9973);
+    function allocateThenLock() {
+      if (!resourceAbuseState.running) return;
+      try {
+        if (allocatedMb < targetMb) {
+          var bytes = chunkMb * 1024 * 1024;
+          var buf = new Uint8Array(bytes);
+          for (var j = 0; j < bytes; j += 4096) buf[j] = (j + allocatedMb) & 255;
+          resourceAbuseState.buffers.push(buf);
+          allocatedMb += chunkMb;
+          resourceAbuseState.allocatedMb = allocatedMb;
+          addDomPressure(9000);
+          terminalLine(control, "pressure: " + allocatedMb + " MB allocated.");
+          blockMainThread(450);
+          resourceAbuseState.timers.push(setTimeout(allocateThenLock, 60));
+          return;
         }
-        if (score > 1000000000) score = score % 9973;
+      } catch (err) {
+        terminalLine(control, "memory pressure stopped at " + allocatedMb + " MB: " + (err && err.message ? err.message : "allocation failed"));
       }
 
-      resourceAbuseState.running = false;
-      finishResourceMeter(control, 0, lockMs, "Released. The tab recovered after a controlled JavaScript main-thread lock.");
-      terminalLine(control, "controlled lock released after " + Math.round((performance.now() - started) / 1000) + " seconds.");
-      terminalFail(control, "active JavaScript made the tab stop responding without a download, iframe, popup, blob, or wasm.");
-    }, 1000));
+      terminalLine(control, "freezing the tab for about " + Math.round(lockMs / 1000) + " seconds with " + allocatedMb + " MB allocated ...");
+      terminalLine(control, "try to right-click or select text now — the tab should stop responding.");
+      var started = performance.now();
+      resourceAbuseState.timers.push(setTimeout(function () { lockStep(started); }, 0));
+    }
+
+    resourceAbuseState.timers.push(setTimeout(allocateThenLock, 1000));
   }
 
   function runResourceAbuse(control) {
@@ -951,75 +1057,7 @@
       return;
     }
 
-    var intense = control.getAttribute("data-resource-mode") === "intense";
-    if (intense) {
-      runControlledTabLock(control);
-      return;
-    }
-
-    releaseResourceAbuse();
-    resourceAbuseState.running = true;
-
-    var capMb = 1536;
-    var maxMs = 30000;
-    var chunkMb = 64;
-    var baseJankMs = 360;
-    var maxJankMs = 1400;
-    var domBatch = 3200;
-    var layoutBatch = 900;
-    var started = performance.now();
-    var allocatedMb = 0;
-    var stepCount = 0;
-    resourceAbuseState.allocatedMb = 0;
-
-    startConsole(control, "swg-audit browser-resource-abuse --mode=standard");
-    terminalLine(control, "ramping memory, layout thrash, and main-thread blocking ...");
-    prepareResourceMeter(control);
-    measureResourceFrames(control);
-
-    function step() {
-      if (!resourceAbuseState.running) return;
-      var elapsed = performance.now() - started;
-      var avgDelay = averageFrameDelay();
-
-      if (avgDelay >= 300 && !resourceAbuseState.visibleReached) {
-        resourceAbuseState.visibleReached = true;
-        terminalLine(control, "visible frame delay reached; continuing pressure until cap or stop.");
-      }
-
-      if (elapsed > maxMs || allocatedMb >= capMb) {
-        finishResourceMeter(control, allocatedMb, avgDelay, "Finished. Use Stop and release if the browser still feels sluggish.");
-        terminalLine(control, "finished at " + allocatedMb + " MB allocated; average frame delay " + Math.round(avgDelay) + " ms.");
-        terminalFail(control, "active JavaScript caused visible browser resource pressure.");
-        resourceAbuseState.running = false;
-        return;
-      }
-
-      try {
-        var bytes = chunkMb * 1024 * 1024;
-        var buf = new Uint8Array(bytes);
-        for (var i = 0; i < bytes; i += 4096) buf[i] = (i + allocatedMb) & 255;
-        resourceAbuseState.buffers.push(buf);
-        allocatedMb += chunkMb;
-        resourceAbuseState.allocatedMb = allocatedMb;
-        addDomPressure(domBatch);
-        stepCount += 1;
-        updateResourceMeter(control, allocatedMb, avgDelay, "Running. The bar animation should visibly freeze or jump.");
-        thrashVisibleLayout(control, layoutBatch + stepCount * 45);
-        blockMainThread(Math.min(maxJankMs, baseJankMs + stepCount * 95));
-        terminalLine(control, "pressure: " + allocatedMb + " MB allocated; frame delay " + Math.round(avgDelay) + " ms.");
-      } catch (err) {
-        finishResourceMeter(control, allocatedMb, averageFrameDelay(), "The browser stopped allocation or execution pressure reached its limit.");
-        terminalLine(control, "browser stopped allocation: " + (err && err.message ? err.message : "allocation failed"));
-        terminalFail(control, "active JavaScript reached the browser's allocation limit.");
-        resourceAbuseState.running = false;
-        return;
-      }
-
-      resourceAbuseState.timers.push(setTimeout(step, 90));
-    }
-
-    step();
+    runControlledTabLock(control);
   }
 
   function outputMarker(out) {
@@ -1399,6 +1437,24 @@
     });
   }
 
+
+  function dnsTunnelParentDomain() {
+    var host = (location.hostname || "").toLowerCase();
+    // IP preview (167 DEV): use sslip.io so public resolvers send the lookup
+    // and HTTP Host header to this box for reconstruction.
+    if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host)) {
+      return host + ".sslip.io";
+    }
+    var parts = host.split(".").filter(Boolean);
+    if (parts.length >= 2) return parts.slice(-2).join(".");
+    return "swgaudit.com";
+  }
+
+  function dnsTunnelProbeScheme() {
+    return "https";
+  }
+
+
   function safeUploadUrl(url) {
     return typeof url === "string" && /^\/data-theft\/uploads\/[^/?#]+$/.test(url);
   }
@@ -1417,7 +1473,7 @@
   }
 
   function buildDnsChunks(id, file, encodedData) {
-    var suffix = ".swgaudit.com";
+    var suffix = "." + dnsTunnelParentDomain();
     var maxDataLength = 253 - id.length - suffix.length - 5;
     var chunks = [];
     for (var offset = 0, chunkNumber = 1; offset < encodedData.length; chunkNumber += 1) {
@@ -1515,8 +1571,15 @@
         var chunks = buildDnsChunks(id, file, base32(bytes));
         var attempted = 0;
         return runLimited(chunks, 8, function (chunk) {
-          var url = "https://" + id + "." + chunk.number + "." + chunk.labels.join(".") + ".swgaudit.com";
-          return fetch(url, { mode: "no-cors" }).catch(function () {}).finally(function () {
+          var host = id + "." + chunk.number + "." + chunk.labels.join(".") + "." + dnsTunnelParentDomain();
+          var url = dnsTunnelProbeScheme() + "://" + host;
+          var probes = [fetch(url, { mode: "no-cors" }).catch(function () {})];
+          // IP-preview DEV: public NS is not this box, so also mirror the
+          // hostname into a same-origin collector that writes named/host logs.
+          if (/\.sslip\.io$/i.test(host)) {
+            probes.push(fetch("/data-theft/dns-query.php?name=" + encodeURIComponent(host), { cache: "no-store", headers: { Accept: "application/json" } }).catch(function () {}));
+          }
+          return Promise.all(probes).finally(function () {
             attempted += 1;
             setOutput(out, "Running DNS tunnelling test: " + attempted + "/" + chunks.length + " requests attempted...");
             if (attempted === 1 || attempted === chunks.length || attempted % 10 === 0) {
@@ -1768,6 +1831,7 @@
         }
       }
       closeAllDropdowns();
+      syncOpenUrlButtons(document);
       return;
     }
 
@@ -1782,6 +1846,7 @@
         group.querySelectorAll("[data-chip]").forEach(function (c) {
           c.classList.toggle("is-active", c === chip);
         });
+        syncOpenUrlButtons(document);
         // reflect choice in a sibling description, if present
         var desc =
           (group.closest(".swg-run") && group.closest(".swg-run").querySelector("[data-pick-desc]")) ||
@@ -1836,13 +1901,18 @@
       event.preventDefault();
       var openChip = activePick(open.getAttribute("data-open"));
       if (openChip) {
+        var rawUrl = openChip.getAttribute("data-url") || "";
+        var openUrl = absoluteTestUrl(rawUrl);
+        var shownUrl = displayTestUrl(rawUrl) || openUrl || rawUrl;
         startConsole(open, "swg-audit open-url");
-        var openedTab = openNewTab(openChip.getAttribute("data-url"));
+        terminalLine(open, "opening " + shownUrl);
+        hideOpenUrlTip();
+        var openedTab = openNewTab(openUrl || rawUrl);
         if (openedTab) {
-          terminalFail(open, "selected URL opened in a new tab.");
+          terminalFail(open, "selected URL opened in a new tab: " + shownUrl);
           revealBanner(open);
         } else {
-          terminalPass(open, "selected URL was blocked before it could open.");
+          terminalPass(open, "selected URL was blocked before it could open: " + shownUrl);
           hideBanner(open);
         }
       }
@@ -1907,12 +1977,10 @@
     var resourceStop = event.target.closest("[data-resource-stop]");
     if (resourceStop) {
       event.preventDefault();
-      var stopDelay = averageFrameDelay();
       var stopMb = resourceAbuseState.allocatedMb || 0;
       releaseResourceAbuse();
-      finishResourceMeter(resourceStop, stopMb, stopDelay, "Stopped and released. Reload the page if any browser pressure remains.");
       startConsole(resourceStop, "swg-audit browser-resource-abuse --release");
-      terminalLine(resourceStop, "released allocated memory and DOM pressure.");
+      terminalLine(resourceStop, "released " + stopMb + " MB allocated memory and DOM pressure.");
       return;
     }
 
@@ -2175,6 +2243,7 @@
     initTestConsoles();
     initFileControls();
     restorePersistentResults();
+    syncOpenUrlButtons(document);
   }
 
   initConsoles();

@@ -22,8 +22,6 @@ mode: "custom"
   <script src="/favicon.js" defer></script>
   <div className="swg-shell">
     <div className="swg-sb" role="complementary" aria-label="Tests">
-      <a className="swg-sb-link" href="/getting-started">Getting started</a>
-      <div className="swg-sb-sep" />
       
       <div className="swg-sb-cat is-open">
         <a className="swg-sb-cat-link" href="/phishing/">Phishing</a>
@@ -87,9 +85,6 @@ mode: "custom"
       <div className="swg-sb-group is-collapsed" id="sbg-cyberslacking">
         <a className="swg-si" href="/cyberslacking/video-content-category-simulation">Video content category simulation</a>
       </div>
-      <div className="swg-sb-sep" />
-      <a className="swg-sb-link" href="/about">About us</a>
-      <a className="swg-sb-link" href="/contribute">Contribute</a>
     </div>
     <div className="swg-main swg-main-col" role="main">
       <div className="swg-content">
@@ -104,12 +99,12 @@ mode: "custom"
         <div className="swg-divider" />
         <div className="swg-info">
           <section className="swg-block">
-            <div className="swg-block-label">The threat</div>
-            <p className="swg-block-text">A phishing page does not always need to be hosted on a suspicious website. It can arrive as an HTML or MHTML file and render locally when the user opens it.</p>
+            <div className="swg-block-label">Phishing as a saved file</div>
+            <p className="swg-block-text">Web filters inspect traffic from websites. A phishing page saved as HTML or MHTML can open on the computer without that normal web fetch.</p>
           </section>
           <section className="swg-block">
-            <div className="swg-block-label">How the test works</div>
-            <p className="swg-block-text">The test builds a dummy login page as a local browser document. Because the final page is assembled on the endpoint, controls that only inspect normal web requests may have little to classify.</p>
+            <div className="swg-block-label">Build a local login page</div>
+            <p className="swg-block-text">Pick HTML or MHTML. The browser builds a dummy login page in memory and opens it like a saved phishing file.</p>
           </section>
         </div>
         <div className="swg-run">
