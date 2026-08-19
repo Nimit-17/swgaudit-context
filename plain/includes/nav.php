@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/helpers.php';
+
+$activeNav = isset($activeNav) ? $activeNav : '';
 ?>
 <header class="swg-nav" role="banner">
   <button
@@ -20,8 +22,8 @@ require_once __DIR__ . '/helpers.php';
   </a>
 
   <div class="swg-nav-actions">
-    <a class="swg-nl swg-about-link" href="/about">About us</a>
-    <a class="swg-nl swg-contribute-link" href="/contribute">Contribute</a>
+    <a class="swg-nl swg-about-link<?php echo $activeNav === 'about' ? ' is-active' : ''; ?>" href="/about">About us</a>
+    <a class="swg-nl swg-contribute-link<?php echo $activeNav === 'contribute' ? ' is-active' : ''; ?>" href="/contribute">Contribute</a>
     <a
       class="swg-gh"
       href="https://github.com/Nimit-17/swgaudit-context"

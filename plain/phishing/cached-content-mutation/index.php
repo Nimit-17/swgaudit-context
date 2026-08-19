@@ -24,16 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">The threat</div>
-              <p class="swg-block-text">
-                Attackers can serve harmless content first, wait for inspection to mark the URL as safe, and then change what the same URL returns. A control that remembers only the first verdict can miss the later phishing page.
-              </p>
+              <div class="swg-block-label">Clean page, then a swap</div>
+              <p class="swg-block-text">A first clean page can earn a pass from a filter. The next visit to the same URL can return a phishing login instead.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">How the test works</div>
-              <p class="swg-block-text">
-                The launch button creates a unique test token and opens one URL with that token. On the first request, the server stores the token and returns a harmless page; on the next request with the same token, it returns the dummy login page from the same URL.
-              </p>
+              <div class="swg-block-label">Same URL, second page</div>
+              <p class="swg-block-text">Open the link, then refresh once. The first page is benign. The refresh shows a dummy Microsoft-style login on the same URL.</p>
             </section>
           </div>
 

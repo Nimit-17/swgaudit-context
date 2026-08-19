@@ -25,15 +25,11 @@ require __DIR__ . '/../../includes/layout-start.php';
           <div class="swg-info">
             <section class="swg-block">
               <div class="swg-block-label">Links that hide the real site</div>
-              <p class="swg-block-text">
-                Attackers hide the real destination with typos, lookalike characters, encoded paths, redirects, and short links. The link that looks trusted may open a different page.
-              </p>
+              <p class="swg-block-text">Attackers hide the real destination with typos, lookalike characters, encoded paths, redirects, and short links. The link that looks trusted may open a different page.</p>
             </section>
             <section class="swg-block">
               <div class="swg-block-label">Five URL variations</div>
-              <p class="swg-block-text">
-                Pick one variation and open it. Each choice opens the same dummy login page through a different URL disguise.
-              </p>
+              <p class="swg-block-text">Pick one variation and open it. Each choice opens the same dummy login page through a different URL disguise.</p>
             </section>
           </div>
 

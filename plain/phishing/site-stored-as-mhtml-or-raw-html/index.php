@@ -24,16 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">The threat</div>
-              <p class="swg-block-text">
-                A phishing page does not always need to be hosted on a suspicious website. It can arrive as an HTML or MHTML file and render locally when the user opens it.
-              </p>
+              <div class="swg-block-label">Phishing as a saved file</div>
+              <p class="swg-block-text">Web filters inspect traffic from websites. A phishing page saved as HTML or MHTML can open on the computer without that normal web fetch.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">How the test works</div>
-              <p class="swg-block-text">
-                The test builds a dummy login page as a local browser document. Because the final page is assembled on the endpoint, controls that only inspect normal web requests may have little to classify.
-              </p>
+              <div class="swg-block-label">Build a local login page</div>
+              <p class="swg-block-text">Pick HTML or MHTML. The browser builds a dummy login page in memory and opens it like a saved phishing file.</p>
             </section>
           </div>
 

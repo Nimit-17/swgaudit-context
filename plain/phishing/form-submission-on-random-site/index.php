@@ -24,16 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">The threat</div>
-              <p class="swg-block-text">
-                The landing page is only half of a phishing attack. The real damage happens when a credential form can deliver a username and password to the attacker-controlled server.
-              </p>
+              <div class="swg-block-label">Sending passwords out</div>
+              <p class="swg-block-text">Blocking the lure page is only half the defense. If a login form can still send credentials out of the network, the theft succeeds.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">How the test works</div>
-              <p class="swg-block-text">
-                The form sends a POST request containing only the prefilled dummy username and password to the SWG Audit simulation endpoint. The test fails only if that dummy credential payload reaches the server.
-              </p>
+              <div class="swg-block-label">Submit dummy credentials</div>
+              <p class="swg-block-text">Submit the prefilled dummy username and password. The collector records arrival, then discards the values.</p>
             </section>
           </div>
 

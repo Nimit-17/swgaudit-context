@@ -24,16 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">The threat</div>
-              <p class="swg-block-text">
-                Canvas is a browser drawing surface, similar to a blank sheet that JavaScript can paint on. A phishing kit can paint a fake login screen as pixels instead of using readable HTML text, labels, and input fields.
-              </p>
+              <div class="swg-block-label">Login drawn as an image</div>
+              <p class="swg-block-text">Many scanners search page text for words like password. A canvas can draw a login screen as pixels so those words never appear in the page code.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">How the test works</div>
-              <p class="swg-block-text">
-                The test opens a GitHub-style dummy login page rendered entirely on canvas. The page looks like a normal login screen, but simple scanners looking at the page structure do not see normal form fields or text such as 'password'.
-              </p>
+              <div class="swg-block-label">Canvas login screen</div>
+              <p class="swg-block-text">Open the canvas login. The page draws a GitHub-style sign-in screen as an image instead of normal form fields.</p>
             </section>
           </div>
 
