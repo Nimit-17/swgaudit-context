@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  plain-check:
-    name: Plain site sanity
+  mintlify-check:
+    name: Mintlify broken-link check
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -19,7 +19,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Require plain DocumentRoot files
+      - name: Plain site sanity (Mintlify removed)
         run: |
           set -euo pipefail
           test -f plain/index.php
@@ -27,9 +27,9 @@ jobs:
           test -f plain/js/nav.js
           test -f scripts/narrative-copy.json
           test -f scripts/sync-plain-copy.js
-          # Mintlify must not return
-          if compgen -G '*.mdx' > /dev/null || compgen -G '**/*.mdx' > /dev/null; then
+          if find . -name '*.mdx' -not -path './.git/*' | grep -q .; then
             echo 'Mintlify .mdx files must not be in the repo'
+            find . -name '*.mdx' -not -path './.git/*'
             exit 1
           fi
           if [ -f docs.json ] || [ -f package.json ] || [ -f swg.js ] || [ -f style.css ]; then
