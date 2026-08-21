@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Upload after encryption</div>
-      <p class="swg-block-text">Encrypting a file in the browser can hide contents from inspection. The receiver with the key can restore the file.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Encrypt, then send</div>
-      <p class="swg-block-text">Choose a mode and submit. The collector decrypts with the known test key and reports whether rebuild works.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Encrypt before upload</div>
+              <p class="swg-block-text">Encrypting a file in the browser hides contents from inspection. A collector that holds the key restores the file.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Pick encryption, then send</div>
+              <p class="swg-block-text">Choose an AES-GCM mode and submit. The collector decrypts with the shared key and reports whether rebuild succeeds.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">

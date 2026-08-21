@@ -1,6 +1,6 @@
 # SWG Audit site text instructions
 
-Rules for rewriting on-site copy (homepage intro, categories, test hook/buildup). Pass/fail UI and run/terminal are out of scope unless noted.
+Rules for rewriting on-site copy (homepage intro, categories, test hook/buildup, and on-page terminal lines). Pass/fail condition cards and run controls stay out of scope unless noted.
 
 ## Locked homepage lines (do not change)
 
@@ -41,9 +41,19 @@ They are hardcoded in `scripts/generate-pages.js` (`HOME_H1`, `HOME_LEAD`) with 
 ## Site experience
 - Moving through the site should feel like one continuous experience.
 - Each test follows a movie arc: **hook → buildup → climax → end**.
-  - Climax = the run control (already built).
-  - End = on-page terminal result (already built).
-  - Rewrite work targets **hook** and **buildup** only.
+  - Climax = the run control (already built; do not redesign).
+  - End = on-page terminal result (rewrite the **step lines** so a watcher can follow what happens in real time).
+  - Narrative rewrite targets **hook** and **buildup**. Terminal rewrite targets the runtime strings in `swg.js` / `plain/js/*` (keep both in sync when a test has both).
+
+## Terminal lines (real-time log)
+- Goal: anyone in the room can see what the test is doing while it runs.
+- Prefer a clear step sequence over clever wording. No deep research required for terminal copy.
+- Keep the fixed pass/fail prefixes (`Your perimeter security has passed/failed.`) — rewrite only the detail text passed into those helpers, plus interim `terminalLine` steps.
+- Do not invent steps the code does not perform.
+- **Malware (typical template):** name the action → fetch/open from server or carrier → assemble/decode when that happens → download or block outcome.
+- **Data theft (typical template):** prepare/transform file → send over the channel under test → report chunk/progress when real → collector rebuild result.
+- **Phishing:** steps vary by test (open URL, assemble local page, canvas draw, mutation refresh, credential POST). Name the variation and each real stage.
+- Buildup may mention one short outcome cue; do not paste full terminal scripts into the buildup paragraph.
 
 ## Structure / IA
 - Getting started lives on the homepage (intro under the locked lead). No separate Getting started page.
@@ -72,8 +82,9 @@ Under the locked lead, keep clear guidance covering:
 - One result = evidence for that technique, not a full security score.
 
 ## Source of truth
-- **167 is DEV only; 64 is LIVE** (see `CONTEXT.md`). Copy edits do not go live until static is shipped to 64.
-- Edit Mintlify source on 167: `/var/www/swgaudit-v3`.
-- Prefer `scripts/narrative-copy.json` + `node scripts/generate-pages.js` for test/category copy.
-- Homepage H1/lead are locked in `indexHtml()`; intro lines are in `HOME_INTRO` there.
-- Apache on 167 serves `dist-static` for **dev** preview; run `npm run export:static` before IP/browser checks on 167 reflect MDX/CSS changes. Do not hand-edit generated `dist-static/**/index.html`.
+- **167 is DEV only; 64 is LIVE** (see `CONTEXT.md`). Copy edits do not go live until files are shipped to 64.
+- Edit the plain site: `plain/` (Apache DocumentRoot on 167 is `/var/www/swgaudit-v5/plain`).
+- Prefer `scripts/narrative-copy.json` + `node scripts/sync-plain-copy.js` for test/category narrative.
+- Homepage H1/lead are locked in `plain/index.php`. Intro under the lead is editable.
+- Terminal step lines live in `plain/js/*`. Keep wording aligned with the real mechanism.
+- Do not reintroduce Mintlify (`*.mdx`, `docs.json`, root `swg.js` / `style.css`, mint `package.json`).

@@ -15,8 +15,8 @@ require __DIR__ . '/../includes/layout-start.php';
           <h1>Data Theft</h1>
           <div class="swg-divider"></div>
           <div class="swg-category-copy">
-            <p>Data theft can look like normal work: file uploads, encoded traffic, small pieces, or channels that policy already allows.</p>
-            <p>Each test sends a dummy file to a controlled collector. Encoding, encryption, chunking, DNS queries, and URL paths either stop before rebuild or arrive whole on the other side.</p>
+            <p>Data theft can ride channels policy already allows: file uploads, encoded or encrypted bodies, small chunked posts, DNS queries, and long URL paths.</p>
+            <p>Each test sends a dummy file to a controlled collector. Watch whether encoding, encryption, chunking, DNS labels, or path pieces stop before rebuild or arrive whole on the other side.</p>
           </div>
         </div>
 <?php require __DIR__ . '/../includes/layout-end.php'; ?>

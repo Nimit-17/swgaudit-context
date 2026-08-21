@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Upload in small pieces</div>
-      <p class="swg-block-text">Sending a file as many small uploads can bypass rules that look for one full file in one request.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Split, then reassemble</div>
-      <p class="swg-block-text">Choose a chunk pattern and submit. The collector joins the pieces and reports whether the full file returns.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Split across uploads</div>
+              <p class="swg-block-text">Sending a file as many uploads bypasses rules that look for one file in one request.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Pick a chunk pattern</div>
+              <p class="swg-block-text">Choose a chunk pattern and submit. The collector joins the pieces and reports whether the file returns.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">

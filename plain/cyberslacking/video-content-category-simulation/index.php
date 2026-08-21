@@ -23,15 +23,15 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Video type vs website name</div>
-      <p class="swg-block-text">One streaming host can serve many video categories. Allowing the website does not prove every category is allowed.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Load different video categories</div>
-      <p class="swg-block-text">Pick a category. The player loads a matching sample so policy must follow the media type, not only the host name.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Category vs host allow list</div>
+              <p class="swg-block-text">One streaming host can serve many video categories. Allowing the website does not prove every category is allowed.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Load a video category</div>
+              <p class="swg-block-text">Pick a category. The player loads a matching sample so policy must follow the media type, not only the host name.</p>
+            </section>
+          </div>
 
   <div class="swg-run swg-run--no-terminal swg-run--media">
     <div class="swg-run-label">Try it yourself</div>

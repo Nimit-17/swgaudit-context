@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Move data in the URL path</div>
-      <p class="swg-block-text">File data can move inside long URL paths without a normal upload form. Filters that only watch POST uploads can miss this.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Send pieces in GET paths</div>
-      <p class="swg-block-text">Choose a file under the size limit and run. Path pieces hit the tunnel endpoint. Status shows whether rebuild succeeds.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Bytes inside URL paths</div>
+              <p class="swg-block-text">File data moves inside URL paths without a form upload. Filters that only watch POST uploads miss this channel.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Send pieces as GET paths</div>
+              <p class="swg-block-text">Choose a file under 200 KB and run. Path pieces hit the tunnel endpoint. Status shows whether the collector rebuilds the file.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">

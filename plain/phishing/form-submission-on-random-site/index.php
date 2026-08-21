@@ -24,12 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">Sending passwords out</div>
-              <p class="swg-block-text">Blocking the lure page is only half the defense. If a login form can still send credentials out of the network, the theft succeeds.</p>
+              <div class="swg-block-label">Credentials leave on submit</div>
+              <p class="swg-block-text">Blocking a lure page stops only the display. If a login form can POST a username and password to a collector outside the network, the theft completes.</p>
             </section>
             <section class="swg-block">
               <div class="swg-block-label">Submit dummy credentials</div>
-              <p class="swg-block-text">Submit the prefilled dummy username and password. The collector records arrival, then discards the values.</p>
+              <p class="swg-block-text">Submit the dummy username and password shown in the form. The collector records whether the POST arrives, then discards the values.</p>
             </section>
           </div>
 

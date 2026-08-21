@@ -24,12 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">Clean page, then a swap</div>
-              <p class="swg-block-text">A first clean page can earn a pass from a filter. The next visit to the same URL can return a phishing login instead.</p>
+              <div class="swg-block-label">Same URL, second page</div>
+              <p class="swg-block-text">Attackers serve a holding page on the first visit so scanners mark the URL safe. A later visit to the same URL returns a login page instead.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">Same URL, second page</div>
-              <p class="swg-block-text">Open the link, then refresh once. The first page is benign. The refresh shows a dummy Microsoft-style login on the same URL.</p>
+              <div class="swg-block-label">Open once, then refresh</div>
+              <p class="swg-block-text">Open the link. The first response is a holding page. Refresh once; the same URL returns a dummy Microsoft login.</p>
             </section>
           </div>
 

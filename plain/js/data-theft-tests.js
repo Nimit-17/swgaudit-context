@@ -455,7 +455,7 @@
     });
   }
 
-  function runDataTheftForm(form, build, preparingText) {
+  function runDataTheftForm(form, build, transformKind) {
     bindRunPage(form);
     var pagePath = location.pathname;
     var out = cardOutput(form);
@@ -466,30 +466,33 @@
       setOutput(out, "Choose a file before running the test.");
       return;
     }
+    var mode = activeMode(form) || transformKind;
     clearRunResult(form, out);
     startConsole(form, "swg-audit data-theft submit --file=" + file.name);
-    terminalLine(form, preparingText);
-    setOutput(out, preparingText);
+    terminalLine(form, "selected file: " + file.name);
+    terminalLine(form, "preparing file (" + mode + ") ...");
+    setOutput(out, "Preparing file (" + mode + ")...");
     if (button) button.disabled = true;
     build(file, form)
       .then(function (formData) {
-        terminalLine(form, "submitting transformed file to server ...");
-        setOutput(out, "Submitting transformed file...");
+        terminalLine(form, "sending " + mode + " payload to collector ...");
+        setOutput(out, "Sending " + mode + " payload...");
         return submitEvasion(formData);
       })
       .then(function (result) {
+        terminalLine(form, "checking collector reconstruction ...");
         if (result && result.reconstructed) {
-          terminalFail(form, "server reconstructed the submitted file.");
+          terminalFail(form, "collector rebuilt the submitted file.");
           revealServerFile(form, result.fileUrl);
           setPersistentOutput(out, "Test failed.", "is-fail", pagePath);
           return;
         }
-        terminalPass(form, "the server could not reconstruct the submitted file.");
+        terminalPass(form, "collector did not rebuild the submitted file.");
         setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
       })
       .catch(function (err) {
         if (isBlockedHttpError(err)) {
-          reportBlockedSubmission(form, out, pagePath, "the server could not reconstruct the submitted file.");
+          reportBlockedSubmission(form, out, pagePath, "collector did not rebuild the submitted file.");
           return;
         }
         reportIncompleteSubmission(form, out, "submission could not complete.");
@@ -612,8 +615,8 @@
       (function (attempt) {
         chain = chain
           .then(function () {
-            setOutput(out, "Checking server result (" + attempt + "/" + attempts + ")...");
-            terminalLine(form, "checking server result (" + attempt + "/" + attempts + ") ...");
+            setOutput(out, "Checking collector reconstruction (" + attempt + "/" + attempts + ")...");
+            terminalLine(form, "checking collector reconstruction (" + attempt + "/" + attempts + ") ...");
             return fetch("/data-theft/fetch_uploaded_data.php?id=" + encodeURIComponent(id), {
               headers: { Accept: "application/json" },
             })
@@ -663,6 +666,7 @@
     }
     if (file.size > 100 * 1024) {
       startConsole(form, "swg-audit dns-tunnel --file=" + file.name);
+      terminalLine(form, "selected file: " + file.name);
       terminalLine(form, "file exceeds 100 KB limit.");
       return setOutput(out, "Choose a file smaller than 100 KB.");
     }
@@ -670,8 +674,9 @@
     if (reset) reset.hidden = true;
     clearRunResult(form, out);
     startConsole(form, "swg-audit dns-tunnel --file=" + file.name);
-    terminalLine(form, "encoding file into DNS labels ...");
-    setOutput(out, "Preparing DNS tunnelling test...");
+    terminalLine(form, "selected file: " + file.name);
+    terminalLine(form, "preparing file (dns tunneling) ...");
+    setOutput(out, "Preparing file (dns tunneling)...");
     var id = testId().slice(0, 16);
     fileBytes(file)
       .then(function (bytes) {
@@ -685,10 +690,10 @@
               attempted += 1;
               setOutput(
                 out,
-                "Running DNS tunnelling test: " + attempted + "/" + chunks.length + " requests attempted..."
+                "Sending DNS request " + attempted + "/" + chunks.length + "..."
               );
               if (attempted === 1 || attempted === chunks.length || attempted % 10 === 0) {
-                terminalLine(form, "attempted " + attempted + "/" + chunks.length + " DNS requests ...");
+                terminalLine(form, "sending DNS request " + attempted + "/" + chunks.length + " ...");
               }
             });
         });
@@ -698,7 +703,7 @@
       })
       .then(function (result) {
         if (result.success && result.fileUrl) {
-          terminalFail(form, "server reconstructed the full file from DNS queries.");
+          terminalFail(form, "collector rebuilt the file from DNS queries.");
           revealServerFile(form, result.fileUrl);
           setPersistentOutput(
             out,
@@ -707,10 +712,10 @@
             pagePath
           );
         } else if (result.partial) {
-          terminalPass(form, "the file was not fully reconstructed from DNS queries.");
+          terminalPass(form, "collector did not fully rebuild the file from DNS queries.");
           setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
         } else {
-          terminalPass(form, "the file was not reconstructed from DNS queries.");
+          terminalPass(form, "collector did not rebuild the file from DNS queries.");
           setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
         }
       })
@@ -765,11 +770,13 @@
     }
     if (file.size === 0) {
       startConsole(form, "swg-audit path-tunnel --file=" + file.name);
+      terminalLine(form, "selected file: " + file.name);
       terminalLine(form, "empty file was not sent.");
       return setOutput(out, "Choose a non-empty file before running the test.");
     }
     if (file.size > 200 * 1024) {
       startConsole(form, "swg-audit path-tunnel --file=" + file.name);
+      terminalLine(form, "selected file: " + file.name);
       terminalLine(form, "file exceeds 200 KB limit.");
       return setOutput(out, "Choose a file smaller than 200 KB.");
     }
@@ -779,8 +786,9 @@
     if (reset) reset.hidden = true;
     clearRunResult(form, out);
     startConsole(form, "swg-audit path-tunnel --file=" + file.name);
-    terminalLine(form, "encoding file into URL path chunks ...");
-    setOutput(out, "Preparing HTTP path tunneling test...");
+    terminalLine(form, "selected file: " + file.name);
+    terminalLine(form, "preparing file (http path tunneling) ...");
+    setOutput(out, "Preparing file (http path tunneling)...");
     fileBytes(file)
       .then(function (bytes) {
         var chunks = buildPathChunks(file, bytes);
@@ -818,8 +826,8 @@
           (function (attempt) {
             chain = chain
               .then(function () {
-                setOutput(out, "Checking server result (" + attempt + "/5)...");
-                terminalLine(form, "checking server result (" + attempt + "/5) ...");
+                setOutput(out, "Checking collector reconstruction (" + attempt + "/5)...");
+                terminalLine(form, "checking collector reconstruction (" + attempt + "/5) ...");
                 return fetch(
                   "/data-theft/path-tunnel.php?status=1&id=" + encodeURIComponent(id),
                   { cache: "no-store", headers: { Accept: "application/json" } }
@@ -859,7 +867,7 @@
         var partialExfil = result && result.partial;
         var fullReconstruction = result && result.success && result.reconstructed;
         if (fullReconstruction) {
-          terminalFail(form, "server reconstructed the file from URL path chunks.");
+          terminalFail(form, "collector rebuilt the file from URL path chunks.");
           revealServerFile(form, result.fileUrl);
           setPersistentOutput(
             out,
@@ -868,10 +876,10 @@
             pagePath
           );
         } else if (partialExfil) {
-          terminalPass(form, "the file was not fully reconstructed from URL path chunks.");
+          terminalPass(form, "collector did not fully rebuild the file from URL path chunks.");
           setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
         } else {
-          terminalPass(form, "the file was not reconstructed from URL path chunks.");
+          terminalPass(form, "collector did not rebuild the file from URL path chunks.");
           setPersistentOutput(out, "Test passed.", "is-pass", pagePath);
         }
       })
@@ -1011,8 +1019,10 @@
         }
         clearRunResult(normalFile, fileOut);
         startConsole(normalFile, "swg-audit file-upload --file=" + normalSelectedFile.name);
-        terminalLine(normalFile, "uploading selected file to server ...");
-        setOutput(fileOut, "Uploading selected file...");
+        terminalLine(normalFile, "selected file: " + normalSelectedFile.name);
+        terminalLine(normalFile, "preparing file (plain upload) ...");
+        terminalLine(normalFile, "sending file to collector ...");
+        setOutput(fileOut, "Sending file to collector...");
         var normalFormData = new FormData(normalFile);
         if (!fileInput.files || !fileInput.files[0]) {
           normalFormData.set(
@@ -1031,7 +1041,8 @@
             return readJson(response);
           })
           .then(function (result) {
-            terminalFail(normalFile, "server received and stored the uploaded file.");
+            terminalLine(normalFile, "checking collector receipt ...");
+            terminalFail(normalFile, "collector received and stored the uploaded file.");
             revealServerFile(normalFile, result.fileUrl);
             setPersistentOutput(fileOut, "Test failed.", "is-fail", uploadPagePath);
           })
@@ -1041,7 +1052,7 @@
                 normalFile,
                 fileOut,
                 uploadPagePath,
-                "file upload was blocked or interrupted."
+                "collector did not receive the uploaded file."
               );
               return;
             }
@@ -1053,21 +1064,21 @@
       var encoding = event.target.closest("[data-data-theft-encoding-form]");
       if (encoding) {
         event.preventDefault();
-        runDataTheftForm(encoding, buildEncodingForm, "Encoding selected file...");
+        runDataTheftForm(encoding, buildEncodingForm, "encoding");
         return;
       }
 
       var encryption = event.target.closest("[data-data-theft-encryption-form]");
       if (encryption) {
         event.preventDefault();
-        runDataTheftForm(encryption, buildEncryptionForm, "Encrypting selected file...");
+        runDataTheftForm(encryption, buildEncryptionForm, "encryption");
         return;
       }
 
       var chunking = event.target.closest("[data-data-theft-chunking-form]");
       if (chunking) {
         event.preventDefault();
-        runDataTheftForm(chunking, buildChunkingForm, "Chunking selected file...");
+        runDataTheftForm(chunking, buildChunkingForm, "chunking");
         return;
       }
 

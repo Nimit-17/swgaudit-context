@@ -10,16 +10,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  mintlify-check:
-    name: Mintlify broken-link check
+  plain-check:
+    name: Plain site sanity
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Mintlify checks paused
+      - name: Require plain DocumentRoot files
         run: |
-          echo  Mintlify validation is temporarily paused while SWG Audit moves to a clean static HTML/CSS/JS implementation.
-          echo This job keeps the required GitHub status check green during the migration.
+          set -euo pipefail
+          test -f plain/index.php
+          test -f plain/css/site.css
+          test -f plain/js/nav.js
+          test -f scripts/narrative-copy.json
+          test -f scripts/sync-plain-copy.js
+          # Mintlify must not return
+          if compgen -G '*.mdx' > /dev/null || compgen -G '**/*.mdx' > /dev/null; then
+            echo 'Mintlify .mdx files must not be in the repo'
+            exit 1
+          fi
+          if [ -f docs.json ] || [ -f package.json ] || [ -f swg.js ] || [ -f style.css ]; then
+            echo 'Mintlify root artifacts must not be in the repo'
+            exit 1
+          fi
+          echo 'plain site layout ok'

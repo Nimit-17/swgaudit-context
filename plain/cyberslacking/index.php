@@ -15,8 +15,8 @@ require __DIR__ . '/../includes/layout-start.php';
           <h1>Facility Abuse</h1>
           <div class="swg-divider"></div>
           <div class="swg-category-copy">
-            <p>Blocking one streaming website is not enough. The same host can serve many kinds of video.</p>
-            <p>This test loads different video categories through the same player path. Watch whether policy follows the content type, not only the website name.</p>
+            <p>Blocking one streaming host does not prove every media category on that host is blocked. The same player path can serve many video types.</p>
+            <p>This test loads different video categories through one player path. Watch whether policy follows the content category, not only the website name.</p>
           </div>
         </div>
 <?php require __DIR__ . '/../includes/layout-end.php'; ?>

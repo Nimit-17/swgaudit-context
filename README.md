@@ -37,4 +37,4 @@ Educational and controlled. Use only where you are authorized. Use dummy data. D
 
 ## Repository
 
-Mintlify source for SWG Audit. Edit and review here, then export and deploy through your normal pipeline to the live host. Site: [swgaudit.com](https://swgaudit.com)
+Plain PHP/HTML/CSS/JS site for SWG Audit (`plain/`). Narrative source: `scripts/narrative-copy.json` (sync with `node scripts/sync-plain-copy.js`). Dev preview on 167 is `/var/www/swgaudit-v5/plain`. Live site: [swgaudit.com](https://swgaudit.com).

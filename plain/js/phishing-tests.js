@@ -183,8 +183,17 @@ function buildCanvasHtml() {
     if (cache) {
       event.preventDefault();
       startConsole(cache, "swg-audit cache-mutation");
-      openNewTab("/phishing/cache-test.php?test=" + testId());
-      terminalFail(cache, "content-change test page opened in a new tab.");
+      terminalLine(cache, "opening content-change URL in a new tab ...");
+      terminalLine(
+        cache,
+        "first response is a holding page; refresh once for the login page on the same URL ..."
+      );
+      var openedCache = openNewTab("/phishing/cache-test.php?test=" + testId());
+      if (openedCache) {
+        terminalFail(cache, "content-change page opened; refresh once to load the login swap.");
+      } else {
+        terminalPass(cache, "browser blocked the content-change page.");
+      }
       return;
     }
 
@@ -193,28 +202,20 @@ function buildCanvasHtml() {
       event.preventDefault();
       var storedChip = activeChip(stored.getAttribute("data-stored-launch"));
       var format = storedChip ? storedChip.getAttribute("data-format") : "raw-html";
+      var formatLabel = format === "mhtml" ? "MHTML" : "HTML";
       startConsole(stored, "swg-audit stored-page --format=" + format);
-      terminalLine(
-        stored,
-        format === "mhtml"
-          ? "assembling MHTML payload in the browser ..."
-          : "assembling raw HTML in the browser ..."
-      );
+      terminalLine(stored, "selected format: " + formatLabel);
+      terminalLine(stored, "assembling " + formatLabel + " in the browser ...");
       try {
         var localHtml = makeDummyMicrosoftLoginHtml();
         var renderedHtml =
           format === "mhtml" ? extractHtmlFromMhtml(buildClientMhtml(localHtml)) : localHtml;
-        terminalLine(
-          stored,
-          "building blob from locally assembled " +
-            (format === "mhtml" ? "MHTML" : "HTML") +
-            " ..."
-        );
+        terminalLine(stored, "building local page from assembled " + formatLabel + " ...");
         var opened = openClientHtml(renderedHtml);
-        if (opened) terminalFail(stored, "locally assembled phishing page opened in a new tab.");
-        else terminalPass(stored, "locally assembled phishing page was blocked by the browser.");
+        if (opened) terminalFail(stored, "local " + formatLabel + " login page opened in a new tab.");
+        else terminalPass(stored, "browser blocked the local " + formatLabel + " login page.");
       } catch (err) {
-        terminalLine(stored, "stored phishing page could not be built.");
+        terminalLine(stored, "local " + formatLabel + " login page could not be built.");
       }
       return;
     }
@@ -223,9 +224,11 @@ function buildCanvasHtml() {
     if (canvas) {
       event.preventDefault();
       startConsole(canvas, "swg-audit canvas-page");
+      terminalLine(canvas, "drawing canvas login page ...");
+      terminalLine(canvas, "opening canvas login in a new tab ...");
       var openedCanvas = openClientHtml(buildCanvasHtml());
-      if (openedCanvas) terminalFail(canvas, "canvas-rendered phishing page opened in a new tab.");
-      else terminalPass(canvas, "canvas-rendered phishing page was blocked by the browser.");
+      if (openedCanvas) terminalFail(canvas, "canvas login page opened in a new tab.");
+      else terminalPass(canvas, "browser blocked the canvas login page.");
     }
   });
 
@@ -234,7 +237,9 @@ function buildCanvasHtml() {
     if (!credential) return;
     event.preventDefault();
     var out = cardOutput(credential);
-    setOutput(out, "Submitting dummy credential payload...");
+    startConsole(credential, "swg-audit credential-submit");
+    terminalLine(credential, "submitting dummy credentials to collector ...");
+    setOutput(out, "Submitting dummy credentials to the collector...");
     fetch(credential.action || "/phishing/credential-submit.php", {
       method: "post",
       body: new FormData(credential),
@@ -245,13 +250,16 @@ function buildCanvasHtml() {
         return readJson(response);
       })
       .then(function () {
-        setOutput(out, "Test failed: dummy credential payload reached the simulation endpoint.", "is-fail");
+        terminalFail(credential, "collector received the dummy credentials.");
+        setOutput(out, "Test failed: collector received the dummy credentials.", "is-fail");
       })
       .catch(function (err) {
         if (isBlockedHttpError(err)) {
-          setOutput(out, "Test passed.", "is-pass");
+          terminalPass(credential, "collector did not receive the dummy credentials.");
+          setOutput(out, "Test passed: collector did not receive the dummy credentials.", "is-pass");
           return;
         }
+        terminalLine(credential, "credential submission could not complete.");
         setOutput(out, "Test could not complete. Please retry.");
       });
   });

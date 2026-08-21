@@ -24,12 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">Links that hide the real site</div>
-              <p class="swg-block-text">Attackers hide the real destination with typos, lookalike characters, encoded paths, redirects, and short links. The link that looks trusted may open a different page.</p>
+              <div class="swg-block-label">Many URL forms, one destination</div>
+              <p class="swg-block-text">Attackers reach a login page through typo paths, Unicode homographs, percent encoding, redirects, and link shortening. Matching one string does not guarantee detection of every form that opens that page.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">Five URL variations</div>
-              <p class="swg-block-text">Pick one variation and open it. Each choice opens the same dummy login page through a different URL disguise.</p>
+              <div class="swg-block-label">Pick a form and open</div>
+              <p class="swg-block-text">Pick one variation and open it. Each choice opens one dummy login page in a new tab. Typo, homograph, encoding, redirect, and short-link paths all resolve to that page.</p>
             </section>
           </div>
 

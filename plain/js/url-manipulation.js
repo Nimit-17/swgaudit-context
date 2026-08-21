@@ -152,13 +152,16 @@
     var rawUrl = selected.getAttribute("data-url") || "";
     var openUrl = absoluteTestUrl(rawUrl);
     var shownUrl = displayTestUrl(rawUrl) || openUrl || rawUrl;
+    var variation = (selected.textContent || "").trim() || "selected URL";
     startConsole(open, "swg-audit open-url");
-    terminalLine(open, "opening " + shownUrl);
+    terminalLine(open, "selected variation: " + variation);
+    terminalLine(open, "destination URL: " + shownUrl);
+    terminalLine(open, "opening destination in a new tab ...");
     var openedTab = openNewTab(openUrl || rawUrl);
     if (openedTab) {
-      terminalFail(open, "selected URL opened in a new tab: " + shownUrl);
+      terminalFail(open, "new tab opened and loaded the destination login page.");
     } else {
-      terminalPass(open, "selected URL was blocked before it could open: " + shownUrl);
+      terminalPass(open, "browser blocked the new tab before the destination could open.");
     }
   });
 })();

@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Upload after encoding</div>
-      <p class="swg-block-text">Encoding a file as Base64, hex, or similar can hide clear text from filters while the receiver can still rebuild the original.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Encode, then send</div>
-      <p class="swg-block-text">Choose an encoding and submit. The collector tries to decode and reports whether the original file comes back.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Encode before upload</div>
+              <p class="swg-block-text">Encoding converts file bytes into Base64, hex, or URL text. Filters that match clear text miss the content. A collector still rebuilds the original file.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Pick encoding, then send</div>
+              <p class="swg-block-text">Choose Base64, double Base64, hex, or URL encoding, then submit. The collector decodes and reports whether the original file returns.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">

@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Move data through DNS</div>
-      <p class="swg-block-text">DNS lookups often face less inspection than web uploads. File bytes can ride inside DNS names and rebuild at a collector.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Send file bytes as DNS queries</div>
-      <p class="swg-block-text">Choose a small dummy file and run the tunnel. The result shows whether the file can be rebuilt from DNS traffic.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Bytes inside DNS names</div>
+              <p class="swg-block-text">DNS lookups often escape the inspection applied to web uploads. File bytes ride inside DNS names and rebuild at a collector.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Tunnel a file over DNS</div>
+              <p class="swg-block-text">Choose a dummy file under 100 KB and run the tunnel. Status shows whether the collector rebuilds the file from DNS queries.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">

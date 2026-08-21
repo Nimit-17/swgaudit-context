@@ -24,12 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">Phishing as a saved file</div>
-              <p class="swg-block-text">Web filters inspect traffic from websites. A phishing page saved as HTML or MHTML can open on the computer without that normal web fetch.</p>
+              <div class="swg-block-label">Login page as a local file</div>
+              <p class="swg-block-text">Attackers deliver a login page as an HTML or MHTML file. The browser opens the file on the device. Filters that only inspect website fetches never see that page on the wire.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">Build a local login page</div>
-              <p class="swg-block-text">Pick HTML or MHTML. The browser builds a dummy login page in memory and opens it like a saved phishing file.</p>
+              <div class="swg-block-label">Assemble and open locally</div>
+              <p class="swg-block-text">Pick HTML or MHTML. The browser builds a dummy Microsoft login page in memory, wraps the page in the chosen format, and opens the page in a new tab the way a saved phishing file would open.</p>
             </section>
           </div>
 

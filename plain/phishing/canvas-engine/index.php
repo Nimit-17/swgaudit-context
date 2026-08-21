@@ -24,12 +24,12 @@ require __DIR__ . '/../../includes/layout-start.php';
 
           <div class="swg-info">
             <section class="swg-block">
-              <div class="swg-block-label">Login drawn as an image</div>
-              <p class="swg-block-text">Many scanners search page text for words like password. A canvas can draw a login screen as pixels so those words never appear in the page code.</p>
+              <div class="swg-block-label">Login drawn as pixels</div>
+              <p class="swg-block-text">Attackers draw a login screen on an HTML canvas, a drawing surface in the browser. The page shows a sign-in form as pixels, so scanners that search page text for words such as password find none.</p>
             </section>
             <section class="swg-block">
-              <div class="swg-block-label">Canvas login screen</div>
-              <p class="swg-block-text">Open the canvas login. The page draws a GitHub-style sign-in screen as an image instead of normal form fields.</p>
+              <div class="swg-block-label">Open the canvas login</div>
+              <p class="swg-block-text">Open the canvas login. The page draws a GitHub sign-in screen as an image and captures clicks and keystrokes on that drawing instead of HTML form fields.</p>
             </section>
           </div>
 

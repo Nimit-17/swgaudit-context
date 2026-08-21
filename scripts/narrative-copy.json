@@ -1,188 +1,188 @@
 {
   "home": {
-    "_comment": "HOME_H1 and HOME_LEAD are locked in generate-pages.js indexHtml. Do not change unless a human user explicitly asks. Intro lines below are editable getting-started copy; keep HOME_INTRO in generate-pages.js in sync.",
+    "_comment": "HOME H1/lead are locked in plain/index.php. Do not change unless a human user explicitly asks. Intro below is editable getting-started copy; keep plain/index.php in sync.",
     "title": "Validate the real-world effectiveness of your perimeter security",
     "lead": "SWG Audit is an open source initiative designed to safely simulate modern web-based cyber threats.",
     "intro": "Pick a category, run a test, and compare what happens to the pass and fail conditions on that page. Pass means the web filter or browser blocked or warned. Fail means the action completed with no block. Use dummy credentials and disposable files only. Do not use live credentials or live business files. One result is evidence for that technique, not a full security score."
   },
   "categories": {
     "Phishing": [
-      "Phishing no longer depends on an obviously malicious domain. Attackers use lookalike links, saved HTML files, login screens drawn as images, and pages that change after a first check to capture sign-in details.",
-      "These tests run those methods in the browser. Watch whether the imitation login appears, whether filters still catch it, and whether a dummy password can leave the network."
+      "Phishing often bypasses host-name block lists. Attackers open login pages from lookalike URLs, saved HTML or MHTML files, canvas pixel drawings, and pages that swap content after a first check.",
+      "These tests run those delivery paths in the browser. Watch whether the imitation login appears, whether filters still catch it, and whether a dummy password can leave the network."
     ],
     "Malware": [
-      "Malware often arrives inside documents, archives, cloud links, encoded text, encrypted packages, or pieces that the browser rebuilds later.",
-      "These tests use stand-in samples and the EICAR antivirus test string. The question is whether controls inspect the final file even when the delivery path is hard to scan."
+      "Malware delivery rarely stops at one EXE download. Attackers hide markers inside documents, archives, cloud links, encoded text, encrypted packages, HTML carriers, WebAssembly memory, and chunked pieces the browser rebuilds later.",
+      "These tests use stand-in samples and the EICAR antivirus test string. Watch whether controls inspect the final file even when the path on the wire looks hard to scan."
     ],
     "Data Theft": [
-      "Data theft can look like normal work: file uploads, encoded traffic, small pieces, or channels that policy already allows.",
-      "Each test sends a dummy file to a controlled collector. Encoding, encryption, chunking, DNS queries, and URL paths either stop before rebuild or arrive whole on the other side."
+      "Data theft can ride channels policy already allows: file uploads, encoded or encrypted bodies, small chunked posts, DNS queries, and long URL paths.",
+      "Each test sends a dummy file to a controlled collector. Watch whether encoding, encryption, chunking, DNS labels, or path pieces stop before rebuild or arrive whole on the other side."
     ],
     "Cyberslacking": [
-      "Blocking one streaming website is not enough. The same host can serve many kinds of video.",
-      "This test loads different video categories through the same player path. Watch whether policy follows the content type, not only the website name."
+      "Blocking one streaming host does not prove every media category on that host is blocked. The same player path can serve many video types.",
+      "This test loads different video categories through one player path. Watch whether policy follows the content category, not only the website name."
     ]
   },
   "tests": {
     "phishing/url-manipulation": {
-      "hookHeading": "Links that hide the real site",
-      "buildupHeading": "Five URL variations",
-      "hook": "Attackers hide the real destination with typos, lookalike characters, encoded paths, redirects, and short links. The link that looks trusted may open a different page.",
-      "buildup": "Pick one variation and open it. Each choice opens the same dummy login page through a different URL disguise."
+      "hookHeading": "Many URL forms, one destination",
+      "buildupHeading": "Pick a form and open",
+      "hook": "Attackers reach a login page through typo paths, Unicode homographs, percent encoding, redirects, and link shortening. Matching one string does not guarantee detection of every form that opens that page.",
+      "buildup": "Pick one variation and open it. Each choice opens one dummy login page in a new tab. Typo, homograph, encoding, redirect, and short-link paths all resolve to that page."
     },
     "phishing/site-stored-as-mhtml-or-raw-html": {
-      "hookHeading": "Phishing as a saved file",
-      "buildupHeading": "Build a local login page",
-      "hook": "Web filters inspect traffic from websites. A phishing page saved as HTML or MHTML can open on the computer without that normal web fetch.",
-      "buildup": "Pick HTML or MHTML. The browser builds a dummy login page in memory and opens it like a saved phishing file."
+      "hookHeading": "Login page as a local file",
+      "buildupHeading": "Assemble and open locally",
+      "hook": "Attackers deliver a login page as an HTML or MHTML file. The browser opens the file on the device. Filters that only inspect website fetches never see that page on the wire.",
+      "buildup": "Pick HTML or MHTML. The browser builds a dummy Microsoft login page in memory, wraps the page in the chosen format, and opens the page in a new tab the way a saved phishing file would open."
     },
     "phishing/canvas-engine": {
-      "hookHeading": "Login drawn as an image",
-      "buildupHeading": "Canvas login screen",
-      "hook": "Many scanners search page text for words like password. A canvas can draw a login screen as pixels so those words never appear in the page code.",
-      "buildup": "Open the canvas login. The page draws a GitHub-style sign-in screen as an image instead of normal form fields."
+      "hookHeading": "Login drawn as pixels",
+      "buildupHeading": "Open the canvas login",
+      "hook": "Attackers draw a login screen on an HTML canvas, a drawing surface in the browser. The page shows a sign-in form as pixels, so scanners that search page text for words such as password find none.",
+      "buildup": "Open the canvas login. The page draws a GitHub sign-in screen as an image and captures clicks and keystrokes on that drawing instead of HTML form fields."
     },
     "phishing/cached-content-mutation": {
-      "hookHeading": "Clean page, then a swap",
-      "buildupHeading": "Same URL, second page",
-      "hook": "A first clean page can earn a pass from a filter. The next visit to the same URL can return a phishing login instead.",
-      "buildup": "Open the link, then refresh once. The first page is benign. The refresh shows a dummy Microsoft-style login on the same URL."
+      "hookHeading": "Same URL, second page",
+      "buildupHeading": "Open once, then refresh",
+      "hook": "Attackers serve a holding page on the first visit so scanners mark the URL safe. A later visit to the same URL returns a login page instead.",
+      "buildup": "Open the link. The first response is a holding page. Refresh once; the same URL returns a dummy Microsoft login."
     },
     "phishing/form-submission-on-random-site": {
-      "hookHeading": "Sending passwords out",
+      "hookHeading": "Credentials leave on submit",
       "buildupHeading": "Submit dummy credentials",
-      "hook": "Blocking the lure page is only half the defense. If a login form can still send credentials out of the network, the theft succeeds.",
-      "buildup": "Submit the prefilled dummy username and password. The collector records arrival, then discards the values."
+      "hook": "Blocking a lure page stops only the display. If a login form can POST a username and password to a collector outside the network, the theft completes.",
+      "buildup": "Submit the dummy username and password shown in the form. The collector records whether the POST arrives, then discards the values."
     },
     "malware/ransomware-file": {
-      "hookHeading": "Ransom note without malware",
+      "hookHeading": "Ransom note without code",
       "buildupHeading": "Download the note sample",
-      "hook": "Ransomware leaves instruction notes that are not programs. Filters that only block executables can miss that signal.",
-      "buildup": "Download the ransom-note sample and watch whether content policy flags the pattern."
+      "hook": "Ransomware leaves instruction notes that are not programs. Filters that only block executables miss that signal.",
+      "buildup": "Download ransomware-note-simulation.txt and watch whether content policy flags the ransom-note pattern."
     },
     "malware/personal-data-file": {
       "hookHeading": "Spreadsheet with personal fields",
       "buildupHeading": "Download the sample sheet",
-      "hook": "Personal data often leaves as a normal office file with no malware inside. Controls must catch the data type, not only viruses.",
-      "buildup": "Download the spreadsheet sample that looks like personal records and watch whether DLP blocks the download."
+      "hook": "Personal records often leave as an office file with no malware inside. Controls must catch the data type, not only viruses.",
+      "buildup": "Download pii-file.xlsx shaped like personal records and watch whether DLP blocks the download."
     },
     "malware/different-file-formats": {
-      "hookHeading": "Same test file, many formats",
-      "buildupHeading": "Pick a file type",
+      "hookHeading": "Same marker, many formats",
+      "buildupHeading": "Pick a format and download",
       "hook": "Some filters trust or distrust files by extension. The same malware marker inside TXT, PDF, Office, or ZIP should still be found.",
       "buildup": "Choose a format and download. Each file holds the same EICAR test marker so result differences come from format handling."
     },
     "malware/executable-files": {
       "hookHeading": "Programs and scripts",
       "buildupHeading": "Pick an executable type",
-      "hook": "Attackers still deliver code as EXE files, scripts, and other runnable types. An unchecked download puts that code on the computer.",
-      "buildup": "Choose an extension and download the sample. Each type appears in real attacks."
+      "hook": "Attackers still deliver code as EXE files, scripts, and other runnable types. An unchecked download puts the code on the computer.",
+      "buildup": "Choose an extension and download the sample. Each type appears in attacks."
     },
     "malware/http-https-and-cloud-delivery": {
       "hookHeading": "Same file, different paths",
-      "buildupHeading": "HTTP, HTTPS, or cloud",
-      "hook": "Blocking one known-malicious host is not enough. The same file can arrive over plain HTTP, normal HTTPS, or a trusted cloud link.",
-      "buildup": "Pick a channel. The same stand-in sample arrives over HTTP, local HTTPS, or Google Drive so the filter must follow the file, not the brand."
+      "buildupHeading": "Pick HTTP, HTTPS, or cloud",
+      "hook": "Blocking one known-malicious host is not enough. The same file can arrive over plain HTTP, HTTPS, or a cloud link.",
+      "buildup": "Pick a channel. The same sample arrives over HTTP, local HTTPS, or Google Drive so the filter must follow the file, not the brand."
     },
     "malware/nested-file-download": {
       "hookHeading": "Files inside files",
-      "buildupHeading": "Download a nested sample",
+      "buildupHeading": "Pick a nesting chain",
       "hook": "Attackers hide payloads inside ZIP, ISO, or Office packages. Scanners that only open the outer layer miss what sits underneath.",
       "buildup": "Choose a nesting chain and download. Each sample hides the same test marker two or three layers deep."
     },
     "malware/password-protected-file": {
       "hookHeading": "Password-locked ZIP",
-      "buildupHeading": "Password is 123456",
-      "hook": "A password on a ZIP can stop automated scanning even when the password is weak or written in the same email.",
-      "buildup": "Download the protected ZIP. The password is 123456 on purpose so the gap is scan access, not strong encryption."
+      "buildupHeading": "Download with password 123456",
+      "hook": "A password on a ZIP can stop automated scanning even when the password is written in the same email.",
+      "buildup": "Download test-password-protected.zip. The password is 123456 so the gap is scan access, not encryption strength."
     },
     "malware/file-spoofing": {
       "hookHeading": "Name that looks like a PDF",
-      "buildupHeading": "dummy.pdf.exe",
-      "hook": "A name like invoice.pdf.exe can look like a document while Windows still runs it as a program.",
-      "buildup": "Download the sample. The name looks like a PDF. The file type is a Windows executable stand-in."
+      "buildupHeading": "Download dummy.pdf.exe",
+      "hook": "A name like invoice.pdf.exe can look like a document while Windows still runs the file as a program.",
+      "buildup": "Download dummy.pdf.exe. The name looks like a PDF. The file type is a Windows executable stand-in."
     },
     "malware/encoded-files": {
       "hookHeading": "Encoded text becomes a file",
       "buildupHeading": "Decode in the browser",
       "hook": "Base64 or Base32 can make a file look like plain text in transit. Filters that never decode miss the file rebuilt on the computer.",
-      "buildup": "Choose an encoding. The browser downloads encoded DOCM data, decodes it locally, and offers the rebuilt file."
+      "buildup": "Choose Base64 or Base32. The browser fetches encoded DOCM data, decodes the data locally, and offers the rebuilt file."
     },
     "malware/encrypted-files": {
-      "hookHeading": "Encrypted until the browser opens it",
-      "buildupHeading": "Decrypt then save",
-      "hook": "Encryption can hide file contents from network scanners. Browser code and a key can restore the file after it passes the filter.",
-      "buildup": "Run the fetch. The browser decrypts the sample on the computer and offers the rebuilt DOCM file."
+      "hookHeading": "Encrypted until browser decrypt",
+      "buildupHeading": "Decrypt or download archive",
+      "hook": "Encryption can hide file contents from network scanners. Browser code and a key can restore the file after the filter.",
+      "buildup": "Choose AES-GCM ciphertext or an encrypted archive. Some options decrypt in the browser before download. Others download AES ZIP or encrypted 7Z as-is."
     },
     "malware/browser-open-docm": {
       "hookHeading": "Office file with macros",
       "buildupHeading": "Open the DOCM sample",
-      "hook": "Macro-enabled Office files can run code when opened. This sample shows the EICAR test string instead of real malware.",
-      "buildup": "Open the DOCM sample and watch whether policy blocks the macro document before the test message appears."
+      "hook": "Macro-enabled Office files can run code when opened. The sample shows the EICAR test string instead of malware.",
+      "buildup": "Open eicar.docm from the server in a new tab and watch whether policy blocks the macro document before any download completes."
     },
     "malware/webassembly-eicar": {
       "hookHeading": "Built inside WebAssembly",
       "buildupHeading": "Read marker from memory",
-      "hook": "WebAssembly can hold data that does not look like a file on the network. Script can read that memory and build the malware test string in the browser.",
-      "buildup": "Run the test. The browser starts a Wasm module and builds the EICAR string from memory."
+      "hook": "WebAssembly can hold data that does not look like a file on the network. Script can read module memory and build the malware test string in the browser.",
+      "buildup": "Run the test. The browser loads eicar.wasm, reads the EICAR string from module memory, and offers eicar.txt."
     },
     "malware/chunk-attacks-different-orders": {
       "hookHeading": "File arrives in pieces",
-      "buildupHeading": "Download pieces, then join",
+      "buildupHeading": "Fetch pieces, then join",
       "hook": "Sending a file in pieces, sometimes out of order, can bypass tools that expect one full download. The browser joins the pieces later.",
-      "buildup": "Choose an order pattern. The browser downloads the pieces, joins the test marker, and offers the rebuilt file."
+      "buildup": "Choose an order pattern. The browser fetches the pieces for that pattern, joins the test marker, and offers the rebuilt file."
     },
     "malware/smuggling-html-js-css-or-svg": {
       "hookHeading": "Hidden inside web page code",
       "buildupHeading": "Extract and rebuild",
-      "hook": "HTML, JavaScript, CSS, or SVG can carry an encoded file that only appears after the page runs. Network scanners may see a normal web asset.",
+      "hook": "HTML, JavaScript, CSS, or SVG can carry an encoded file that only appears after the page runs. Network scanners may see a web asset.",
       "buildup": "Pick a carrier type. The page extracts the hidden data and rebuilds the DOCM file in the browser."
     },
     "malware/browser-resource-abuse": {
       "hookHeading": "Browser tab resource exhaustion",
-      "buildupHeading": "Memory load and lock",
+      "buildupHeading": "Confirm, allocate, then lock",
       "hook": "JavaScript alone can use so much memory and CPU that the tab freezes. No download or popup is required.",
       "buildup": "Confirm the warning, then start. Try to right-click or select text. The terminal shows memory use while the tab freezes for about 30 seconds, then memory frees about 10 seconds later."
     },
     "data-theft/personal-data-submission-in-normal-file": {
-      "hookHeading": "Normal file upload",
+      "hookHeading": "Records leave as uploads",
       "buildupHeading": "Upload a dummy file",
-      "hook": "Attackers can move records outbound with ordinary file uploads that look like normal work traffic.",
-      "buildup": "Choose a dummy file and upload it. The collector reports whether the file arrived whole."
+      "hook": "Attackers move records outbound through file uploads that match work traffic. Filters that only watch for malware miss this path.",
+      "buildup": "Choose a dummy file and upload. The collector reports whether the file arrives."
     },
     "data-theft/file-encoding": {
-      "hookHeading": "Upload after encoding",
-      "buildupHeading": "Encode, then send",
-      "hook": "Encoding a file as Base64, hex, or similar can hide clear text from filters while the receiver can still rebuild the original.",
-      "buildup": "Choose an encoding and submit. The collector tries to decode and reports whether the original file comes back."
+      "hookHeading": "Encode before upload",
+      "buildupHeading": "Pick encoding, then send",
+      "hook": "Encoding converts file bytes into Base64, hex, or URL text. Filters that match clear text miss the content. A collector still rebuilds the original file.",
+      "buildup": "Choose Base64, double Base64, hex, or URL encoding, then submit. The collector decodes and reports whether the original file returns."
     },
     "data-theft/file-encrypting": {
-      "hookHeading": "Upload after encryption",
-      "buildupHeading": "Encrypt, then send",
-      "hook": "Encrypting a file in the browser can hide contents from inspection. The receiver with the key can restore the file.",
-      "buildup": "Choose a mode and submit. The collector decrypts with the known test key and reports whether rebuild works."
+      "hookHeading": "Encrypt before upload",
+      "buildupHeading": "Pick encryption, then send",
+      "hook": "Encrypting a file in the browser hides contents from inspection. A collector that holds the key restores the file.",
+      "buildup": "Choose an AES-GCM mode and submit. The collector decrypts with the shared key and reports whether rebuild succeeds."
     },
     "data-theft/file-chunking": {
-      "hookHeading": "Upload in small pieces",
-      "buildupHeading": "Split, then reassemble",
-      "hook": "Sending a file as many small uploads can bypass rules that look for one full file in one request.",
-      "buildup": "Choose a chunk pattern and submit. The collector joins the pieces and reports whether the full file returns."
+      "hookHeading": "Split across uploads",
+      "buildupHeading": "Pick a chunk pattern",
+      "hook": "Sending a file as many uploads bypasses rules that look for one file in one request.",
+      "buildup": "Choose a chunk pattern and submit. The collector joins the pieces and reports whether the file returns."
     },
     "data-theft/dns-tunneling": {
-      "hookHeading": "Move data through DNS",
-      "buildupHeading": "Send file bytes as DNS queries",
-      "hook": "DNS lookups often face less inspection than web uploads. File bytes can ride inside DNS names and rebuild at a collector.",
-      "buildup": "Choose a small dummy file and run the tunnel. The result shows whether the file can be rebuilt from DNS traffic."
+      "hookHeading": "Bytes inside DNS names",
+      "buildupHeading": "Tunnel a file over DNS",
+      "hook": "DNS lookups often escape the inspection applied to web uploads. File bytes ride inside DNS names and rebuild at a collector.",
+      "buildup": "Choose a dummy file under 100 KB and run the tunnel. Status shows whether the collector rebuilds the file from DNS queries."
     },
     "data-theft/http-path-tunneling": {
-      "hookHeading": "Move data in the URL path",
-      "buildupHeading": "Send pieces in GET paths",
-      "hook": "File data can move inside long URL paths without a normal upload form. Filters that only watch POST uploads can miss this.",
-      "buildup": "Choose a file under the size limit and run. Path pieces hit the tunnel endpoint. Status shows whether rebuild succeeds."
+      "hookHeading": "Bytes inside URL paths",
+      "buildupHeading": "Send pieces as GET paths",
+      "hook": "File data moves inside URL paths without a form upload. Filters that only watch POST uploads miss this channel.",
+      "buildup": "Choose a file under 200 KB and run. Path pieces hit the tunnel endpoint. Status shows whether the collector rebuilds the file."
     },
     "cyberslacking/video-content-category-simulation": {
-      "hookHeading": "Video type vs website name",
-      "buildupHeading": "Load different video categories",
+      "hookHeading": "Category vs host allow list",
+      "buildupHeading": "Load a video category",
       "hook": "One streaming host can serve many video categories. Allowing the website does not prove every category is allowed.",
       "buildup": "Pick a category. The player loads a matching sample so policy must follow the media type, not only the host name."
     }

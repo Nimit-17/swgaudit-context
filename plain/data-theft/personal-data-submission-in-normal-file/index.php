@@ -23,17 +23,17 @@ require __DIR__ . '/../../includes/layout-start.php';
   <div class="swg-divider"></div>
 
   <div class="swg-info">
-    <section class="swg-block">
-      <div class="swg-block-label">Normal file upload</div>
-      <p class="swg-block-text">Attackers can move records outbound with ordinary file uploads that look like normal work traffic.</p>
-    </section>
-    <section class="swg-block">
-      <div class="swg-block-label">Upload a dummy file</div>
-      <p class="swg-block-text">Choose a dummy file and upload it. The collector reports whether the file arrived whole.</p>
-    </section>
-  </div>
+            <section class="swg-block">
+              <div class="swg-block-label">Records leave as uploads</div>
+              <p class="swg-block-text">Attackers move records outbound through file uploads that match work traffic. Filters that only watch for malware miss this path.</p>
+            </section>
+            <section class="swg-block">
+              <div class="swg-block-label">Upload a dummy file</div>
+              <p class="swg-block-text">Choose a dummy file and upload. The collector reports whether the file arrives.</p>
+            </section>
+          </div>
 
-  <div class="swg-run">
+          <div class="swg-run">
     <div class="swg-run-label">Try it yourself</div>
     <div class="swg-run-body">
       <div class="swg-run-controls">
